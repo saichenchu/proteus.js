@@ -16,3 +16,7 @@ Wire is in the process of releasing source code, but is not yet actively develop
 npm install
 npm test
 ```
+
+## Build Status
+
+[![Build Status](https://travis-ci.org/wireapp/proteus.js.svg?branch=master)](https://travis-ci.org/wireapp/proteus.js)
