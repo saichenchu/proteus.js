@@ -5,7 +5,7 @@
 	"coffee-script": "~1",
 
     "cbor-codec": "wireapp/cbor-codec.js#v1.0.0",
-    "libsodium": "wireapp/libsodium.js#v0.2.10-wire"
+    "libsodium": "wireapp/libsodium.js#master"
   },
   "devDependencies": {
     "mocha": "~2",
