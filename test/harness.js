@@ -1,0 +1,17 @@
+assert = require('chai').assert;
+
+global.sodium = require('libsodium');
+Proteus = require('proteus');
+Proteus.derived = {
+  DerivedSecrets: require('proteus/derived/DerivedSecrets'),
+  CipherKey: require('proteus/derived/CipherKey'),
+  MacKey: require('proteus/derived/MacKey')
+};
+
+Proteus.message.SessionTag = require('proteus/message/SessionTag');
+
+Proteus.util = {
+  KeyDerivationUtil: require('proteus/util/KeyDerivationUtil'),
+  ArrayUtil: require('proteus/util/ArrayUtil'),
+  TypeUtil: require('proteus/util/TypeUtil')
+};
