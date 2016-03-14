@@ -19,7 +19,7 @@ module.exports = do ->
     if not Array.isArray classes
       classes = [classes]
 
-    return if classes.some((k) -> inst instanceof k or inst.prototype instanceof k)
+    return if classes.some((k) -> inst instanceof k or (inst and inst.prototype instanceof k))
 
     valid_types = classes.map((k) -> "'#{k.name}'").join(' or ')
     if inst
