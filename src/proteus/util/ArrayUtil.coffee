@@ -25,8 +25,7 @@ module.exports = do ->
     if args.length > 1
       first_buffer = args.shift()
       concatenated_buffer = undefined
-      for index, array_buffer_view of args
-        second_buffer = array_buffer_view
+      for second_buffer in args
         concatenated_buffer = new first_buffer.constructor first_buffer.byteLength + second_buffer.byteLength
         concatenated_buffer.set first_buffer, 0
         concatenated_buffer.set second_buffer, first_buffer.byteLength
