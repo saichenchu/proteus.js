@@ -48,7 +48,7 @@ describe 'CipherKey sanity checks (IETF ChaCha20 test vectors)', ->
 
     for vector in ietf_vectors
       cipher_text = encrypt_plain_text vector
-      assert(sodium.to_hex(cipher_text) is vector.m)
+      assert.deepEqual(sodium.to_hex(cipher_text), vector.m)
 
   it 'decrypts ciphertext to plaintext', ->
     decrypt_cipher_text = (vector) ->
