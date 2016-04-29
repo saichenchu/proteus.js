@@ -20,19 +20,13 @@ module.exports = do ->
   ###
 
   concatenate_array_buffers: (buffers) ->
-    return_buffer = buffers[0]
+    Proteus.util.TypeUtil.assert_is_instance Array, buffers
 
-    if buffers.length > 1
-      first_buffer = buffers.shift()
-      concatenated_buffer = undefined
-      for second_buffer in buffers
-        concatenated_buffer = new first_buffer.constructor first_buffer.byteLength + second_buffer.byteLength
-        concatenated_buffer.set first_buffer, 0
-        concatenated_buffer.set second_buffer, first_buffer.byteLength
-        first_buffer = concatenated_buffer
-      return_buffer = concatenated_buffer
-
-    return return_buffer
+    return buffers.reduce (a, b) ->
+      buf = new a.constructor (a.byteLength + b.byteLength)
+      buf.set a, 0
+      buf.set b, a.byteLength
+      return buf
 
   array_buffer_to_string: (buffer) ->
     return String.fromCharCode.apply null, buffer
