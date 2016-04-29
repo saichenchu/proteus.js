@@ -56,10 +56,10 @@ module.exports = class SessionState
     TypeUtil.assert_is_instance KeyPair, alice_base
     TypeUtil.assert_is_instance PreKeyBundle, bob_pkbundle
 
-    master_key = ArrayUtil.concatenate_array_buffers(
+    master_key = ArrayUtil.concatenate_array_buffers([
       alice_identity_pair.secret_key.shared_secret(bob_pkbundle.public_key),
       alice_base.secret_key.shared_secret(bob_pkbundle.identity_key.public_key),
-      alice_base.secret_key.shared_secret(bob_pkbundle.public_key))
+      alice_base.secret_key.shared_secret(bob_pkbundle.public_key)])
 
     dsecs = DerivedSecrets.kdf_without_salt master_key, "handshake"
 
@@ -85,10 +85,10 @@ module.exports = class SessionState
     TypeUtil.assert_is_instance IdentityKey, alice_ident
     TypeUtil.assert_is_instance PublicKey, alice_base
 
-    master_key = ArrayUtil.concatenate_array_buffers(
+    master_key = ArrayUtil.concatenate_array_buffers([
       bob_prekey.secret_key.shared_secret(alice_ident.public_key),
       bob_ident.secret_key.shared_secret(alice_base),
-      bob_prekey.secret_key.shared_secret(alice_base))
+      bob_prekey.secret_key.shared_secret(alice_base)])
 
     dsecs = DerivedSecrets.kdf_without_salt master_key, "handshake"
 

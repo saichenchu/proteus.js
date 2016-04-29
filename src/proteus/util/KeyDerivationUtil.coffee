@@ -61,9 +61,9 @@ module.exports = do ->
       result = new Uint8Array 0
 
       for i in [0..(num_blocks - 1)]
-        buf = ArrayUtil.concatenate_array_buffers hmac, info, new Uint8Array [i + 1]
+        buf = ArrayUtil.concatenate_array_buffers [hmac, info, new Uint8Array [i + 1]]
         hmac = sodium.crypto_auth_hmacsha256 buf, tag
-        result = ArrayUtil.concatenate_array_buffers result, hmac
+        result = ArrayUtil.concatenate_array_buffers [result, hmac]
 
       return result.slice 0, length
 

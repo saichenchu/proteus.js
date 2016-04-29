@@ -18,14 +18,14 @@ module.exports = do ->
   ###
   Concatenates array buffers (usually 8-bit unsigned).
   ###
-  concatenate_array_buffers: ->
-    args = Array.prototype.slice.call arguments
-    return_buffer = args[0]
 
-    if args.length > 1
-      first_buffer = args.shift()
+  concatenate_array_buffers: (buffers) ->
+    return_buffer = buffers[0]
+
+    if buffers.length > 1
+      first_buffer = buffers.shift()
       concatenated_buffer = undefined
-      for second_buffer in args
+      for second_buffer in buffers
         concatenated_buffer = new first_buffer.constructor first_buffer.byteLength + second_buffer.byteLength
         concatenated_buffer.set first_buffer, 0
         concatenated_buffer.set second_buffer, first_buffer.byteLength
