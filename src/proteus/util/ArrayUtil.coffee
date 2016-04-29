@@ -14,13 +14,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+TypeUtil = require '../util/TypeUtil'
+
 module.exports = do ->
   ###
   Concatenates array buffers (usually 8-bit unsigned).
   ###
 
   concatenate_array_buffers: (buffers) ->
-    Proteus.util.TypeUtil.assert_is_instance Array, buffers
+    TypeUtil.assert_is_instance Array, buffers
 
     return buffers.reduce (a, b) ->
       buf = new a.constructor (a.byteLength + b.byteLength)
