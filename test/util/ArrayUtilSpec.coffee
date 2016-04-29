@@ -44,3 +44,30 @@ describe 'HMAC-based Key Derivation Function', ->
     actual = Proteus.util.ArrayUtil.byte_array_to_bit_array input
     expected = [1751217000, 1601331572, 1667786100]
     assert.deepEqual(actual, expected)
+
+  it 'concatenates buffers together', ->
+    assert.deepEqual(
+      Proteus.util.ArrayUtil.concatenate_array_buffers(
+        new Uint8Array([1,2,3])),
+      new Uint8Array([1,2,3]))
+
+    assert.deepEqual(
+      Proteus.util.ArrayUtil.concatenate_array_buffers(
+        new Uint8Array([1,2,3]),
+        new Uint8Array([4,5,6])),
+      new Uint8Array([1,2,3,4,5,6]))
+
+    assert.deepEqual(
+      Proteus.util.ArrayUtil.concatenate_array_buffers(
+        new Uint8Array([1,2,3]),
+        new Uint8Array([4,5,6]),
+        new Uint8Array([7,8,9])),
+      new Uint8Array([1,2,3,4,5,6,7,8,9]))
+
+    assert.deepEqual(
+      Proteus.util.ArrayUtil.concatenate_array_buffers(
+        new Uint8Array([1,2,3]),
+        new Uint8Array([4,5,6]),
+        new Uint8Array([7,8,9]),
+        new Uint8Array([10,11,12])),
+      new Uint8Array([1,2,3,4,5,6,7,8,9,10,11,12]))
