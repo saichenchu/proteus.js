@@ -33,8 +33,8 @@ module.exports = class DerivedSecrets
 
     okm = KeyDerivationUtil.hkdf salt, input, info, byte_length
 
-    cipher_key = new Uint8Array okm.slice 0, 32
-    mac_key = new Uint8Array okm.slice 32, 64
+    cipher_key = new Uint8Array okm.buffer.slice 0, 32
+    mac_key = new Uint8Array okm.buffer.slice 32, 64
 
     ds = ClassUtil.new_instance DerivedSecrets
     ds.cipher_key = CipherKey.new cipher_key

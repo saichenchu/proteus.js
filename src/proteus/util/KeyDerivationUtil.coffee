@@ -67,7 +67,7 @@ module.exports = do ->
         hmac = sodium.crypto_auth_hmacsha256 buf, tag
         result = ArrayUtil.concatenate_array_buffers [result, hmac]
 
-      return result.slice 0, length
+      return new Uint8Array result.buffer.slice 0, length
 
     key = extract salt, input
     return expand key, info, length
