@@ -38,7 +38,6 @@ CipherMessage = require '../message/CipherMessage'
 PreKeyMessage = require '../message/PreKeyMessage'
 SessionTag = require '../message/SessionTag'
 
-SessionState = require './SessionState'
 PreKeyStore = require './PreKeyStore'
 ChainKey = require './ChainKey'
 
@@ -319,3 +318,5 @@ module.exports = class Session
     TypeUtil.assert_is_instance Object, self.session_states
 
     return self
+
+SessionState = require './SessionState'
