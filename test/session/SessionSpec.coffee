@@ -111,6 +111,30 @@ describe 'Session', ->
     assert_serialise_deserialise alice_ident, alice
     assert_serialise_deserialise bob_ident, bob
 
+  it 'should limit the number of receive chains', ->
+    [alice_ident, bob_ident] = [0..1].map(-> Proteus.keys.IdentityKeyPair.new())
+    [alice_store, bob_store] = [0..1].map(-> new TestStore Proteus.keys.PreKey.generate_prekeys 0, 10)
+
+    bob_prekey = bob_store.prekeys[0]
+    bob_bundle = Proteus.keys.PreKeyBundle.new bob_ident.public_key, bob_prekey
+
+    alice = Proteus.session.Session.init_from_prekey alice_ident, bob_bundle
+    hello_bob = alice.encrypt 'Hello Bob!'
+
+    bob = assert_init_from_message bob_ident, bob_store, hello_bob, 'Hello Bob!'
+
+    assert(alice.session_states[alice.session_tag].state.recv_chains.length is 1)
+    assert(bob.session_states[bob.session_tag].state.recv_chains.length is 1)
+
+    for _ in [0..(Proteus.session.Session.MAX_RECV_CHAINS * 2)]
+      assert_decrypt 'ping', alice.decrypt alice_store, bob.encrypt 'ping'
+      assert_decrypt 'pong', bob.decrypt bob_store, alice.encrypt 'pong'
+
+      assert.isAtMost(alice.session_states[alice.session_tag].state.recv_chains.length,
+        Proteus.session.Session.MAX_RECV_CHAINS)
+      assert.isAtMost(bob.session_states[bob.session_tag].state.recv_chains.length,
+        Proteus.session.Session.MAX_RECV_CHAINS)
+
   it 'should handle a counter mismatch', ->
     [alice_ident, bob_ident] = [0..1].map(-> Proteus.keys.IdentityKeyPair.new())
     [alice_store, bob_store] = [0..1].map(-> new TestStore Proteus.keys.PreKey.generate_prekeys 0, 10)
