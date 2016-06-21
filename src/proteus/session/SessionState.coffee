@@ -121,7 +121,7 @@ module.exports = class SessionState
     @recv_chains.unshift recv_chain
 
     if @recv_chains.length > Session.MAX_RECV_CHAINS
-      @recv_chains.pop()
+      @recv_chains = @recv_chains.slice 0, Session.MAX_RECV_CHAINS
 
     return
 
