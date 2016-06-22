@@ -20,18 +20,32 @@ class TestStore extends Proteus.session.PreKeyStore
   constructor: (@prekeys) ->
 
   get_prekey: (prekey_id) ->
-    return @prekeys[prekey_id]
+    return new Promise (resolve, reject) =>
+      resolve @prekeys[prekey_id]
 
   remove: (prekey_id) ->
-    delete @prekeys[prekey_id]
+    return new Promise (resolve, reject) =>
+      delete @prekeys[prekey_id]
+      resolve()
 
 assert_init_from_message = (ident, store, msg, expected) ->
-  [bob, msg] = Proteus.session.Session.init_from_message ident, store, msg
-  assert.strictEqual(sodium.to_string(msg), expected)
-  return bob
+  return new Promise (resolve, reject) ->
+    Proteus.session.Session.init_from_message ident, store, msg
+    .then (x) ->
+      [s, msg] = x
+      assert.strictEqual(sodium.to_string(msg), expected)
+      resolve s
 
-assert_decrypt = (expected, actual) ->
-  assert.strictEqual(expected, sodium.to_string(actual))
+    .catch (e) ->
+      reject e
+
+assert_decrypt = (expected, p) ->
+  return new Promise (resolve, reject) ->
+    p.then (actual) ->
+      assert.strictEqual(expected, sodium.to_string(actual))
+      resolve()
+    .catch (e) ->
+      reject e
 
 assert_prev_count = (session, expected) ->
   assert.strictEqual(expected, session.session_states[session.session_tag].state.prev_counter)
@@ -54,154 +68,251 @@ describe 'Session', ->
     bob_prekey = bob_store.prekeys[0]
     bob_bundle = Proteus.keys.PreKeyBundle.new bob_ident.public_key, bob_prekey
 
-    alice = Proteus.session.Session.init_from_prekey alice_ident, bob_bundle
-    assert(alice.session_states[alice.session_tag].state.recv_chains.length is 1)
+    Proteus.session.Session.init_from_prekey alice_ident, bob_bundle
+    .then (alice) ->
+      assert(alice.session_states[alice.session_tag].state.recv_chains.length is 1)
+      assert_serialise_deserialise alice_ident, alice
 
-    assert_serialise_deserialise alice_ident, alice
-
-  it 'encrypts and decrypts messsages', ->
+  it 'encrypts and decrypts messsages', (done) ->
     [alice_ident, bob_ident] = [0..1].map(-> Proteus.keys.IdentityKeyPair.new())
     [alice_store, bob_store] = [0..1].map(-> new TestStore Proteus.keys.PreKey.generate_prekeys 0, 10)
 
     bob_prekey = bob_store.prekeys[0]
     bob_bundle = Proteus.keys.PreKeyBundle.new bob_ident.public_key, bob_prekey
 
-    alice = Proteus.session.Session.init_from_prekey alice_ident, bob_bundle
-    assert(alice.session_states[alice.session_tag].state.recv_chains.length is 1)
+    alice = null
+    bob = null
 
-    hello_bob = alice.encrypt 'Hello Bob!'
-    hello_bob_delayed = alice.encrypt 'Hello delay!'
-    assert(Object.keys(alice.session_states).length is 1)
-    assert(alice.session_states[alice.session_tag].state.recv_chains.length is 1)
+    hello_bob = null
+    hello_bob_delayed = null
+    hello_alice = null
+    ping_bob_1 = null
+    ping_bob_2 = null
+    pong_alice = null
 
-    bob = assert_init_from_message bob_ident, bob_store, hello_bob, 'Hello Bob!'
-    assert(Object.keys(bob.session_states).length is 1)
-    assert(bob.session_states[bob.session_tag].state.recv_chains.length is 1)
+    Proteus.session.Session.init_from_prekey alice_ident, bob_bundle
+    .then (s) ->
+      alice = s
 
-    hello_alice = bob.encrypt 'Hello Alice!'
+      assert(alice.session_states[alice.session_tag].state.recv_chains.length is 1)
 
-    assert_decrypt 'Hello Alice!', alice.decrypt(alice_store, hello_alice)
-    assert(alice.pending_prekey is null)
-    assert(alice.session_states[alice.session_tag].state.recv_chains.length is 2)
-    assert(alice.remote_identity.fingerprint() is bob.local_identity.public_key.fingerprint())
+      Promise.all(['Hello Bob!', 'Hello delay!'].map((x) -> alice.encrypt x))
 
-    ping_bob_1 = alice.encrypt 'Ping1!'
-    ping_bob_2 = alice.encrypt 'Ping2!'
-    assert_prev_count alice, 2
+    .then (msgs) ->
+      [hello_bob, hello_bob_delayed] = msgs
 
-    assert(ping_bob_1.message instanceof Proteus.message.CipherMessage)
-    assert(ping_bob_2.message instanceof Proteus.message.CipherMessage)
+      assert(Object.keys(alice.session_states).length is 1)
+      assert(alice.session_states[alice.session_tag].state.recv_chains.length is 1)
 
-    assert_decrypt 'Ping1!', bob.decrypt bob_store, ping_bob_1
-    assert(bob.session_states[bob.session_tag].state.recv_chains.length is 2)
-    assert_decrypt 'Ping2!', bob.decrypt bob_store, ping_bob_2
-    assert(bob.session_states[bob.session_tag].state.recv_chains.length is 2)
+      assert_init_from_message bob_ident, bob_store, hello_bob, 'Hello Bob!'
 
-    pong_alice = bob.encrypt 'Pong!'
-    assert_prev_count bob, 1
+    .then (s) ->
+      bob = s
 
-    assert_decrypt 'Pong!', alice.decrypt alice_store, pong_alice
-    assert(alice.session_states[alice.session_tag].state.recv_chains.length is 3)
-    assert_prev_count alice, 2
+      assert(Object.keys(bob.session_states).length is 1)
+      assert(bob.session_states[bob.session_tag].state.recv_chains.length is 1)
 
-    assert_decrypt 'Hello delay!', bob.decrypt bob_store, hello_bob_delayed
-    assert(bob.session_states[bob.session_tag].state.recv_chains.length is 2)
-    assert_prev_count bob, 1
+      bob.encrypt 'Hello Alice!'
 
-    assert_serialise_deserialise alice_ident, alice
-    assert_serialise_deserialise bob_ident, bob
+    .then (m) ->
+      hello_alice = m
+      assert_decrypt 'Hello Alice!', alice.decrypt(alice_store, hello_alice)
 
-  it 'should limit the number of receive chains', ->
+    .then ->
+      assert(alice.pending_prekey is null)
+      assert(alice.session_states[alice.session_tag].state.recv_chains.length is 2)
+      assert(alice.remote_identity.fingerprint() is bob.local_identity.public_key.fingerprint())
+
+      Promise.all(['Ping1!', 'Ping2!'].map((x) -> alice.encrypt x))
+
+    .then (msgs) ->
+      [ping_bob_1, ping_bob_2] = msgs
+
+      assert_prev_count alice, 2
+
+      assert(ping_bob_1.message instanceof Proteus.message.CipherMessage)
+      assert(ping_bob_2.message instanceof Proteus.message.CipherMessage)
+
+      assert_decrypt 'Ping1!', bob.decrypt bob_store, ping_bob_1
+
+    .then ->
+      assert(bob.session_states[bob.session_tag].state.recv_chains.length is 2)
+      assert_decrypt 'Ping2!', bob.decrypt bob_store, ping_bob_2
+
+    .then ->
+      assert(bob.session_states[bob.session_tag].state.recv_chains.length is 2)
+      bob.encrypt 'Pong!'
+
+    .then (m) ->
+      pong_alice = m
+      assert_prev_count bob, 1
+      assert_decrypt 'Pong!', alice.decrypt alice_store, pong_alice
+
+    .then ->
+      assert(alice.session_states[alice.session_tag].state.recv_chains.length is 3)
+      assert_prev_count alice, 2
+      assert_decrypt 'Hello delay!', bob.decrypt bob_store, hello_bob_delayed
+
+    .then ->
+      assert(bob.session_states[bob.session_tag].state.recv_chains.length is 2)
+      assert_prev_count bob, 1
+
+      assert_serialise_deserialise alice_ident, alice
+      assert_serialise_deserialise bob_ident, bob
+
+    .then((() -> done()), (err) -> done(err))
+
+  it 'should limit the number of receive chains', (done) ->
     [alice_ident, bob_ident] = [0..1].map(-> Proteus.keys.IdentityKeyPair.new())
     [alice_store, bob_store] = [0..1].map(-> new TestStore Proteus.keys.PreKey.generate_prekeys 0, 10)
 
     bob_prekey = bob_store.prekeys[0]
     bob_bundle = Proteus.keys.PreKeyBundle.new bob_ident.public_key, bob_prekey
 
-    alice = Proteus.session.Session.init_from_prekey alice_ident, bob_bundle
-    hello_bob = alice.encrypt 'Hello Bob!'
+    alice = null
+    bob = null
 
-    bob = assert_init_from_message bob_ident, bob_store, hello_bob, 'Hello Bob!'
+    Proteus.session.Session.init_from_prekey alice_ident, bob_bundle
+    .then (s) ->
+      alice = s
+      alice.encrypt 'Hello Bob!'
 
-    assert(alice.session_states[alice.session_tag].state.recv_chains.length is 1)
-    assert(bob.session_states[bob.session_tag].state.recv_chains.length is 1)
+    .then (hello_bob) ->
+      assert_init_from_message bob_ident, bob_store, hello_bob, 'Hello Bob!'
 
-    for _ in [0..(Proteus.session.Session.MAX_RECV_CHAINS * 2)]
-      assert_decrypt 'ping', alice.decrypt alice_store, bob.encrypt 'ping'
-      assert_decrypt 'pong', bob.decrypt bob_store, alice.encrypt 'pong'
+    .then (s) ->
+      bob = s
 
-      assert.isAtMost(alice.session_states[alice.session_tag].state.recv_chains.length,
-        Proteus.session.Session.MAX_RECV_CHAINS)
-      assert.isAtMost(bob.session_states[bob.session_tag].state.recv_chains.length,
-        Proteus.session.Session.MAX_RECV_CHAINS)
+      assert(alice.session_states[alice.session_tag].state.recv_chains.length is 1)
+      assert(bob.session_states[bob.session_tag].state.recv_chains.length is 1)
 
-  it 'should handle a counter mismatch', ->
+      Promise.all([0..(Proteus.session.Session.MAX_RECV_CHAINS * 2)].map(() ->
+        return new Promise (resolve, reject) ->
+          bob.encrypt 'ping'
+          .then (m) ->
+            assert_decrypt 'ping', alice.decrypt alice_store, m
+
+          .then ->
+            alice.encrypt 'pong'
+
+          .then (m) ->
+            assert_decrypt 'pong', bob.decrypt bob_store, m
+
+          .then ->
+            assert.isAtMost(alice.session_states[alice.session_tag].state.recv_chains.length,
+              Proteus.session.Session.MAX_RECV_CHAINS)
+            assert.isAtMost(bob.session_states[bob.session_tag].state.recv_chains.length,
+              Proteus.session.Session.MAX_RECV_CHAINS)
+
+            resolve()))
+
+    .then((() -> done()), (err) -> done(err))
+
+  it 'should handle a counter mismatch', (done) ->
     [alice_ident, bob_ident] = [0..1].map(-> Proteus.keys.IdentityKeyPair.new())
     [alice_store, bob_store] = [0..1].map(-> new TestStore Proteus.keys.PreKey.generate_prekeys 0, 10)
 
     bob_prekey = bob_store.prekeys[0]
     bob_bundle = Proteus.keys.PreKeyBundle.new bob_ident.public_key, bob_prekey
 
-    alice = Proteus.session.Session.init_from_prekey alice_ident, bob_bundle
-    hello_bob = alice.encrypt 'Hello Bob!'
+    alice = null
+    bob = null
 
-    bob = assert_init_from_message bob_ident, bob_store, hello_bob, 'Hello Bob!'
+    ciphertexts = null
 
-    cipher_texts =
-      hello1: bob.encrypt 'Hello1'
-      hello2: bob.encrypt 'Hello2'
-      hello3: bob.encrypt 'Hello3'
-      hello4: bob.encrypt 'Hello4'
-      hello5: bob.encrypt 'Hello5'
+    Proteus.session.Session.init_from_prekey alice_ident, bob_bundle
+    .then (s) ->
+      alice = s
+      alice.encrypt 'Hello Bob!'
 
-    assert_decrypt 'Hello2', alice.decrypt alice_store, cipher_texts.hello2
-    assert(alice.session_states[alice.session_tag].state.recv_chains[0].message_keys.length is 1)
+    .then (m) ->
+      assert_init_from_message bob_ident, bob_store, m, 'Hello Bob!'
 
-    assert_serialise_deserialise alice_ident, alice
+    .then (s) ->
+      bob = s
 
-    assert_decrypt 'Hello1', alice.decrypt alice_store, cipher_texts.hello1
-    assert(alice.session_states[alice.session_tag].state.recv_chains[0].message_keys.length is 0)
+      Promise.all(['Hello1', 'Hello2', 'Hello3', 'Hello4', 'Hello5'].map (x) -> bob.encrypt(x))
 
-    assert_decrypt 'Hello3', alice.decrypt alice_store, cipher_texts.hello3
-    assert(alice.session_states[alice.session_tag].state.recv_chains[0].message_keys.length is 0)
+    .then (t) ->
+      ciphertexts = t
+      assert_decrypt 'Hello2', alice.decrypt alice_store, ciphertexts[1]
 
-    assert_decrypt 'Hello5', alice.decrypt alice_store, cipher_texts.hello5
-    assert(alice.session_states[alice.session_tag].state.recv_chains[0].message_keys.length is 1)
+    .then ->
+      assert(alice.session_states[alice.session_tag].state.recv_chains[0].message_keys.length is 1)
+      assert_serialise_deserialise alice_ident, alice
+      assert_decrypt 'Hello1', alice.decrypt alice_store, ciphertexts[0]
 
-    assert_decrypt 'Hello4', alice.decrypt alice_store, cipher_texts.hello4
-    assert(alice.session_states[alice.session_tag].state.recv_chains[0].message_keys.length is 0)
+    .then ->
+      assert(alice.session_states[alice.session_tag].state.recv_chains[0].message_keys.length is 0)
+      assert_decrypt 'Hello3', alice.decrypt alice_store, ciphertexts[2]
 
-    for _, message of cipher_texts
-      malfunction = -> alice.decrypt alice_store, message
-      assert.throws malfunction, Proteus.errors.DecryptError.DuplicateMessage
+    .then ->
+      assert(alice.session_states[alice.session_tag].state.recv_chains[0].message_keys.length is 0)
+      assert_decrypt 'Hello5', alice.decrypt alice_store, ciphertexts[4]
+    .then ->
+      assert(alice.session_states[alice.session_tag].state.recv_chains[0].message_keys.length is 1)
+      assert_decrypt 'Hello4', alice.decrypt alice_store, ciphertexts[3]
 
-    assert_serialise_deserialise alice_ident, alice
-    assert_serialise_deserialise bob_ident, bob
+    .then ->
+      assert(alice.session_states[alice.session_tag].state.recv_chains[0].message_keys.length is 0)
 
-  it 'should handle multiple prekey messages', ->
+      Promise.all(ciphertexts.map (x) ->
+        return new Promise (resolve, reject) ->
+          alice.decrypt alice_store, x
+          .then ->
+            assert.fail 'should have raised Proteus.errors.DecryptError.DuplicateMessage'
+
+          .catch (e) ->
+            assert.instanceOf e, Proteus.errors.DecryptError.DuplicateMessage
+            resolve())
+
+    .then ->
+      assert_serialise_deserialise alice_ident, alice
+      assert_serialise_deserialise bob_ident, bob
+
+    .then((() -> done()), (err) -> done(err))
+
+  it 'should handle multiple prekey messages', (done) ->
     [alice_ident, bob_ident] = [0..1].map(-> Proteus.keys.IdentityKeyPair.new())
     bob_store = new TestStore Proteus.keys.PreKey.generate_prekeys 0, 10
 
     bob_prekey = bob_store.prekeys[0]
     bob_bundle = Proteus.keys.PreKeyBundle.new bob_ident.public_key, bob_prekey
 
-    alice = Proteus.session.Session.init_from_prekey alice_ident, bob_bundle
+    alice = null
+    bob = null
 
-    hello_bob1 = alice.encrypt 'Hello Bob1!'
-    hello_bob2 = alice.encrypt 'Hello Bob2!'
-    hello_bob3 = alice.encrypt 'Hello Bob3!'
+    hello_bob1 = null
+    hello_bob2 = null
+    hello_bob3 = null
 
-    bob = assert_init_from_message bob_ident, bob_store, hello_bob1, 'Hello Bob1!'
-    assert(Object.keys(bob.session_states).length is 1)
-    assert_decrypt 'Hello Bob2!', bob.decrypt bob_store, hello_bob2
-    assert(Object.keys(bob.session_states).length is 1)
-    assert_decrypt 'Hello Bob3!', bob.decrypt bob_store, hello_bob3
-    assert(Object.keys(bob.session_states).length is 1)
+    Proteus.session.Session.init_from_prekey alice_ident, bob_bundle
+    .then (s) ->
+      alice = s
+      Promise.all(['Hello Bob1!', 'Hello Bob2!', 'Hello Bob3!'].map (x) -> alice.encrypt x)
 
-    assert_serialise_deserialise alice_ident, alice
-    assert_serialise_deserialise bob_ident, bob
+    .then (m) ->
+      [hello_bob1, hello_bob2, hello_bob3] = m
+      assert_init_from_message bob_ident, bob_store, hello_bob1, 'Hello Bob1!'
 
-  it 'should handle simultaneous prekey messages', ->
+    .then (s) ->
+      bob = s
+      assert(Object.keys(bob.session_states).length is 1)
+      assert_decrypt 'Hello Bob2!', bob.decrypt bob_store, hello_bob2
+
+    .then ->
+      assert(Object.keys(bob.session_states).length is 1)
+      assert_decrypt 'Hello Bob3!', bob.decrypt bob_store, hello_bob3
+
+    .then ->
+      assert(Object.keys(bob.session_states).length is 1)
+
+      assert_serialise_deserialise alice_ident, alice
+      assert_serialise_deserialise bob_ident, bob
+
+    .then((() -> done()), (err) -> done(err))
+
+  it 'should handle simultaneous prekey messages', (done) ->
     [alice_ident, bob_ident] = [0..1].map(-> Proteus.keys.IdentityKeyPair.new())
     [alice_store, bob_store] = [0..1].map(-> new TestStore Proteus.keys.PreKey.generate_prekeys 0, 10)
 
@@ -211,32 +322,53 @@ describe 'Session', ->
     alice_prekey = alice_store.prekeys[0]
     alice_bundle = Proteus.keys.PreKeyBundle.new alice_ident.public_key, alice_prekey
 
-    alice = Proteus.session.Session.init_from_prekey alice_ident, bob_bundle
-    hello_bob = alice.encrypt 'Hello Bob!'
+    alice = null
+    bob = null
 
-    bob = Proteus.session.Session.init_from_prekey bob_ident, alice_bundle
-    hello_alice = bob.encrypt 'Hello Alice!'
+    hello_bob = null
+    hello_alice = null
 
-    assert(alice.session_tag.toString() isnt bob.session_tag.toString())
+    Proteus.session.Session.init_from_prekey alice_ident, bob_bundle
+    .then (s) ->
+      alice = s
+      alice.encrypt 'Hello Bob!'
 
-    assert_decrypt 'Hello Bob!', bob.decrypt bob_store, hello_bob
-    assert(Object.keys(bob.session_states).length is 2)
+    .then (m) ->
+      hello_bob = m
+      bob = Proteus.session.Session.init_from_prekey bob_ident, alice_bundle
 
-    assert_decrypt 'Hello Alice!', alice.decrypt alice_store, hello_alice
-    assert(Object.keys(alice.session_states).length is 2)
+    .then (s) ->
+      bob = s
+      bob.encrypt 'Hello Alice!'
 
-    greet_bob = alice.encrypt 'That was fast!'
-    assert_decrypt 'That was fast!', bob.decrypt bob_store, greet_bob
+    .then (m) ->
+      hello_alice = m
 
-    answer_alice = bob.encrypt ':-)'
-    assert_decrypt ':-)', alice.decrypt alice_store, answer_alice
+      assert.notStrictEqual(alice.session_tag.toString(), bob.session_tag.toString())
+      assert_decrypt 'Hello Bob!', bob.decrypt bob_store, hello_bob
 
-    assert(alice.session_tag.toString() is bob.session_tag.toString())
+    .then ->
+      assert(Object.keys(bob.session_states).length is 2)
+      assert_decrypt 'Hello Alice!', alice.decrypt alice_store, hello_alice
 
-    assert_serialise_deserialise alice_ident, alice
-    assert_serialise_deserialise bob_ident, bob
+    .then ->
+      assert(Object.keys(alice.session_states).length is 2)
+      alice.encrypt 'That was fast!'
+    .then (m) ->
+      assert_decrypt 'That was fast!', bob.decrypt bob_store, m
 
-  it 'should handle simultaneous repeated messages', ->
+      bob.encrypt ':-)'
+    .then (m) ->
+      assert_decrypt ':-)', alice.decrypt alice_store, m
+
+      assert.strictEqual(alice.session_tag.toString(), bob.session_tag.toString())
+
+      assert_serialise_deserialise alice_ident, alice
+      assert_serialise_deserialise bob_ident, bob
+
+    .then((() -> done()), (err) -> done(err))
+
+  it 'should handle simultaneous repeated messages', (done) ->
     [alice_ident, bob_ident] = [0..1].map(-> Proteus.keys.IdentityKeyPair.new())
     [alice_store, bob_store] = [0..1].map(-> new TestStore Proteus.keys.PreKey.generate_prekeys 0, 10)
 
@@ -246,226 +378,366 @@ describe 'Session', ->
     alice_prekey = alice_store.prekeys[0]
     alice_bundle = Proteus.keys.PreKeyBundle.new alice_ident.public_key, alice_prekey
 
-    alice = Proteus.session.Session.init_from_prekey alice_ident, bob_bundle
-    hello_bob = alice.encrypt 'Hello Bob!'
+    alice = null
+    bob = null
 
-    bob = Proteus.session.Session.init_from_prekey bob_ident, alice_bundle
-    hello_alice = bob.encrypt 'Hello Alice!'
+    hello_bob = null
+    echo_bob1 = null
+    echo_bob2 = null
+    stop_bob = null
+    hello_alice = null
+    echo_alice1 = null
+    echo_alice2 = null
 
-    assert(alice.session_tag.toString() isnt bob.session_tag.toString())
+    Proteus.session.Session.init_from_prekey alice_ident, bob_bundle
+    .then (s) ->
+      alice = s
+      alice.encrypt 'Hello Bob!'
+    .then (m) ->
+      hello_bob = m
+      Proteus.session.Session.init_from_prekey bob_ident, alice_bundle
 
-    assert_decrypt 'Hello Bob!', bob.decrypt bob_store, hello_bob
-    assert_decrypt 'Hello Alice!', alice.decrypt alice_store, hello_alice
+    .then (s) ->
+      bob = s
+      bob.encrypt 'Hello Alice!'
 
-    echo_bob1 = alice.encrypt 'Echo Bob1!'
-    echo_alice1 = bob.encrypt 'Echo Alice1!'
+    .then (m) ->
+      hello_alice = m
 
-    assert_decrypt 'Echo Bob1!', bob.decrypt bob_store, echo_bob1
-    assert(Object.keys(bob.session_states).length is 2)
+      assert(alice.session_tag.toString() isnt bob.session_tag.toString())
 
-    assert_decrypt 'Echo Alice1!', alice.decrypt alice_store, echo_alice1
-    assert(Object.keys(alice.session_states).length is 2)
+      assert_decrypt 'Hello Bob!', bob.decrypt bob_store, hello_bob
 
-    assert(alice.session_tag.toString() isnt bob.session_tag.toString())
+    .then ->
+      assert_decrypt 'Hello Alice!', alice.decrypt alice_store, hello_alice
 
-    echo_bob2 = alice.encrypt 'Echo Bob2!'
-    echo_alice2 = bob.encrypt 'Echo Alice2!'
+    .then ->
+      alice.encrypt 'Echo Bob1!'
 
-    assert_decrypt 'Echo Bob2!', bob.decrypt bob_store, echo_bob2
-    assert(Object.keys(bob.session_states).length is 2)
+    .then (m) ->
+      echo_bob1 = m
+      bob.encrypt 'Echo Alice1!'
 
-    assert_decrypt 'Echo Alice2!', alice.decrypt alice_store, echo_alice2
-    assert(Object.keys(alice.session_states).length is 2)
+    .then (m) ->
+      echo_alice1 = m
 
-    assert(alice.session_tag.toString() isnt bob.session_tag.toString())
+      assert_decrypt 'Echo Bob1!', bob.decrypt bob_store, echo_bob1
+      assert(Object.keys(bob.session_states).length is 2)
+      assert_decrypt 'Echo Alice1!', alice.decrypt alice_store, echo_alice1
+      assert(Object.keys(alice.session_states).length is 2)
+      assert(alice.session_tag.toString() isnt bob.session_tag.toString())
 
-    stop_bob = alice.encrypt 'Stop it!'
-    assert_decrypt 'Stop it!', bob.decrypt bob_store, stop_bob
+      alice.encrypt 'Echo Bob2!'
 
-    answer_alice = bob.encrypt 'OK'
-    assert_decrypt 'OK', alice.decrypt alice_store, answer_alice
+    .then (m) ->
+      echo_bob2 = m
+      bob.encrypt 'Echo Alice2!'
 
-    assert(alice.session_tag.toString() is bob.session_tag.toString())
+    .then (m) ->
+      echo_alice2 = m
 
-    assert_serialise_deserialise alice_ident, alice
-    assert_serialise_deserialise bob_ident, bob
+      assert_decrypt 'Echo Bob2!', bob.decrypt bob_store, echo_bob2
+    .then ->
+      assert(Object.keys(bob.session_states).length is 2)
+      assert_decrypt 'Echo Alice2!', alice.decrypt alice_store, echo_alice2
 
-  it 'should handle mass communication', ->
+    .then ->
+      assert(Object.keys(alice.session_states).length is 2)
+      assert(alice.session_tag.toString() isnt bob.session_tag.toString())
+      alice.encrypt 'Stop it!'
+
+    .then (m) ->
+      stop_bob = m
+      assert_decrypt 'Stop it!', bob.decrypt bob_store, stop_bob
+      bob.encrypt 'OK'
+
+    .then (m) ->
+      answer_alice = m
+      assert_decrypt 'OK', alice.decrypt alice_store, answer_alice
+
+      assert(alice.session_tag.toString() is bob.session_tag.toString())
+
+      assert_serialise_deserialise alice_ident, alice
+      assert_serialise_deserialise bob_ident, bob
+
+    .then((() -> done()), (err) -> done(err))
+
+  it 'should handle mass communication', (done) ->
     [alice_ident, bob_ident] = [0..1].map(-> Proteus.keys.IdentityKeyPair.new())
     [alice_store, bob_store] = [0..1].map(-> new TestStore Proteus.keys.PreKey.generate_prekeys 0, 10)
 
     bob_prekey = bob_store.prekeys[0]
     bob_bundle = Proteus.keys.PreKeyBundle.new bob_ident.public_key, bob_prekey
 
-    alice = Proteus.session.Session.init_from_prekey alice_ident, bob_bundle
-    hello_bob = alice.encrypt 'Hello Bob!'
+    alice = null
+    bob = null
+    hello_bob = null
 
-    bob = assert_init_from_message bob_ident, bob_store, hello_bob, 'Hello Bob!'
+    Proteus.session.Session.init_from_prekey alice_ident, bob_bundle
+    .then (s) ->
+      alice = s
+      alice.encrypt 'Hello Bob!'
 
-    # XXX: need to serialize/deserialize to/from CBOR here
-    messages = [0...999].map(-> bob.encrypt 'Hello Alice!')
-    messages.map((m) -> assert_decrypt 'Hello Alice!', alice.decrypt alice_store, m)
+    .then (m) ->
+      hello_bob = m
 
-    assert_serialise_deserialise alice_ident, alice
-    assert_serialise_deserialise bob_ident, bob
+      assert_init_from_message bob_ident, bob_store, hello_bob, 'Hello Bob!'
+    .then (s) ->
+      bob = s
 
-  it 'should fail retry init from message', ->
+      # XXX: need to serialize/deserialize to/from CBOR here
+      Promise.all([0...999].map(-> bob.encrypt 'Hello Alice!'))
+    .then (messages) ->
+      Promise.all(messages.map((m) -> assert_decrypt 'Hello Alice!', alice.decrypt alice_store,
+        Proteus.message.Envelope.deserialise(m.serialise())))
+
+    .then ->
+      assert_serialise_deserialise alice_ident, alice
+      assert_serialise_deserialise bob_ident, bob
+
+    .then((() -> done()), (err) -> done(err))
+
+  it 'should fail retry init from message', (done) ->
     [alice_ident, bob_ident] = [0..1].map(-> Proteus.keys.IdentityKeyPair.new())
     bob_store = new TestStore Proteus.keys.PreKey.generate_prekeys 0, 10
 
     bob_prekey = bob_store.prekeys[0]
     bob_bundle = Proteus.keys.PreKeyBundle.new bob_ident.public_key, bob_prekey
 
-    alice = Proteus.session.Session.init_from_prekey alice_ident, bob_bundle
-    hello_bob = alice.encrypt 'Hello Bob!'
+    alice = null
+    bob = null
+    hello_bob = null
 
-    bob = assert_init_from_message bob_ident, bob_store, hello_bob, 'Hello Bob!'
+    Proteus.session.Session.init_from_prekey alice_ident, bob_bundle
+    .then (s) ->
+      alice = s
+      alice.encrypt 'Hello Bob!'
 
-    assert.throws((-> Proteus.session.Session.init_from_message bob_ident, bob_store, hello_bob),
-      Proteus.errors.DecryptError.PrekeyNotFound)
+    .then (m) ->
+      hello_bob = m
+      assert_init_from_message bob_ident, bob_store, hello_bob, 'Hello Bob!'
 
-  it 'pathological case', ->
+    .then (s) ->
+      bob = s
+      Proteus.session.Session.init_from_message bob_ident, bob_store, hello_bob
+
+    .then ->
+      assert.fail 'should have thrown Proteus.errors.DecryptError.PrekeyNotFound'
+
+    .catch (e) ->
+      assert.instanceOf e, Proteus.errors.DecryptError.PrekeyNotFound
+
+    .then((() -> done()), (err) -> done(err))
+
+  it 'pathological case', (done) ->
     @timeout 0
 
     num_alices = 32
 
+    alices = null
+    bob = null
+
     [alice_ident, bob_ident] = [0..1].map(-> Proteus.keys.IdentityKeyPair.new())
     bob_store = new TestStore Proteus.keys.PreKey.generate_prekeys 0, num_alices
 
-    alices = bob_store.prekeys.map((pk) ->
+    Promise.all(bob_store.prekeys.map((pk) ->
       bundle = Proteus.keys.PreKeyBundle.new bob_ident.public_key, pk
-      return Proteus.session.Session.init_from_prekey alice_ident, bundle)
+      return Proteus.session.Session.init_from_prekey alice_ident, bundle))
+    .then (s) ->
+      alices = s
+      assert(alices.length is num_alices)
+      alices[0].encrypt 'Hello Bob!'
 
-    assert(alices.length is num_alices)
+    .then (m) ->
+      assert_init_from_message bob_ident, bob_store, m, 'Hello Bob!'
 
-    hello_bob = alices[0].encrypt 'Hello Bob!'
-    bob = assert_init_from_message bob_ident, bob_store, hello_bob, 'Hello Bob!'
+    .then (s) ->
+      bob = s
 
-    alices.map (a) ->
-      # XXX: rust code uses 0..900, but that takes too long for JS to run and the
-      #      test suite times out
-      for _ in [0..900]
-        a.encrypt 'hello'
+      Promise.all(alices.map (a) ->
+        return new Promise (resolve, reject) ->
+          Promise.all([0..900].map(-> a.encrypt 'hello'))
+          .then ->
+            a.encrypt 'Hello Bob!'
 
-      hello_bob = a.encrypt 'Hello Bob!'
-      assert_decrypt 'Hello Bob!', bob.decrypt bob_store, hello_bob
+          .then (m) ->
+            resolve assert_decrypt 'Hello Bob!', bob.decrypt bob_store, m)
 
-    assert(Object.keys(bob.session_states).length is num_alices)
+    .then ->
+      assert(Object.keys(bob.session_states).length is num_alices)
 
-    alices.map (a) ->
-      assert_decrypt 'Hello Bob!', bob.decrypt bob_store, a.encrypt 'Hello Bob!'
+      Promise.all(alices.map (a) ->
+        a.encrypt 'Hello Bob!'
+        .then (m) ->
+          assert_decrypt 'Hello Bob!', bob.decrypt bob_store, m)
 
-    return
+    .then((() -> done()), (err) -> done(err))
 
-  it 'skipped message keys', ->
+  it 'skipped message keys', (done) ->
     [alice_ident, bob_ident] = [0..1].map(-> Proteus.keys.IdentityKeyPair.new())
     [alice_store, bob_store] = [0..1].map(-> new TestStore Proteus.keys.PreKey.generate_prekeys 0, 10)
 
     bob_prekey = bob_store.prekeys[0]
     bob_bundle = Proteus.keys.PreKeyBundle.new bob_ident.public_key, bob_prekey
 
-    alice = Proteus.session.Session.init_from_prekey alice_ident, bob_bundle
-    hello_bob = alice.encrypt 'Hello Bob!'
+    alice = null
+    bob = null
+    hello_bob = null
+    hello_alice0 = null
+    hello_alice2 = null
+    hello_bob0 = null
+    hello_again0 = null
+    hello_again1 = null
 
-    do ->
-      s = alice.session_states[alice.session_tag].state
-      assert(s.recv_chains.length is 1)
-      assert(s.recv_chains[0].chain_key.idx is 0)
-      assert(s.send_chain.chain_key.idx is 1)
-      assert(s.recv_chains[0].message_keys.length is 0)
+    Proteus.session.Session.init_from_prekey alice_ident, bob_bundle
+    .then (s) ->
+      alice = s
+      alice.encrypt 'Hello Bob!'
 
-    bob = assert_init_from_message bob_ident, bob_store, hello_bob, 'Hello Bob!'
+    .then (m) ->
+      hello_bob = m
 
-    do ->
-      # Normal exchange. Bob has created a new receive chain without skipped message keys.
+      do ->
+        s = alice.session_states[alice.session_tag].state
+        assert(s.recv_chains.length is 1)
+        assert(s.recv_chains[0].chain_key.idx is 0)
+        assert(s.send_chain.chain_key.idx is 1)
+        assert(s.recv_chains[0].message_keys.length is 0)
 
-      s = bob.session_states[bob.session_tag].state
-      assert(s.recv_chains.length is 1)
-      assert(s.recv_chains[0].chain_key.idx is 1)
-      assert(s.send_chain.chain_key.idx is 0)
-      assert(s.recv_chains[0].message_keys.length is 0)
+      assert_init_from_message bob_ident, bob_store, hello_bob, 'Hello Bob!'
 
-    hello_alice0 = bob.encrypt 'Hello0'
-    bob.encrypt 'Hello1'
-    hello_alice2 = bob.encrypt 'Hello2'
+    .then (s) ->
+      bob = s
 
-    alice.decrypt alice_store, hello_alice2
+      do ->
+        # Normal exchange. Bob has created a new receive chain without skipped message keys.
 
-    do ->
-      # Alice has two skipped message keys in her new receive chain.
+        s = bob.session_states[bob.session_tag].state
+        assert(s.recv_chains.length is 1)
+        assert(s.recv_chains[0].chain_key.idx is 1)
+        assert(s.send_chain.chain_key.idx is 0)
+        assert(s.recv_chains[0].message_keys.length is 0)
 
-      s = alice.session_states[alice.session_tag].state
-      assert(s.recv_chains.length is 2)
-      assert(s.recv_chains[0].chain_key.idx is 3)
-      assert(s.send_chain.chain_key.idx is 0)
-      assert(s.recv_chains[0].message_keys.length is 2)
-      assert(s.recv_chains[0].message_keys[0].counter is 0)
-      assert(s.recv_chains[0].message_keys[1].counter is 1)
+      bob.encrypt 'Hello0'
+    .then (m) ->
+      hello_alice0 = m
+      bob.encrypt 'Hello1' # unused result
+      bob.encrypt 'Hello2'
 
-    hello_bob0 = alice.encrypt 'Hello0'
-    assert_decrypt 'Hello0', bob.decrypt bob_store, hello_bob0
+    .then (m) ->
+      hello_alice2 = m
+      alice.decrypt alice_store, hello_alice2
 
-    do ->
-      # For Bob everything is normal still. A new message from Alice means a
-      # new receive chain has been created and again no skipped message keys.
+    .then ->
+      do ->
+        # Alice has two skipped message keys in her new receive chain.
 
-      s = bob.session_states[bob.session_tag].state
-      assert(s.recv_chains.length is 2)
-      assert(s.recv_chains[0].chain_key.idx is 1)
-      assert(s.send_chain.chain_key.idx is 0)
-      assert(s.recv_chains[0].message_keys.length is 0)
+        s = alice.session_states[alice.session_tag].state
+        assert(s.recv_chains.length is 2)
+        assert(s.recv_chains[0].chain_key.idx is 3)
+        assert(s.send_chain.chain_key.idx is 0)
+        assert(s.recv_chains[0].message_keys.length is 2)
+        assert(s.recv_chains[0].message_keys[0].counter is 0)
+        assert(s.recv_chains[0].message_keys[1].counter is 1)
 
-    assert_decrypt 'Hello0', alice.decrypt alice_store, hello_alice0
+      alice.encrypt 'Hello0'
 
-    do ->
-      # Alice received the first of the two missing messages. Therefore
-      # only one message key is still skipped (counter value = 1).
+    .then (m) ->
+      hello_bob0 = m
+      assert_decrypt 'Hello0', bob.decrypt bob_store, hello_bob0
 
-      s = alice.session_states[alice.session_tag].state
-      assert(s.recv_chains.length is 2)
-      assert(s.recv_chains[0].message_keys.length is 1)
-      assert(s.recv_chains[0].message_keys[0].counter is 1)
+    .then ->
 
-    hello_again0 = bob.encrypt 'Again0'
-    hello_again1 = bob.encrypt 'Again1'
+      do ->
+        # For Bob everything is normal still. A new message from Alice means a
+        # new receive chain has been created and again no skipped message keys.
 
-    assert_decrypt 'Again1', alice.decrypt alice_store, hello_again1
+        s = bob.session_states[bob.session_tag].state
+        assert(s.recv_chains.length is 2)
+        assert(s.recv_chains[0].chain_key.idx is 1)
+        assert(s.send_chain.chain_key.idx is 0)
+        assert(s.recv_chains[0].message_keys.length is 0)
 
-    do ->
-      # Alice received the first of the two missing messages. Therefore
-      # only one message key is still skipped (counter value = 1).
+      assert_decrypt 'Hello0', alice.decrypt alice_store, hello_alice0
 
-      s = alice.session_states[alice.session_tag].state
-      assert(s.recv_chains.length is 3)
-      assert(s.recv_chains[0].message_keys.length is 1)
-      assert(s.recv_chains[1].message_keys.length is 1)
-      assert(s.recv_chains[0].message_keys[0].counter is 0)
-      assert(s.recv_chains[1].message_keys[0].counter is 1)
+    .then ->
+      do ->
+        # Alice received the first of the two missing messages. Therefore
+        # only one message key is still skipped (counter value = 1).
 
-    assert_decrypt 'Again0', alice.decrypt alice_store, hello_again0
+        s = alice.session_states[alice.session_tag].state
+        assert(s.recv_chains.length is 2)
+        assert(s.recv_chains[0].message_keys.length is 1)
+        assert(s.recv_chains[0].message_keys[0].counter is 1)
 
-  it 'replaced prekeys', ->
+      bob.encrypt 'Again0'
+    .then (m) ->
+      hello_again0 = m
+      bob.encrypt 'Again1'
+
+    .then (m) ->
+      hello_again1 = m
+      assert_decrypt 'Again1', alice.decrypt alice_store, hello_again1
+
+    .then ->
+      do ->
+        # Alice received the first of the two missing messages. Therefore
+        # only one message key is still skipped (counter value = 1).
+
+        s = alice.session_states[alice.session_tag].state
+        assert(s.recv_chains.length is 3)
+        assert(s.recv_chains[0].message_keys.length is 1)
+        assert(s.recv_chains[1].message_keys.length is 1)
+        assert(s.recv_chains[0].message_keys[0].counter is 0)
+        assert(s.recv_chains[1].message_keys[0].counter is 1)
+
+      assert_decrypt 'Again0', alice.decrypt alice_store, hello_again0
+
+    .then((() -> done()), (err) -> done(err))
+
+  it 'replaced prekeys', (done) ->
     [alice_ident, bob_ident] = [0..1].map(-> Proteus.keys.IdentityKeyPair.new())
     [bob_store1, bob_store2] = [0..2].map(-> new TestStore Proteus.keys.PreKey.generate_prekeys 0, 1)
 
     bob_prekey = bob_store1.prekeys[0]
     bob_bundle = Proteus.keys.PreKeyBundle.new bob_ident.public_key, bob_prekey
 
-    alice = Proteus.session.Session.init_from_prekey alice_ident, bob_bundle
-    hello_bob1 = alice.encrypt 'Hello Bob1!'
+    alice = null
+    bob = null
+    hello_bob1 = null
+    hello_bob2 = null
+    hello_bob3 = null
 
-    bob = assert_init_from_message bob_ident, bob_store1, hello_bob1, 'Hello Bob1!'
-    assert(Object.keys(bob.session_states).length is 1)
+    Proteus.session.Session.init_from_prekey alice_ident, bob_bundle
+    .then (s) ->
+      alice = s
+      alice.encrypt 'Hello Bob1!'
 
-    hello_bob2 = alice.encrypt 'Hello Bob2!'
-    assert_decrypt 'Hello Bob2!', bob.decrypt bob_store1, hello_bob2
-    assert(Object.keys(bob.session_states).length is 1)
+    .then (m) ->
+      hello_bob1 = m
+      assert_init_from_message bob_ident, bob_store1, hello_bob1, 'Hello Bob1!'
 
-    hello_bob3 = alice.encrypt 'Hello Bob3!'
-    assert_decrypt 'Hello Bob3!', bob.decrypt bob_store2, hello_bob3
-    assert(Object.keys(bob.session_states).length is 1)
+    .then (s) ->
+      bob = s
+      assert(Object.keys(bob.session_states).length is 1)
 
-  it 'max counter gap', ->
+      alice.encrypt 'Hello Bob2!'
+
+    .then (m) ->
+      hello_bob2 = m
+      assert_decrypt 'Hello Bob2!', bob.decrypt bob_store1, hello_bob2
+      assert(Object.keys(bob.session_states).length is 1)
+
+      alice.encrypt 'Hello Bob3!'
+
+    .then (m) ->
+      hello_bob3 = m
+      assert_decrypt 'Hello Bob3!', bob.decrypt bob_store2, hello_bob3
+      assert(Object.keys(bob.session_states).length is 1)
+
+    .then((() -> done()), (err) -> done(err))
+
+  it 'max counter gap', (done) ->
     @timeout 0
 
     [alice_ident, bob_ident] = [0..1].map(-> Proteus.keys.IdentityKeyPair.new())
@@ -477,15 +749,26 @@ describe 'Session', ->
     bob_prekey = bob_store.prekeys[Proteus.keys.PreKey.MAX_PREKEY_ID]
     bob_bundle = Proteus.keys.PreKeyBundle.new bob_ident.public_key, bob_prekey
 
-    alice = Proteus.session.Session.init_from_prekey alice_ident, bob_bundle
-    hello_bob1 = alice.encrypt 'Hello Bob1!'
+    alice = null
+    bob = null
 
-    bob = assert_init_from_message bob_ident, bob_store, hello_bob1, 'Hello Bob1!'
-    assert(Object.keys(bob.session_states).length is 1)
+    Proteus.session.Session.init_from_prekey alice_ident, bob_bundle
+    .then (s) ->
+      alice = s
+      alice.encrypt 'Hello Bob1!'
+    .then (hello_bob1) ->
+      assert_init_from_message bob_ident, bob_store, hello_bob1, 'Hello Bob1!'
 
-    for i in [0..1001]
-      hello_bob2 = alice.encrypt 'Hello Bob2!'
-      assert_decrypt 'Hello Bob2!', bob.decrypt bob_store, hello_bob2
-      assert.strictEqual(Object.keys(bob.session_states).length, 1)
+    .then (s) ->
+      bob = s
+      assert(Object.keys(bob.session_states).length is 1)
 
-    return
+      Promise.all(Array.apply(null, Array(1001)).map((_, i) ->
+        return new Promise (resolve, reject) ->
+          alice.encrypt 'Hello Bob2!'
+          .then (hello_bob2) ->
+            assert_decrypt 'Hello Bob2!', bob.decrypt bob_store, hello_bob2
+            assert.strictEqual(Object.keys(bob.session_states).length, 1)
+            resolve()))
+
+    .then((() -> done()), (err) -> done(err))

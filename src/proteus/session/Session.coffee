@@ -114,7 +114,7 @@ module.exports = class Session
         else
           resolve [session, plain]
       .catch ->
-        throw new DecryptError.PrekeyNotFound
+        reject new DecryptError.PrekeyNotFound
 
   _new_state: (prekey_store, prekey_message) ->
     return new Promise (resolve, reject) =>
