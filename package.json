@@ -3,9 +3,8 @@
   "version": "1.0.3",
   "dependencies": {
 	"coffee-script": "~1",
-
     "cbor-codec": "wireapp/cbor-codec.js#v1.0.0",
-    "libsodium": "wireapp/libsodium.js#master"
+    "libsodium": "wireapp/libsodium.js#wire-0.1.3"
   },
   "devDependencies": {
     "mocha": "~2",
@@ -22,7 +21,6 @@
   },
   "scripts": {
 	"build": "coffee -co build src",
-
 	"install": "npm run build",
 	"test": "mocha --compilers coffee:coffee-script/register -s 30000 -t 30000 --recursive test/harness.js test"
   },
