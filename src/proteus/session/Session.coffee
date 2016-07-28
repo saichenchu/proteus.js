@@ -61,62 +61,69 @@ module.exports = class Session
   @param remote_pkbundle [Proteus.keys.PreKeyBundle] Bob's Pre-Key Bundle
   ###
   @init_from_prekey: (local_identity, remote_pkbundle) ->
-    TypeUtil.assert_is_instance IdentityKeyPair, local_identity
-    TypeUtil.assert_is_instance PreKeyBundle, remote_pkbundle
+    return new Promise (resolve, reject) =>
+      TypeUtil.assert_is_instance IdentityKeyPair, local_identity
+      TypeUtil.assert_is_instance PreKeyBundle, remote_pkbundle
 
-    alice_base = KeyPair.new()
+      alice_base = KeyPair.new()
 
-    state = SessionState.init_as_alice local_identity, alice_base, remote_pkbundle
+      state = SessionState.init_as_alice local_identity, alice_base, remote_pkbundle
 
-    session_tag = SessionTag.new()
+      session_tag = SessionTag.new()
 
-    session = ClassUtil.new_instance Session
-    session.session_tag = session_tag
-    session.local_identity = local_identity
-    session.remote_identity = remote_pkbundle.identity_key
-    session.pending_prekey = [remote_pkbundle.prekey_id, alice_base.public_key]
-    session.session_states = {}
+      session = ClassUtil.new_instance Session
+      session.session_tag = session_tag
+      session.local_identity = local_identity
+      session.remote_identity = remote_pkbundle.identity_key
+      session.pending_prekey = [remote_pkbundle.prekey_id, alice_base.public_key]
+      session.session_states = {}
 
-    session._insert_session_state session_tag, state
-    return session
+      session._insert_session_state session_tag, state
+      resolve session
 
   @init_from_message: (our_identity, prekey_store, envelope) ->
-    TypeUtil.assert_is_instance IdentityKeyPair, our_identity
-    TypeUtil.assert_is_instance PreKeyStore, prekey_store
-    TypeUtil.assert_is_instance Envelope, envelope
+    return new Promise (resolve, reject) =>
+      TypeUtil.assert_is_instance IdentityKeyPair, our_identity
+      TypeUtil.assert_is_instance PreKeyStore, prekey_store
+      TypeUtil.assert_is_instance Envelope, envelope
 
-    pkmsg = switch
-      when envelope.message instanceof CipherMessage
-        throw new DecryptError.InvalidMessage 'Can\'t initialise a session from a CipherMessage.'
-      when envelope.message instanceof PreKeyMessage
-        envelope.message
-      else
-        throw new DecryptError.InvalidMessage
+      pkmsg = switch
+        when envelope.message instanceof CipherMessage
+          throw new DecryptError.InvalidMessage 'Can\'t initialise a session from a CipherMessage.'
+        when envelope.message instanceof PreKeyMessage
+          envelope.message
+        else
+          throw new DecryptError.InvalidMessage
 
-    session = ClassUtil.new_instance Session
-    session.session_tag = pkmsg.message.session_tag
-    session.local_identity = our_identity
-    session.remote_identity = pkmsg.identity_key
-    session.pending_prekey = null
-    session.session_states = {}
+      session = ClassUtil.new_instance Session
+      session.session_tag = pkmsg.message.session_tag
+      session.local_identity = our_identity
+      session.remote_identity = pkmsg.identity_key
+      session.pending_prekey = null
+      session.session_states = {}
 
-    state = session._new_state(prekey_store, pkmsg)
-    if not state
-      throw new DecryptError.PrekeyNotFound
+      session._new_state(prekey_store, pkmsg)
+      .then (state) =>
+        plain = state.decrypt(envelope, pkmsg.message)
+        session._insert_session_state(pkmsg.message.session_tag, state)
 
-    plain = state.decrypt(envelope, pkmsg.message)
-    session._insert_session_state(pkmsg.message.session_tag, state)
-    if pkmsg.prekey_id < PreKey.MAX_PREKEY_ID
-      prekey_store.remove(pkmsg.prekey_id)
-
-    return [session, plain]
+        if pkmsg.prekey_id < PreKey.MAX_PREKEY_ID
+          prekey_store.remove(pkmsg.prekey_id)
+          .then ->
+            resolve [session, plain]
+        else
+          resolve [session, plain]
+      .catch ->
+        reject new DecryptError.PrekeyNotFound
 
   _new_state: (prekey_store, prekey_message) ->
-    prekey = prekey_store.get_prekey prekey_message.prekey_id
-    return null if not prekey
+    return new Promise (resolve, reject) =>
+      prekey_store.get_prekey prekey_message.prekey_id
+      .then (prekey) =>
+        reject null if not prekey
 
-    return SessionState.init_as_bob(
-      @local_identity, prekey.key_pair, prekey_message.identity_key, prekey_message.base_key)
+        resolve SessionState.init_as_bob(
+          @local_identity, prekey.key_pair, prekey_message.identity_key, prekey_message.base_key)
 
   _insert_session_state: (tag, state) ->
     if tag in @session_states
@@ -167,11 +174,12 @@ module.exports = class Session
   @return [Proteus.message.Envelope] Encrypted message
   ###
   encrypt: (plaintext) ->
-    state = @session_states[@session_tag]
-    if not state
-      throw new ProteusError 'No session for tag'
+    return new Promise (resolve, reject) =>
+      state = @session_states[@session_tag]
+      if not state
+        throw new ProteusError 'No session for tag'
 
-    return state.state.encrypt @local_identity.public_key, @pending_prekey, @session_tag, plaintext
+      resolve state.state.encrypt @local_identity.public_key, @pending_prekey, @session_tag, plaintext
 
   ###
   @param prekey_store [Proteus.session.PreKeyStore] Store from which we can fetch local PreKeys
@@ -179,41 +187,42 @@ module.exports = class Session
   @return [Uint8Array] Decrypted message (aka plaintext)
   ###
   decrypt: (prekey_store, envelope) ->
-    TypeUtil.assert_is_instance PreKeyStore, prekey_store
-    TypeUtil.assert_is_instance Envelope, envelope
+    return new Promise (resolve, reject) =>
+      TypeUtil.assert_is_instance PreKeyStore, prekey_store
+      TypeUtil.assert_is_instance Envelope, envelope
 
-    msg = envelope.message
-    switch
-      when msg instanceof CipherMessage
-        return @_decrypt_cipher_message envelope, envelope.message
+      msg = envelope.message
+      switch
+        when msg instanceof CipherMessage
+          resolve @_decrypt_cipher_message envelope, envelope.message
 
-      when msg instanceof PreKeyMessage
-        if msg.identity_key.fingerprint() != @remote_identity.fingerprint()
-          throw new DecryptError.RemoteIdentityChanged
+        when msg instanceof PreKeyMessage
+          if msg.identity_key.fingerprint() != @remote_identity.fingerprint()
+            throw new DecryptError.RemoteIdentityChanged
 
-        decrypt_error = null
+          decrypt_error = null
 
-        try
-          return @_decrypt_cipher_message envelope, msg.message
-        catch e
-          decrypt_error = e
+          try
+            resolve @_decrypt_cipher_message envelope, msg.message
+          catch e
+            decrypt_error = e
 
-          if not (e instanceof DecryptError.InvalidSignature or
-                  e instanceof DecryptError.InvalidMessage)
-            throw e
+            if not (e instanceof DecryptError.InvalidSignature or
+                    e instanceof DecryptError.InvalidMessage)
+              throw e
 
-        state = @_new_state prekey_store, msg
-        if not state
-          throw decrypt_error
+          @_new_state prekey_store, msg
+          .then (state) =>
+            plaintext = state.decrypt envelope, msg.message
+            if msg.prekey_id != PreKey.MAX_PREKEY_ID
+              prekey_store.remove(msg.prekey_id)
 
-        plaintext = state.decrypt envelope, msg.message
-        if msg.prekey_id != PreKey.MAX_PREKEY_ID
-          prekey_store.remove(msg.prekey_id)
+            @_insert_session_state msg.message.session_tag, state
+            @pending_prekey = null
 
-        @_insert_session_state msg.message.session_tag, state
-        @pending_prekey = null
-
-        return plaintext
+            resolve plaintext
+          .catch =>
+            throw decrypt_error
 
   _decrypt_cipher_message: (envelope, msg) ->
     state = @session_states[msg.session_tag]
