@@ -1,8 +1,6 @@
 {
-  "name": "proteus",
-  "version": "2.0.0",
   "dependencies": {
-	"coffee-script": "~1",
+    "coffee-script": "~1",
     "cbor-codec": "wireapp/cbor-codec.js#v1.0.0",
     "libsodium": "wireapp/libsodium.js#wire-0.1.3"
   },
@@ -10,19 +8,18 @@
     "mocha": "~2",
     "chai": "~3"
   },
-  "license": "LicenseRef-LICENSE",
+  "homepage": "https://github.com/wireapp/proteus.js",
+  "license": "GPL-3.0",
+  "main": "build/proteus.js",
+  "name": "proteus",
   "repository": {
     "type": "git",
     "url": "git://github.com/wireapp/proteus.js.git"
   },
-  "bugs": {
-    "url": "https://github.com/wireapp/proteus.js/issues"
-  },
   "scripts": {
-	"build": "coffee -co build src",
-	"install": "npm run build",
-	"test": "mocha --compilers coffee:coffee-script/register -s 30000 -t 30000 --recursive test/harness.js test"
+    "build": "coffee -co build src",
+    "install": "npm run build",
+    "test": "mocha --compilers coffee:coffee-script/register -s 30000 -t 30000 --recursive test/harness.js test"
   },
-  "homepage": "https://github.com/wireapp/proteus.js",
-  "main": "build/proteus.js"
+  "version": "2.0.0"
 }
