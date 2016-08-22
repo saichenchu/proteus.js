@@ -1,0 +1,14 @@
+{
+  "name": "proteus",
+  "main": "build/proteus-bundle.js",
+  "license": "GPL-3.0",
+  "homepage": "https://github.com/wireapp/proteus.js",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
