@@ -11,7 +11,7 @@
   "homepage": "https://github.com/wireapp/proteus.js",
   "license": "GPL-3.0",
   "main": "build/proteus.js",
-  "name": "proteus",
+  "name": "wireapp-proteus",
   "repository": {
     "type": "git",
     "url": "git://github.com/wireapp/proteus.js.git"
