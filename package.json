@@ -18,7 +18,7 @@
   },
   "scripts": {
     "build": "coffee -co build src",
-    "install": "npm run build",
+    "prepublish": "npm run build",
     "test": "mocha --compilers coffee:coffee-script/register -s 30000 -t 30000 --recursive test/harness.js test"
   },
   "version": "2.0.0"
