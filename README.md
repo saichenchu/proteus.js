@@ -6,13 +6,29 @@ You can find the published source code at [github.com/wireapp](https://github.co
 
 For licensing information, see the attached LICENSE file and the list of third-party licenses at [wire.com/legal/licenses/](https://wire.com/legal/licenses/).
 
-## Run tests
+## Build Status
+
+[![Build Status](https://travis-ci.org/wireapp/proteus.js.svg?branch=master)](https://travis-ci.org/wireapp/proteus.js)
+
+## Usage
+
+```bash
+npm install wireapp-proteus
+```
+
+```javascript
+var Proteus = require('wireapp-proteus');
+
+var ikp = Proteus.keys.IdentityKeyPair.new();
+var buffer = ikp.serialise();
+var view = new Uint8Array(buffer);
+
+console.log('Identity Key Pair', view);
+```
+
+## Run Tests
 
 ```bash
 npm install
 npm test
 ```
-
-## Build Status
-
-[![Build Status](https://travis-ci.org/wireapp/proteus.js.svg?branch=master)](https://travis-ci.org/wireapp/proteus.js)
