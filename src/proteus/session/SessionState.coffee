@@ -129,7 +129,7 @@ module.exports = class SessionState
   @param identity_key [Proteus.keys.IdentityKey] Public identity key of the local identity key pair
   @param pending [] Pending pre-key
   @param tag [Proteus.message.SessionTag] Session tag
-  @param plaintext [String] The plaintext to encrypt
+  @param plaintext [String, Uint8Array] The plaintext to encrypt
 
   @return [Proteus.message.Envelope]
   ###

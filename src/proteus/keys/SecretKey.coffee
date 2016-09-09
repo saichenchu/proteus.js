@@ -43,7 +43,7 @@ module.exports = class SecretKey
   ###
   This function can be used to compute a message signature.
 
-  @param message [String, Uint8Array] Message to be signed
+  @param message [String] Message to be signed
   @return [Uint8Array] A message signature
   ###
   sign: (message) ->

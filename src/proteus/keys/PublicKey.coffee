@@ -42,7 +42,7 @@ module.exports = class PublicKey
   This function can be used to verify a message signature.
 
   @param signature [Uint8Array] The signature to verify
-  @param message [String, Uint8Array] The message from which the signature was computed.
+  @param message [String] The message from which the signature was computed.
   @return [bool] `true` if the signature is valid, `false` otherwise.
   ###
   verify: (signature, message) ->

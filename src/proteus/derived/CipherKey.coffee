@@ -35,11 +35,12 @@ module.exports = class CipherKey
     return ck
 
   ###
-  @param plaintext [String, ArrayBuffer] The text to encrypt
+  @param plaintext [String, Uint8Array, ArrayBuffer] The text to encrypt
   @param nonce [Uint8Array] Counter as nonce
   @return [Uint8Array] Encypted payload
   ###
   encrypt: (plaintext, nonce) ->
+    # @todo Re-validate if the ArrayBuffer check is needed (Prerequisite: Integration tests)
     if plaintext instanceof ArrayBuffer and plaintext.byteLength isnt undefined
       plaintext = new Uint8Array plaintext
 

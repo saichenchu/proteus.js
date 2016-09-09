@@ -6,6 +6,7 @@
 .tscache
 /bower_components/
 /build/
+!/build/proteus.d.ts
 /demo/libs/
 /docs/
 /lib/
@@ -22,6 +23,7 @@
 /src/test/ts/**/*.js.map
 /test/nightwatch/report
 /test/nightwatch/screenshots
+/typings/
 _SpecRunner.html
 CHANGELOG.md
 init-git.*
