@@ -170,7 +170,12 @@ export declare module message {
     message: message.Message;
     version: number;
 
+    static decode(d: CBOR.Decoder): message.Envelope;
+    static deserialise(buf: ArrayBuffer): message.Envelope;
+    encode(e: CBOR.Encoder): CBOR.Encoder;
     static new(mac_key: derived.MacKey, message: message.Message): message.Envelope;
+    serialise(): ArrayBuffer;
+    verify(mac: derived.MacKey): boolean;
   }
 
   class Message {
