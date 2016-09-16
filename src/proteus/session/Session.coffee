@@ -181,11 +181,6 @@ module.exports = class Session
 
       resolve state.state.encrypt @local_identity.public_key, @pending_prekey, @session_tag, plaintext
 
-  ###
-  @param prekey_store [Proteus.session.PreKeyStore] Store from which we can fetch local PreKeys
-  @param envelope [Proteus.message.Envelope] Encrypted message
-  @return [Uint8Array] Decrypted message (aka plaintext)
-  ###
   decrypt: (prekey_store, envelope) ->
     return new Promise (resolve, reject) =>
       TypeUtil.assert_is_instance PreKeyStore, prekey_store

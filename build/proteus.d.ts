@@ -297,7 +297,7 @@ export declare module session {
     private _insert_session_state(tag: message.SessionTag, state: session.SessionState): number|void;
     private _new_state(prekey_store: session.PreKeyStore, prekey_message: message.PreKeyMessage): Promise<session.SessionState>;
     static decode(local_identity: keys.IdentityKeyPair, d: CBOR.Decoder): session.Session;
-    decrypt(prekey_store: session.PreKeyStore, envelope: message.Envelope): Uint8Array;
+    decrypt(prekey_store: session.PreKeyStore, envelope: message.Envelope): Promise<Uint8Array>;
     static deserialise(local_identity: keys.IdentityKeyPair, buf: ArrayBuffer): session.Session;
     encode(e: CBOR.Encoder): CBOR.Encoder;
     encrypt(plaintext: string|Uint8Array): Promise<message.Envelope>;
