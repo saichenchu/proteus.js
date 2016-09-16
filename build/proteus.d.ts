@@ -239,7 +239,7 @@ export declare module session {
     static new(key: Uint8Array): derived.MacKey;
   }
 
-  class PreKeyStore {
+  interface PreKeyStore {
     get_prekey(prekey_id: number): Promise<keys.PreKey>;
     remove(prekey_id: number): Promise<void>;
   }
