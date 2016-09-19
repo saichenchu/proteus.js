@@ -1,3 +1,4 @@
+var pkg = require('./package.json');
 var webpack = require('webpack');
 
 module.exports = {
@@ -26,6 +27,7 @@ module.exports = {
       compress: {warnings: false},
       output: {comments: false},
       sourceMap: true
-    })
+    }),
+    new webpack.BannerPlugin(`${pkg.name} v${pkg.version}`)
   ]
 };
