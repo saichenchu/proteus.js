@@ -281,6 +281,8 @@ export declare module session {
     static new(chain_key: session.ChainKey, keypair: keys.KeyPair): session.SendChain;
   }
 
+  interface SessionFromMessageTuple extends Array<session.Session | Uint8Array> { 0: session.Session; 1: Uint8Array; }
+
   class Session {
     constructor();
 
@@ -302,7 +304,7 @@ export declare module session {
     encode(e: CBOR.Encoder): CBOR.Encoder;
     encrypt(plaintext: string|Uint8Array): Promise<message.Envelope>;
     get_local_identity(): keys.PublicKey;
-    static init_from_message(our_identity: keys.IdentityKeyPair, prekey_store: session.PreKeyStore, envelope: message.Envelope): Promise<Array<session.Session|Uint8Array>>;
+    static init_from_message(our_identity: keys.IdentityKeyPair, prekey_store: session.PreKeyStore, envelope: message.Envelope): Promise<SessionFromMessageTuple>;
     static init_from_prekey(local_identity: keys.IdentityKeyPair, remote_pkbundle: keys.PreKeyBundle): Promise<session.Session>;
     serialise(): ArrayBuffer;
   }
