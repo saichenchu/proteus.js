@@ -8,6 +8,7 @@
 /build/
 !/build/proteus.d.ts
 /demo/libs/
+/dist/
 /docs/
 /lib/
 /nbproject/private/
