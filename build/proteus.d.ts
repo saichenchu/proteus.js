@@ -60,7 +60,7 @@ export declare module keys {
   class IdentityKeyPair {
     constructor();
 
-    public_key: keys.PublicKey;
+    public_key: keys.IdentityKey;
     secret_key: keys.SecretKey;
     version: number;
 
