@@ -239,9 +239,9 @@ export declare module session {
     static new(key: Uint8Array): derived.MacKey;
   }
 
-  interface PreKeyStore {
-    get_prekey(prekey_id: number): Promise<keys.PreKey>;
-    remove(prekey_id: number): Promise<void>;
+  abstract class PreKeyStore {
+    abstract get_prekey(prekey_id: number): Promise<keys.PreKey>;
+    abstract remove(prekey_id: number): Promise<number>;
   }
 
   class RecvChain {
