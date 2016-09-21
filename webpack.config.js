@@ -4,13 +4,13 @@ var webpack = require('webpack');
 module.exports = {
   devtool: 'source-map',
   entry: {
-    filename: './build/proteus.js'
+    filename: './dist/commonjs/proteus.js'
   },
   output: {
-    filename: 'proteus-bundle.min.js',
+    filename: 'proteus.js',
     library: 'proteus',
     libraryTarget: 'amd',
-    path: './dist'
+    path: './dist/amd'
   },
   node: {
     fs: 'empty',
@@ -23,11 +23,6 @@ module.exports = {
   },
   plugins: [
     new webpack.optimize.DedupePlugin(),
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {warnings: false},
-      output: {comments: false},
-      sourceMap: true
-    }),
     new webpack.BannerPlugin(`${pkg.name} v${pkg.version}`)
   ]
 };

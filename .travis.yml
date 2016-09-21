@@ -4,14 +4,7 @@ sudo: false
 # http://docs.travis-ci.com/user/languages/javascript-with-nodejs/
 language: node_js
 node_js:
-  - "stable"
-
-# http://docs.travis-ci.com/user/build-lifecycle/
-before_script:
-  - "npm install"
-
-script:
-  - "npm test"
+  - "node"
 
 # http://docs.travis-ci.com/user/notifications/
 notifications:

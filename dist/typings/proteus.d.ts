@@ -54,7 +54,7 @@ export declare module keys {
     encode(e: CBOR.Encoder): CBOR.Encoder;
     fingerprint(): string;
     static new(public_key: keys.PublicKey): keys.IdentityKey;
-    tostring(): string;
+    toString(): string;
   }
 
   class IdentityKeyPair {

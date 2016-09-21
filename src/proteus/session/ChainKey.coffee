@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-CBOR = require 'cbor-codec'
+CBOR = require 'wire-webapp-cbor'
 
 DontCallConstructor = require '../errors/DontCallConstructor'
 ClassUtil = require '../util/ClassUtil'
