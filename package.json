@@ -3,6 +3,7 @@
     "wire-webapp-cbor": "1.1.0",
     "libsodium": "wireapp/libsodium.js#wire-0.1.4"
   },
+  "description": "Axolotl protocol implementation for JavaScript",
   "devDependencies": {
     "chai": "~3",
     "coffee-script": "~1",
