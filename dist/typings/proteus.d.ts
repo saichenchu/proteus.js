@@ -89,6 +89,7 @@ export declare module keys {
 
     key_id: number;
     key_pair: keys.KeyPair;
+    static MAX_PREKEY_ID: number;
     version: number;
 
     static decode(d: CBOR.Decoder): keys.PreKey;
