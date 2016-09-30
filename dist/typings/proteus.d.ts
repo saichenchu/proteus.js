@@ -95,7 +95,7 @@ export declare module keys {
     static decode(d: CBOR.Decoder): keys.PreKey;
     static deserialise(buf: ArrayBuffer): keys.PreKey;
     encode(e: CBOR.Encoder): CBOR.Encoder;
-    static generate_prekeys(start: number, size: number): Array<keys.KeyPair>;
+    static generate_prekeys(start: number, size: number): Array<keys.PreKey>;
     static last_resort(): keys.PreKey;
     static new(pre_key_id: number): keys.PreKey;
     serialise(): ArrayBuffer;

@@ -25,5 +25,5 @@
     "test": "mocha --compilers coffee:coffee-script/register -s 30000 -t 30000 --recursive test/harness.js test"
   },
   "typings": "dist/typings/proteus.d.ts",
-  "version": "2.1.1"
+  "version": "2.1.2"
 }
