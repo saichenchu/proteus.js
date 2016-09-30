@@ -17,25 +17,43 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 describe 'PreKey', ->
-  it 'should generate new PreKeys', ->
-    pk = Proteus.keys.PreKey.new 0
-    pk = Proteus.keys.PreKey.last_resort()
-    assert(pk.key_id is Proteus.keys.PreKey.MAX_PREKEY_ID)
+  describe 'Generation', ->
+    it 'should generate new PreKeys', ->
+      pk = Proteus.keys.PreKey.new 0
+      pk = Proteus.keys.PreKey.last_resort()
+      assert(pk.key_id is Proteus.keys.PreKey.MAX_PREKEY_ID)
 
-  it 'should reject invalid PreKey IDs', ->
-    assert.throws(-> Proteus.keys.PreKey.new(undefined))
-    assert.throws(-> Proteus.keys.PreKey.new("foo"))
-    assert.throws(-> Proteus.keys.PreKey.new(-1))
-    assert.throws(-> Proteus.keys.PreKey.new(65537))
-    assert.throws(-> Proteus.keys.PreKey.new(4242.42))
+    it 'should reject invalid PreKey IDs', ->
+      assert.throws(-> Proteus.keys.PreKey.new(undefined))
+      assert.throws(-> Proteus.keys.PreKey.new("foo"))
+      assert.throws(-> Proteus.keys.PreKey.new(-1))
+      assert.throws(-> Proteus.keys.PreKey.new(65537))
+      assert.throws(-> Proteus.keys.PreKey.new(4242.42))
 
-  it 'should serialise and deserialise correctly', ->
-    pk = Proteus.keys.PreKey.new 0
-    pk_bytes = pk.serialise()
-    pk_copy = Proteus.keys.PreKey.deserialise pk_bytes
+    it 'generates ranges of PreKeys', ->
+      prekeys = Proteus.keys.PreKey.generate_prekeys 0, 10
+      assert(prekeys.length is 10)
+      assert(prekeys[0].key_id is 0)
+      assert(prekeys[9].key_id is 9)
 
-    assert(pk_copy.version is pk.version)
-    assert(pk_copy.key_id is pk.key_id)
-    assert(pk_copy.key_pair.public_key.fingerprint() is pk.key_pair.public_key.fingerprint())
+      prekeys = Proteus.keys.PreKey.generate_prekeys 3000, 10
+      assert(prekeys.length is 10)
+      assert(prekeys[0].key_id is 3000)
+      assert(prekeys[9].key_id is 3009)
 
-    assert(sodium.to_hex(new Uint8Array pk_bytes) is sodium.to_hex(new Uint8Array pk_copy.serialise()))
+      prekeys = Proteus.keys.PreKey.generate_prekeys 65530, 10
+      assert(prekeys.length is 10)
+      assert(prekeys[0].key_id is 65530)
+      assert(prekeys[9].key_id is 4)
+
+  describe 'Serialisation', ->
+    it 'should serialise and deserialise correctly', ->
+      pk = Proteus.keys.PreKey.new 0
+      pk_bytes = pk.serialise()
+      pk_copy = Proteus.keys.PreKey.deserialise pk_bytes
+
+      assert(pk_copy.version is pk.version)
+      assert(pk_copy.key_id is pk.key_id)
+      assert(pk_copy.key_pair.public_key.fingerprint() is pk.key_pair.public_key.fingerprint())
+
+      assert(sodium.to_hex(new Uint8Array pk_bytes) is sodium.to_hex(new Uint8Array pk_copy.serialise()))
