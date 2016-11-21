@@ -39,7 +39,6 @@ PreKeyMessage = require '../message/PreKeyMessage'
 SessionTag = require '../message/SessionTag'
 
 PreKeyStore = require './PreKeyStore'
-ChainKey = require './ChainKey'
 
 module.exports = class Session
   @MAX_RECV_CHAINS:     5
@@ -61,7 +60,7 @@ module.exports = class Session
   @param remote_pkbundle [Proteus.keys.PreKeyBundle] Bob's Pre-Key Bundle
   ###
   @init_from_prekey: (local_identity, remote_pkbundle) ->
-    return new Promise (resolve, reject) =>
+    return new Promise (resolve) =>
       TypeUtil.assert_is_instance IdentityKeyPair, local_identity
       TypeUtil.assert_is_instance PreKeyBundle, remote_pkbundle
 
@@ -111,19 +110,19 @@ module.exports = class Session
           prekey_store.remove(pkmsg.prekey_id)
           .then ->
             resolve [session, plain]
+          .catch (error) ->
+            reject new DecryptError.PrekeyNotFound "Could not delete PreKey: #{error.message}"
         else
           resolve [session, plain]
       .catch ->
         reject new DecryptError.PrekeyNotFound
 
-  _new_state: (prekey_store, prekey_message) ->
-    return new Promise (resolve, reject) =>
-      prekey_store.get_prekey prekey_message.prekey_id
-      .then (prekey) =>
-        reject null if not prekey
-
-        resolve SessionState.init_as_bob(
-          @local_identity, prekey.key_pair, prekey_message.identity_key, prekey_message.base_key)
+  _new_state: (pre_key_store, pre_key_message) ->
+    return pre_key_store.get_prekey pre_key_message.prekey_id
+    .then (pre_key) =>
+      if pre_key
+        return SessionState.init_as_bob @local_identity, pre_key.key_pair, pre_key_message.identity_key, pre_key_message.base_key
+      throw new ProteusError 'Unable to get PreKey'
 
   _insert_session_state: (tag, state) ->
     if tag in @session_states
@@ -176,20 +175,21 @@ module.exports = class Session
   encrypt: (plaintext) ->
     return new Promise (resolve, reject) =>
       state = @session_states[@session_tag]
+
       if not state
-        throw new ProteusError 'No session for tag'
+        return reject new ProteusError "Could not find session for tag '#{@session_tag?.toString()}'."
 
       resolve state.state.encrypt @local_identity.public_key, @pending_prekey, @session_tag, plaintext
 
   decrypt: (prekey_store, envelope) ->
-    return new Promise (resolve, reject) =>
+    return new Promise (resolve) =>
       TypeUtil.assert_is_instance PreKeyStore, prekey_store
       TypeUtil.assert_is_instance Envelope, envelope
 
       msg = envelope.message
       switch
         when msg instanceof CipherMessage
-          resolve @_decrypt_cipher_message envelope, envelope.message
+          return resolve @_decrypt_cipher_message envelope, envelope.message
 
         when msg instanceof PreKeyMessage
           if msg.identity_key.fingerprint() != @remote_identity.fingerprint()
@@ -198,7 +198,7 @@ module.exports = class Session
           decrypt_error = null
 
           try
-            resolve @_decrypt_cipher_message envelope, msg.message
+            return resolve @_decrypt_cipher_message envelope, msg.message
           catch e
             decrypt_error = e
 
@@ -215,14 +215,14 @@ module.exports = class Session
             @_insert_session_state msg.message.session_tag, state
             @pending_prekey = null
 
-            resolve plaintext
+            return resolve plaintext
           .catch =>
             throw decrypt_error
 
   _decrypt_cipher_message: (envelope, msg) ->
     state = @session_states[msg.session_tag]
     if not state
-      throw new DecryptError.InvalidMessage 'No matching session state.'
+      throw new DecryptError.InvalidMessage "We received a message with session tag '#{msg.session_tag?.toString()}', but we don't have a session for this tag."
 
     # serialise and de-serialise for a deep clone
     # THIS IS IMPORTANT, DO NOT MUTATE THE SESSION STATE IN-PLACE
