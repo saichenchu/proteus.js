@@ -17,6 +17,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 CBOR = require 'wire-webapp-cbor'
+ed2curve = require 'ed2curve'
 sodium = require 'libsodium'
 
 DontCallConstructor = require '../errors/DontCallConstructor'
@@ -53,7 +54,7 @@ module.exports = class KeyPair
   ###
   _construct_private_key: (ed25519_key_pair) ->
     sk_ed25519 = ed25519_key_pair.privateKey
-    sk_curve25519 = sodium.crypto_sign_ed25519_sk_to_curve25519 sk_ed25519
+    sk_curve25519 = ed2curve.convertSecretKey sk_ed25519
     return SecretKey.new sk_ed25519, sk_curve25519
 
   ###
@@ -62,7 +63,7 @@ module.exports = class KeyPair
   ###
   _construct_public_key: (ed25519_key_pair) ->
     pk_ed25519 = ed25519_key_pair.publicKey
-    pk_curve25519 = sodium.crypto_sign_ed25519_pk_to_curve25519 pk_ed25519
+    pk_curve25519 = ed2curve.convertPublicKey pk_ed25519
     return PublicKey.new pk_ed25519, pk_curve25519
 
   encode: (e) ->
