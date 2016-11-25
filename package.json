@@ -1,29 +1,30 @@
 {
-  "name": "proteus",
-  "version": "1.0.4",
   "dependencies": {
-	"coffee-script": "~1",
     "cbor-codec": "wireapp/cbor-codec.js#v1.0.0",
-    "libsodium": "wireapp/libsodium.js#wire-0.1.3"
+    "ed2curve": "0.1.4",
+    "libsodium": "wireapp/libsodium.js#wire-0.1.4",
+    "wire-webapp-cbor": "1.1.0"
   },
+  "description": "Axolotl protocol implementation for JavaScript",
   "devDependencies": {
-    "mocha": "~2",
-    "chai": "~3"
+    "chai": "3.5.0",
+    "coffee-script": "1.11.1",
+    "mocha": "2.5.3",
+    "webpack": "2.1.0-beta.21"
   },
-  "license": "LicenseRef-LICENSE",
-  "private": true,
+  "homepage": "https://github.com/wireapp/proteus.js",
+  "license": "GPL-3.0",
+  "main": "dist/commonjs/proteus.js",
+  "name": "wire-webapp-proteus",
   "repository": {
     "type": "git",
     "url": "git://github.com/wireapp/proteus.js.git"
   },
-  "bugs": {
-    "url": "https://github.com/wireapp/proteus.js/issues"
-  },
   "scripts": {
-	"build": "coffee -co build src",
-	"install": "npm run build",
-	"test": "mocha --compilers coffee:coffee-script/register -s 30000 -t 30000 --recursive test/harness.js test"
+    "build": "coffee -co dist/commonjs src",
+    "bundle": "npm run build && webpack --progress",
+    "prepublish": "npm run bundle",
+    "test": "mocha --compilers coffee:coffee-script/register -s 30000 -t 30000 --recursive test/harness.js test --trace-warnings"
   },
-  "homepage": "https://github.com/wireapp/proteus.js",
-  "main": "build/proteus.js"
+  "version": "1.0.5"
 }
