@@ -1,4 +1,4 @@
-/*! wire-webapp-proteus v1.0.5 */
+/*! wire-webapp-proteus v1.0.6 */
 define("proteus", [], function() { return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
