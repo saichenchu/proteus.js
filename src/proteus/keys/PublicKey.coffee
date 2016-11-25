@@ -16,7 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-CBOR = require 'cbor-codec'
+CBOR = require 'wire-webapp-cbor'
+ed2curve = require 'ed2curve'
 
 DontCallConstructor = require '../errors/DontCallConstructor'
 ClassUtil = require '../util/ClassUtil'
@@ -68,5 +69,5 @@ module.exports = class PublicKey
 
     TypeUtil.assert_is_instance Uint8Array, self.pub_edward
 
-    self.pub_curve = sodium.crypto_sign_ed25519_pk_to_curve25519 self.pub_edward
+    self.pub_curve = ed2curve.convertPublicKey self.pub_edward
     return self

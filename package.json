@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "cbor-codec": "wireapp/cbor-codec.js#v1.0.0",
     "ed2curve": "0.1.4",
     "libsodium": "wireapp/libsodium.js#wire-0.1.4",
     "wire-webapp-cbor": "1.1.0"
