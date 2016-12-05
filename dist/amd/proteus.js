@@ -1,4 +1,4 @@
-/*! wire-webapp-proteus v2.1.5 */
+/*! wire-webapp-proteus v2.1.6 */
 define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -5170,9 +5170,7 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
             } else {
               return resolve([session, plain]);
             }
-          })["catch"](function() {
-            return reject(new DecryptError.PrekeyNotFound);
-          });
+          })["catch"](reject);
         };
       })(this));
     };
