@@ -522,10 +522,10 @@ describe 'Session', ->
       Proteus.session.Session.init_from_message bob_ident, bob_store, hello_bob
 
     .then ->
-      assert.fail 'should have thrown Proteus.errors.DecryptError.PrekeyNotFound'
+      assert.fail 'should have thrown Proteus.errors.ProteusError'
 
     .catch (e) ->
-      assert.instanceOf e, Proteus.errors.DecryptError.PrekeyNotFound
+      assert.instanceOf e, Proteus.errors.ProteusError
 
     .then((() -> done()), (err) -> done(err))
 

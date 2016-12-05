@@ -114,8 +114,7 @@ module.exports = class Session
             reject new DecryptError.PrekeyNotFound "Could not delete PreKey: #{error.message}"
         else
           resolve [session, plain]
-      .catch ->
-        reject new DecryptError.PrekeyNotFound
+      .catch reject
 
   _new_state: (pre_key_store, pre_key_message) ->
     return pre_key_store.get_prekey pre_key_message.prekey_id
