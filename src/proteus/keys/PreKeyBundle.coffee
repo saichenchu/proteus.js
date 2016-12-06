@@ -33,11 +33,11 @@ module.exports = class PreKeyBundle
     throw new DontCallConstructor @
 
   ###
-  @param identity_key [Proteus.keys.IdentityKey]
+  @param public_identity_key [Proteus.keys.IdentityKey]
   @param prekey [Proteus.keys.PreKey]
   ###
-  @new: (identity_key, prekey) ->
-    TypeUtil.assert_is_instance IdentityKey, identity_key
+  @new: (public_identity_key, prekey) ->
+    TypeUtil.assert_is_instance IdentityKey, public_identity_key
     TypeUtil.assert_is_instance PreKey, prekey
 
     bundle = ClassUtil.new_instance PreKeyBundle
@@ -45,7 +45,7 @@ module.exports = class PreKeyBundle
     bundle.version = 1
     bundle.prekey_id = prekey.key_id
     bundle.public_key = prekey.key_pair.public_key
-    bundle.identity_key = identity_key
+    bundle.identity_key = public_identity_key
     bundle.signature = null
 
     return bundle
@@ -79,6 +79,12 @@ module.exports = class PreKeyBundle
     e = new CBOR.Encoder()
     @encode e
     return e.get_buffer()
+
+  serialised_json: ->
+    return {
+      "id": @prekey_id
+      "key": sodium.to_base64 new Uint8Array(@serialise()), true
+    }
 
   @deserialise: (buf) ->
     TypeUtil.assert_is_instance ArrayBuffer, buf

@@ -70,3 +70,19 @@ describe 'PreKeyBundle', ->
     assert(sodium.to_hex(pkb_copy.signature) is sodium.to_hex(bundle.signature))
 
     assert(sodium.to_hex(new Uint8Array pkb_bytes) is sodium.to_hex(new Uint8Array pkb_copy.serialise()))
+
+  it 'should generate a serialised JSON format', ->
+    identity_key_pair = Proteus.keys.IdentityKeyPair.new()
+    pre_key_id = 72
+    pre_key = Proteus.keys.PreKey.new pre_key_id
+    public_identity_key = identity_key_pair.public_key
+    pre_key_bundle = Proteus.keys.PreKeyBundle.new public_identity_key, pre_key
+    serialised_pre_key_bundle_json = pre_key_bundle.serialised_json()
+
+    assert.strictEqual serialised_pre_key_bundle_json.id, pre_key_id
+
+    serialised_array_buffer_view = sodium.from_base64 serialised_pre_key_bundle_json.key
+    serialised_array_buffer = serialised_array_buffer_view.buffer
+    deserialised_pre_key_bundle = Proteus.keys.PreKeyBundle.deserialise serialised_array_buffer
+
+    assert.deepEqual deserialised_pre_key_bundle.public_key, pre_key_bundle.public_key
