@@ -1,4 +1,4 @@
-/*! wire-webapp-proteus v2.1.6 */
+/*! wire-webapp-proteus v2.1.7 */
 define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -4279,19 +4279,19 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 
 
     /*
-    @param identity_key [Proteus.keys.IdentityKey]
+    @param public_identity_key [Proteus.keys.IdentityKey]
     @param prekey [Proteus.keys.PreKey]
      */
 
-    PreKeyBundle["new"] = function(identity_key, prekey) {
+    PreKeyBundle["new"] = function(public_identity_key, prekey) {
       var bundle;
-      TypeUtil.assert_is_instance(IdentityKey, identity_key);
+      TypeUtil.assert_is_instance(IdentityKey, public_identity_key);
       TypeUtil.assert_is_instance(PreKey, prekey);
       bundle = ClassUtil.new_instance(PreKeyBundle);
       bundle.version = 1;
       bundle.prekey_id = prekey.key_id;
       bundle.public_key = prekey.key_pair.public_key;
-      bundle.identity_key = identity_key;
+      bundle.identity_key = public_identity_key;
       bundle.signature = null;
       return bundle;
     };
@@ -4326,6 +4326,13 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
       e = new CBOR.Encoder();
       this.encode(e);
       return e.get_buffer();
+    };
+
+    PreKeyBundle.prototype.serialised_json = function() {
+      return {
+        "id": this.prekey_id,
+        "key": sodium.to_base64(new Uint8Array(this.serialise()), true)
+      };
     };
 
     PreKeyBundle.deserialise = function(buf) {
