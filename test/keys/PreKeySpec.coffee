@@ -31,6 +31,13 @@ describe 'PreKey', ->
       assert.throws(-> Proteus.keys.PreKey.new(4242.42))
 
     it 'generates ranges of PreKeys', ->
+      prekeys = Proteus.keys.PreKey.generate_prekeys 0, 0
+      assert.strictEqual prekeys.length, 0
+
+      prekeys = Proteus.keys.PreKey.generate_prekeys 0, 1
+      assert.strictEqual prekeys.length, 1
+      assert(prekeys[0].key_id is 0)
+
       prekeys = Proteus.keys.PreKey.generate_prekeys 0, 10
       assert(prekeys.length is 10)
       assert(prekeys[0].key_id is 0)
@@ -41,10 +48,23 @@ describe 'PreKey', ->
       assert(prekeys[0].key_id is 3000)
       assert(prekeys[9].key_id is 3009)
 
+    it 'does not include the last resort pre key', ->
       prekeys = Proteus.keys.PreKey.generate_prekeys 65530, 10
       assert(prekeys.length is 10)
       assert(prekeys[0].key_id is 65530)
+      assert(prekeys[1].key_id is 65531)
+      assert(prekeys[2].key_id is 65532)
+      assert(prekeys[3].key_id is 65533)
+      assert(prekeys[4].key_id is 65534)
+      assert(prekeys[5].key_id is 0)
+      assert(prekeys[6].key_id is 1)
+      assert(prekeys[7].key_id is 2)
+      assert(prekeys[8].key_id is 3)
       assert(prekeys[9].key_id is 4)
+
+      prekeys = Proteus.keys.PreKey.generate_prekeys Proteus.keys.PreKey.MAX_PREKEY_ID, 1
+      assert.strictEqual prekeys.length, 1
+      assert(prekeys[0].key_id is 0)
 
   describe 'Serialisation', ->
     it 'should serialise and deserialise correctly', ->

@@ -59,10 +59,12 @@ module.exports = class PreKey
       TypeUtil.assert_is_integer value
 
       if value < 0 or value > PreKey.MAX_PREKEY_ID
-        throw new RangeError("Arguments must be between 0 and #{PreKey.MAX_PREKEY_ID} inclusive")
+        throw new RangeError("Arguments must be between 0 (inclusive) and #{PreKey.MAX_PREKEY_ID} (inclusive).")
 
     check_integer start
     check_integer size
+
+    return [] if size is 0
 
     return [0..(size - 1)].map((x) ->
       return PreKey.new (start + x) % PreKey.MAX_PREKEY_ID)
