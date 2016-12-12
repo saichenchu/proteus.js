@@ -1,4 +1,4 @@
-/*! wire-webapp-proteus v2.1.9 */
+/*! wire-webapp-proteus v2.1.10 */
 define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -4176,11 +4176,14 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
       check_integer = function(value) {
         TypeUtil.assert_is_integer(value);
         if (value < 0 || value > PreKey.MAX_PREKEY_ID) {
-          throw new RangeError("Arguments must be between 0 and " + PreKey.MAX_PREKEY_ID + " inclusive");
+          throw new RangeError("Arguments must be between 0 (inclusive) and " + PreKey.MAX_PREKEY_ID + " (inclusive).");
         }
       };
       check_integer(start);
       check_integer(size);
+      if (size === 0) {
+        return [];
+      }
       return (function() {
         results = [];
         for (var i = 0, ref = size - 1; 0 <= ref ? i <= ref : i >= ref; 0 <= ref ? i++ : i--){ results.push(i); }
