@@ -1,4 +1,4 @@
-/*! wire-webapp-proteus v2.1.10 */
+/*! wire-webapp-proteus v2.1.11 */
 define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -4158,7 +4158,7 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
       var pk;
       TypeUtil.assert_is_integer(pre_key_id);
       if (pre_key_id < 0 || pre_key_id > PreKey.MAX_PREKEY_ID) {
-        throw new RangeError("pre_key_id must be between 0 and " + PreKey.MAX_PREKEY_ID + " inclusive");
+        throw new RangeError("Argument pre_key_id (" + pre_key_id + ") must be between 0 (inclusive) and " + PreKey.MAX_PREKEY_ID + " (inclusive).");
       }
       pk = ClassUtil.new_instance(PreKey);
       pk.version = 1;

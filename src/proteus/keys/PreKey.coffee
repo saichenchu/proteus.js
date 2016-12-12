@@ -41,7 +41,7 @@ module.exports = class PreKey
     TypeUtil.assert_is_integer pre_key_id
 
     if pre_key_id < 0 or pre_key_id > PreKey.MAX_PREKEY_ID
-      throw new RangeError("pre_key_id must be between 0 and #{PreKey.MAX_PREKEY_ID} inclusive")
+      throw new RangeError "Argument pre_key_id (#{pre_key_id}) must be between 0 (inclusive) and #{PreKey.MAX_PREKEY_ID} (inclusive)."
 
     pk = ClassUtil.new_instance PreKey
 
