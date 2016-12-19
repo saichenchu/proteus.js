@@ -1,5 +1,6 @@
-/*! wire-webapp-proteus v2.1.11 */
-define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/ (function(modules) { // webpackBootstrap
+/*! wire-webapp-proteus v3.0.0 */
+var Proteus =
+/******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 /******/
@@ -34,16 +35,18 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 /******/ 	// expose the module cache
 /******/ 	__webpack_require__.c = installedModules;
 /******/
-/******/ 	// identity function for calling harmory imports with the correct context
+/******/ 	// identity function for calling harmony imports with the correct context
 /******/ 	__webpack_require__.i = function(value) { return value; };
 /******/
-/******/ 	// define getter function for harmory exports
+/******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
-/******/ 		Object.defineProperty(exports, name, {
-/******/ 			configurable: false,
-/******/ 			enumerable: true,
-/******/ 			get: getter
-/******/ 		});
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, {
+/******/ 				configurable: false,
+/******/ 				enumerable: true,
+/******/ 				get: getter
+/******/ 			});
+/******/ 		}
 /******/ 	};
 /******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
@@ -218,7 +221,7 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 
     /*
     This function can be used to verify a message signature.
-
+    
     @param signature [Uint8Array] The signature to verify
     @param message [String] The message from which the signature was computed.
     @return [bool] `true` if the signature is valid, `false` otherwise.
@@ -543,13 +546,13 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_free_and_throw_type_error(address_pool, "unsupported input type for " + varName);
 	}
 
-
+	
 	function crypto_aead_chacha20poly1305_decrypt(secret_nonce, ciphertext, additional_data, public_nonce, key, outputFormat) {
 		var address_pool = [];
 		_check_output_format(outputFormat);
 
 		// ---------- input: secret_nonce (unsized_buf_optional)
-
+		
 		var secret_nonce_address = null, secret_nonce_length = 0;
 		if (secret_nonce != undefined) {
 			secret_nonce = _any_to_Uint8Array(address_pool, secret_nonce, "secret_nonce");
@@ -557,16 +560,16 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 			secret_nonce_length = secret_nonce.length;
 			address_pool.push(secret_nonce_address);
 		}
-
+		
 		// ---------- input: ciphertext (unsized_buf)
-
+		
 		ciphertext = _any_to_Uint8Array(address_pool, ciphertext, "ciphertext");
 		var ciphertext_address = _to_allocated_buf_address(ciphertext),
 		    ciphertext_length = ciphertext.length;
 		address_pool.push(ciphertext_address);
-
+		
 		// ---------- input: additional_data (unsized_buf_optional)
-
+		
 		var additional_data_address = null, additional_data_length = 0;
 		if (additional_data != undefined) {
 			additional_data = _any_to_Uint8Array(address_pool, additional_data, "additional_data");
@@ -574,9 +577,9 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 			additional_data_length = additional_data.length;
 			address_pool.push(additional_data_address);
 		}
-
+		
 		// ---------- input: public_nonce (buf)
-
+		
 		public_nonce = _any_to_Uint8Array(address_pool, public_nonce, "public_nonce");
 		var public_nonce_address, public_nonce_length = (libsodium._crypto_aead_chacha20poly1305_npubbytes()) | 0;
 		if (public_nonce.length !== public_nonce_length) {
@@ -584,9 +587,9 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		public_nonce_address = _to_allocated_buf_address(public_nonce);
 		address_pool.push(public_nonce_address);
-
+		
 		// ---------- input: key (buf)
-
+		
 		key = _any_to_Uint8Array(address_pool, key, "key");
 		var key_address, key_length = (libsodium._crypto_aead_chacha20poly1305_keybytes()) | 0;
 		if (key.length !== key_length) {
@@ -594,22 +597,22 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		key_address = _to_allocated_buf_address(key);
 		address_pool.push(key_address);
-
+		
 		// ---------- output message (buf)
-
+		
 		var message_length = (ciphertext_length - libsodium._crypto_aead_chacha20poly1305_abytes()) | 0,
 		    message = new AllocatedBuf(message_length),
 		    message_address = message.address;
-
+		
 		address_pool.push(message_address);
-
+		
 		if ((libsodium._crypto_aead_chacha20poly1305_decrypt(message_address, null, secret_nonce_address, ciphertext_address, ciphertext_length, 0, additional_data_address, additional_data_length, 0, public_nonce_address, key_address)) === 0) {
 			var ret = _format_output(message, outputFormat);
 			_free_all(address_pool);
 			return ret;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function crypto_aead_chacha20poly1305_encrypt(message, additional_data, secret_nonce, public_nonce, key, outputFormat) {
@@ -617,14 +620,14 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: message (unsized_buf)
-
+		
 		message = _any_to_Uint8Array(address_pool, message, "message");
 		var message_address = _to_allocated_buf_address(message),
 		    message_length = message.length;
 		address_pool.push(message_address);
-
+		
 		// ---------- input: additional_data (unsized_buf_optional)
-
+		
 		var additional_data_address = null, additional_data_length = 0;
 		if (additional_data != undefined) {
 			additional_data = _any_to_Uint8Array(address_pool, additional_data, "additional_data");
@@ -632,9 +635,9 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 			additional_data_length = additional_data.length;
 			address_pool.push(additional_data_address);
 		}
-
+		
 		// ---------- input: secret_nonce (unsized_buf_optional)
-
+		
 		var secret_nonce_address = null, secret_nonce_length = 0;
 		if (secret_nonce != undefined) {
 			secret_nonce = _any_to_Uint8Array(address_pool, secret_nonce, "secret_nonce");
@@ -642,9 +645,9 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 			secret_nonce_length = secret_nonce.length;
 			address_pool.push(secret_nonce_address);
 		}
-
+		
 		// ---------- input: public_nonce (buf)
-
+		
 		public_nonce = _any_to_Uint8Array(address_pool, public_nonce, "public_nonce");
 		var public_nonce_address, public_nonce_length = (libsodium._crypto_aead_chacha20poly1305_npubbytes()) | 0;
 		if (public_nonce.length !== public_nonce_length) {
@@ -652,9 +655,9 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		public_nonce_address = _to_allocated_buf_address(public_nonce);
 		address_pool.push(public_nonce_address);
-
+		
 		// ---------- input: key (buf)
-
+		
 		key = _any_to_Uint8Array(address_pool, key, "key");
 		var key_address, key_length = (libsodium._crypto_aead_chacha20poly1305_keybytes()) | 0;
 		if (key.length !== key_length) {
@@ -662,22 +665,22 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		key_address = _to_allocated_buf_address(key);
 		address_pool.push(key_address);
-
+		
 		// ---------- output ciphertext (buf)
-
+		
 		var ciphertext_length = (message_length + libsodium._crypto_aead_chacha20poly1305_abytes()) | 0,
 		    ciphertext = new AllocatedBuf(ciphertext_length),
 		    ciphertext_address = ciphertext.address;
-
+		
 		address_pool.push(ciphertext_address);
-
+		
 		if ((libsodium._crypto_aead_chacha20poly1305_encrypt(ciphertext_address, null, message_address, message_length, 0, additional_data_address, additional_data_length, 0, secret_nonce_address, public_nonce_address, key_address)) === 0) {
 			var ret = _format_output(ciphertext, outputFormat);
 			_free_all(address_pool);
 			return ret;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function crypto_aead_chacha20poly1305_ietf_decrypt(secret_nonce, ciphertext, additional_data, public_nonce, key, outputFormat) {
@@ -685,7 +688,7 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: secret_nonce (unsized_buf_optional)
-
+		
 		var secret_nonce_address = null, secret_nonce_length = 0;
 		if (secret_nonce != undefined) {
 			secret_nonce = _any_to_Uint8Array(address_pool, secret_nonce, "secret_nonce");
@@ -693,16 +696,16 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 			secret_nonce_length = secret_nonce.length;
 			address_pool.push(secret_nonce_address);
 		}
-
+		
 		// ---------- input: ciphertext (unsized_buf)
-
+		
 		ciphertext = _any_to_Uint8Array(address_pool, ciphertext, "ciphertext");
 		var ciphertext_address = _to_allocated_buf_address(ciphertext),
 		    ciphertext_length = ciphertext.length;
 		address_pool.push(ciphertext_address);
-
+		
 		// ---------- input: additional_data (unsized_buf_optional)
-
+		
 		var additional_data_address = null, additional_data_length = 0;
 		if (additional_data != undefined) {
 			additional_data = _any_to_Uint8Array(address_pool, additional_data, "additional_data");
@@ -710,9 +713,9 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 			additional_data_length = additional_data.length;
 			address_pool.push(additional_data_address);
 		}
-
+		
 		// ---------- input: public_nonce (buf)
-
+		
 		public_nonce = _any_to_Uint8Array(address_pool, public_nonce, "public_nonce");
 		var public_nonce_address, public_nonce_length = (libsodium._crypto_aead_chacha20poly1305_ietf_npubbytes()) | 0;
 		if (public_nonce.length !== public_nonce_length) {
@@ -720,9 +723,9 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		public_nonce_address = _to_allocated_buf_address(public_nonce);
 		address_pool.push(public_nonce_address);
-
+		
 		// ---------- input: key (buf)
-
+		
 		key = _any_to_Uint8Array(address_pool, key, "key");
 		var key_address, key_length = (libsodium._crypto_aead_chacha20poly1305_keybytes()) | 0;
 		if (key.length !== key_length) {
@@ -730,22 +733,22 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		key_address = _to_allocated_buf_address(key);
 		address_pool.push(key_address);
-
+		
 		// ---------- output message (buf)
-
+		
 		var message_length = (ciphertext_length - libsodium._crypto_aead_chacha20poly1305_abytes()) | 0,
 		    message = new AllocatedBuf(message_length),
 		    message_address = message.address;
-
+		
 		address_pool.push(message_address);
-
+		
 		if ((libsodium._crypto_aead_chacha20poly1305_ietf_decrypt(message_address, null, secret_nonce_address, ciphertext_address, ciphertext_length, 0, additional_data_address, additional_data_length, 0, public_nonce_address, key_address)) === 0) {
 			var ret = _format_output(message, outputFormat);
 			_free_all(address_pool);
 			return ret;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function crypto_aead_chacha20poly1305_ietf_encrypt(message, additional_data, secret_nonce, public_nonce, key, outputFormat) {
@@ -753,14 +756,14 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: message (unsized_buf)
-
+		
 		message = _any_to_Uint8Array(address_pool, message, "message");
 		var message_address = _to_allocated_buf_address(message),
 		    message_length = message.length;
 		address_pool.push(message_address);
-
+		
 		// ---------- input: additional_data (unsized_buf_optional)
-
+		
 		var additional_data_address = null, additional_data_length = 0;
 		if (additional_data != undefined) {
 			additional_data = _any_to_Uint8Array(address_pool, additional_data, "additional_data");
@@ -768,9 +771,9 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 			additional_data_length = additional_data.length;
 			address_pool.push(additional_data_address);
 		}
-
+		
 		// ---------- input: secret_nonce (unsized_buf_optional)
-
+		
 		var secret_nonce_address = null, secret_nonce_length = 0;
 		if (secret_nonce != undefined) {
 			secret_nonce = _any_to_Uint8Array(address_pool, secret_nonce, "secret_nonce");
@@ -778,9 +781,9 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 			secret_nonce_length = secret_nonce.length;
 			address_pool.push(secret_nonce_address);
 		}
-
+		
 		// ---------- input: public_nonce (buf)
-
+		
 		public_nonce = _any_to_Uint8Array(address_pool, public_nonce, "public_nonce");
 		var public_nonce_address, public_nonce_length = (libsodium._crypto_aead_chacha20poly1305_ietf_npubbytes()) | 0;
 		if (public_nonce.length !== public_nonce_length) {
@@ -788,9 +791,9 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		public_nonce_address = _to_allocated_buf_address(public_nonce);
 		address_pool.push(public_nonce_address);
-
+		
 		// ---------- input: key (buf)
-
+		
 		key = _any_to_Uint8Array(address_pool, key, "key");
 		var key_address, key_length = (libsodium._crypto_aead_chacha20poly1305_keybytes()) | 0;
 		if (key.length !== key_length) {
@@ -798,22 +801,22 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		key_address = _to_allocated_buf_address(key);
 		address_pool.push(key_address);
-
+		
 		// ---------- output ciphertext (buf)
-
+		
 		var ciphertext_length = (message_length + libsodium._crypto_aead_chacha20poly1305_abytes()) | 0,
 		    ciphertext = new AllocatedBuf(ciphertext_length),
 		    ciphertext_address = ciphertext.address;
-
+		
 		address_pool.push(ciphertext_address);
-
+		
 		if ((libsodium._crypto_aead_chacha20poly1305_ietf_encrypt(ciphertext_address, null, message_address, message_length, 0, additional_data_address, additional_data_length, 0, secret_nonce_address, public_nonce_address, key_address)) === 0) {
 			var ret = _format_output(ciphertext, outputFormat);
 			_free_all(address_pool);
 			return ret;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function crypto_auth(message, key, outputFormat) {
@@ -821,14 +824,14 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: message (unsized_buf)
-
+		
 		message = _any_to_Uint8Array(address_pool, message, "message");
 		var message_address = _to_allocated_buf_address(message),
 		    message_length = message.length;
 		address_pool.push(message_address);
-
+		
 		// ---------- input: key (buf)
-
+		
 		key = _any_to_Uint8Array(address_pool, key, "key");
 		var key_address, key_length = (libsodium._crypto_auth_keybytes()) | 0;
 		if (key.length !== key_length) {
@@ -836,22 +839,22 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		key_address = _to_allocated_buf_address(key);
 		address_pool.push(key_address);
-
+		
 		// ---------- output tag (buf)
-
+		
 		var tag_length = (libsodium._crypto_auth_bytes()) | 0,
 		    tag = new AllocatedBuf(tag_length),
 		    tag_address = tag.address;
-
+		
 		address_pool.push(tag_address);
-
+		
 		if ((libsodium._crypto_auth(tag_address, message_address, message_length, 0, key_address) | 0) === 0) {
 			var ret = _format_output(tag, outputFormat);
 			_free_all(address_pool);
 			return ret;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function crypto_auth_hmacsha256(message, key, outputFormat) {
@@ -859,14 +862,14 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: message (unsized_buf)
-
+		
 		message = _any_to_Uint8Array(address_pool, message, "message");
 		var message_address = _to_allocated_buf_address(message),
 		    message_length = message.length;
 		address_pool.push(message_address);
-
+		
 		// ---------- input: key (buf)
-
+		
 		key = _any_to_Uint8Array(address_pool, key, "key");
 		var key_address, key_length = (libsodium._crypto_auth_hmacsha256_keybytes()) | 0;
 		if (key.length !== key_length) {
@@ -874,29 +877,29 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		key_address = _to_allocated_buf_address(key);
 		address_pool.push(key_address);
-
+		
 		// ---------- output hash (buf)
-
+		
 		var hash_length = (libsodium._crypto_auth_hmacsha256_bytes()) | 0,
 		    hash = new AllocatedBuf(hash_length),
 		    hash_address = hash.address;
-
+		
 		address_pool.push(hash_address);
-
+		
 		if ((libsodium._crypto_auth_hmacsha256(hash_address, message_address, message_length, 0, key_address) | 0) === 0) {
 			var ret = _format_output(hash, outputFormat);
 			_free_all(address_pool);
 			return ret;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function crypto_auth_hmacsha256_verify(tag, message, key) {
 		var address_pool = [];
 
 		// ---------- input: tag (buf)
-
+		
 		tag = _any_to_Uint8Array(address_pool, tag, "tag");
 		var tag_address, tag_length = (libsodium._crypto_auth_hmacsha256_bytes()) | 0;
 		if (tag.length !== tag_length) {
@@ -904,16 +907,16 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		tag_address = _to_allocated_buf_address(tag);
 		address_pool.push(tag_address);
-
+		
 		// ---------- input: message (unsized_buf)
-
+		
 		message = _any_to_Uint8Array(address_pool, message, "message");
 		var message_address = _to_allocated_buf_address(message),
 		    message_length = message.length;
 		address_pool.push(message_address);
-
+		
 		// ---------- input: key (buf)
-
+		
 		key = _any_to_Uint8Array(address_pool, key, "key");
 		var key_address, key_length = (libsodium._crypto_auth_hmacsha256_keybytes()) | 0;
 		if (key.length !== key_length) {
@@ -921,12 +924,12 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		key_address = _to_allocated_buf_address(key);
 		address_pool.push(key_address);
-
+		
 		var result = libsodium._crypto_auth_hmacsha256_verify(tag_address, message_address, message_length, 0, key_address) | 0;
 		var ret = (result === 0);
 		_free_all(address_pool);
 		return ret;
-
+		
 	}
 
 	function crypto_auth_hmacsha512(message, key, outputFormat) {
@@ -934,14 +937,14 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: message (unsized_buf)
-
+		
 		message = _any_to_Uint8Array(address_pool, message, "message");
 		var message_address = _to_allocated_buf_address(message),
 		    message_length = message.length;
 		address_pool.push(message_address);
-
+		
 		// ---------- input: key (buf)
-
+		
 		key = _any_to_Uint8Array(address_pool, key, "key");
 		var key_address, key_length = (libsodium._crypto_auth_hmacsha512_keybytes()) | 0;
 		if (key.length !== key_length) {
@@ -949,29 +952,29 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		key_address = _to_allocated_buf_address(key);
 		address_pool.push(key_address);
-
+		
 		// ---------- output hash (buf)
-
+		
 		var hash_length = (libsodium._crypto_auth_hmacsha512_bytes()) | 0,
 		    hash = new AllocatedBuf(hash_length),
 		    hash_address = hash.address;
-
+		
 		address_pool.push(hash_address);
-
+		
 		if ((libsodium._crypto_auth_hmacsha512(hash_address, message_address, message_length, 0, key_address) | 0) === 0) {
 			var ret = _format_output(hash, outputFormat);
 			_free_all(address_pool);
 			return ret;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function crypto_auth_hmacsha512_verify(tag, message, key) {
 		var address_pool = [];
 
 		// ---------- input: tag (buf)
-
+		
 		tag = _any_to_Uint8Array(address_pool, tag, "tag");
 		var tag_address, tag_length = (libsodium._crypto_auth_hmacsha512_bytes()) | 0;
 		if (tag.length !== tag_length) {
@@ -979,16 +982,16 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		tag_address = _to_allocated_buf_address(tag);
 		address_pool.push(tag_address);
-
+		
 		// ---------- input: message (unsized_buf)
-
+		
 		message = _any_to_Uint8Array(address_pool, message, "message");
 		var message_address = _to_allocated_buf_address(message),
 		    message_length = message.length;
 		address_pool.push(message_address);
-
+		
 		// ---------- input: key (buf)
-
+		
 		key = _any_to_Uint8Array(address_pool, key, "key");
 		var key_address, key_length = (libsodium._crypto_auth_hmacsha512_keybytes()) | 0;
 		if (key.length !== key_length) {
@@ -996,19 +999,19 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		key_address = _to_allocated_buf_address(key);
 		address_pool.push(key_address);
-
+		
 		var result = libsodium._crypto_auth_hmacsha512_verify(tag_address, message_address, message_length, 0, key_address) | 0;
 		var ret = (result === 0);
 		_free_all(address_pool);
 		return ret;
-
+		
 	}
 
 	function crypto_auth_verify(tag, message, key) {
 		var address_pool = [];
 
 		// ---------- input: tag (buf)
-
+		
 		tag = _any_to_Uint8Array(address_pool, tag, "tag");
 		var tag_address, tag_length = (libsodium._crypto_auth_bytes()) | 0;
 		if (tag.length !== tag_length) {
@@ -1016,16 +1019,16 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		tag_address = _to_allocated_buf_address(tag);
 		address_pool.push(tag_address);
-
+		
 		// ---------- input: message (unsized_buf)
-
+		
 		message = _any_to_Uint8Array(address_pool, message, "message");
 		var message_address = _to_allocated_buf_address(message),
 		    message_length = message.length;
 		address_pool.push(message_address);
-
+		
 		// ---------- input: key (buf)
-
+		
 		key = _any_to_Uint8Array(address_pool, key, "key");
 		var key_address, key_length = (libsodium._crypto_auth_keybytes()) | 0;
 		if (key.length !== key_length) {
@@ -1033,12 +1036,12 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		key_address = _to_allocated_buf_address(key);
 		address_pool.push(key_address);
-
+		
 		var result = libsodium._crypto_auth_verify(tag_address, message_address, message_length, 0, key_address) | 0;
 		var ret = (result === 0);
 		_free_all(address_pool);
 		return ret;
-
+		
 	}
 
 	function crypto_box_beforenm(publicKey, secretKey, outputFormat) {
@@ -1046,7 +1049,7 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: publicKey (buf)
-
+		
 		publicKey = _any_to_Uint8Array(address_pool, publicKey, "publicKey");
 		var publicKey_address, publicKey_length = (libsodium._crypto_box_publickeybytes()) | 0;
 		if (publicKey.length !== publicKey_length) {
@@ -1054,9 +1057,9 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		publicKey_address = _to_allocated_buf_address(publicKey);
 		address_pool.push(publicKey_address);
-
+		
 		// ---------- input: secretKey (buf)
-
+		
 		secretKey = _any_to_Uint8Array(address_pool, secretKey, "secretKey");
 		var secretKey_address, secretKey_length = (libsodium._crypto_box_secretkeybytes()) | 0;
 		if (secretKey.length !== secretKey_length) {
@@ -1064,22 +1067,22 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		secretKey_address = _to_allocated_buf_address(secretKey);
 		address_pool.push(secretKey_address);
-
+		
 		// ---------- output sharedKey (buf)
-
+		
 		var sharedKey_length = (libsodium._crypto_box_beforenmbytes()) | 0,
 		    sharedKey = new AllocatedBuf(sharedKey_length),
 		    sharedKey_address = sharedKey.address;
-
+		
 		address_pool.push(sharedKey_address);
-
+		
 		if ((libsodium._crypto_box_beforenm(sharedKey_address, publicKey_address, secretKey_address) | 0) === 0) {
 			var ret = _format_output(sharedKey, outputFormat);
 			_free_all(address_pool);
 			return ret;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function crypto_box_detached(message, nonce, publicKey, secretKey, outputFormat) {
@@ -1087,14 +1090,14 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: message (unsized_buf)
-
+		
 		message = _any_to_Uint8Array(address_pool, message, "message");
 		var message_address = _to_allocated_buf_address(message),
 		    message_length = message.length;
 		address_pool.push(message_address);
-
+		
 		// ---------- input: nonce (buf)
-
+		
 		nonce = _any_to_Uint8Array(address_pool, nonce, "nonce");
 		var nonce_address, nonce_length = (libsodium._crypto_box_noncebytes()) | 0;
 		if (nonce.length !== nonce_length) {
@@ -1102,9 +1105,9 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		nonce_address = _to_allocated_buf_address(nonce);
 		address_pool.push(nonce_address);
-
+		
 		// ---------- input: publicKey (buf)
-
+		
 		publicKey = _any_to_Uint8Array(address_pool, publicKey, "publicKey");
 		var publicKey_address, publicKey_length = (libsodium._crypto_box_publickeybytes()) | 0;
 		if (publicKey.length !== publicKey_length) {
@@ -1112,9 +1115,9 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		publicKey_address = _to_allocated_buf_address(publicKey);
 		address_pool.push(publicKey_address);
-
+		
 		// ---------- input: secretKey (buf)
-
+		
 		secretKey = _any_to_Uint8Array(address_pool, secretKey, "secretKey");
 		var secretKey_address, secretKey_length = (libsodium._crypto_box_secretkeybytes()) | 0;
 		if (secretKey.length !== secretKey_length) {
@@ -1122,30 +1125,30 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		secretKey_address = _to_allocated_buf_address(secretKey);
 		address_pool.push(secretKey_address);
-
+		
 		// ---------- output ciphertext (buf)
-
+		
 		var ciphertext_length = (message_length) | 0,
 		    ciphertext = new AllocatedBuf(ciphertext_length),
 		    ciphertext_address = ciphertext.address;
-
+		
 		address_pool.push(ciphertext_address);
-
+		
 		// ---------- output mac (buf)
-
+		
 		var mac_length = (libsodium._crypto_box_macbytes()) | 0,
 		    mac = new AllocatedBuf(mac_length),
 		    mac_address = mac.address;
-
+		
 		address_pool.push(mac_address);
-
+		
 		if ((libsodium._crypto_box_detached(ciphertext_address, mac_address, message_address, message_length, 0, nonce_address, publicKey_address, secretKey_address) | 0) === 0) {
 			var ret = _format_output({ciphertext: ciphertext, mac: mac}, outputFormat);
 			_free_all(address_pool);
 			return ret;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function crypto_box_easy(message, nonce, publicKey, secretKey, outputFormat) {
@@ -1153,14 +1156,14 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: message (unsized_buf)
-
+		
 		message = _any_to_Uint8Array(address_pool, message, "message");
 		var message_address = _to_allocated_buf_address(message),
 		    message_length = message.length;
 		address_pool.push(message_address);
-
+		
 		// ---------- input: nonce (buf)
-
+		
 		nonce = _any_to_Uint8Array(address_pool, nonce, "nonce");
 		var nonce_address, nonce_length = (libsodium._crypto_box_noncebytes()) | 0;
 		if (nonce.length !== nonce_length) {
@@ -1168,9 +1171,9 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		nonce_address = _to_allocated_buf_address(nonce);
 		address_pool.push(nonce_address);
-
+		
 		// ---------- input: publicKey (buf)
-
+		
 		publicKey = _any_to_Uint8Array(address_pool, publicKey, "publicKey");
 		var publicKey_address, publicKey_length = (libsodium._crypto_box_publickeybytes()) | 0;
 		if (publicKey.length !== publicKey_length) {
@@ -1178,9 +1181,9 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		publicKey_address = _to_allocated_buf_address(publicKey);
 		address_pool.push(publicKey_address);
-
+		
 		// ---------- input: secretKey (buf)
-
+		
 		secretKey = _any_to_Uint8Array(address_pool, secretKey, "secretKey");
 		var secretKey_address, secretKey_length = (libsodium._crypto_box_secretkeybytes()) | 0;
 		if (secretKey.length !== secretKey_length) {
@@ -1188,22 +1191,22 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		secretKey_address = _to_allocated_buf_address(secretKey);
 		address_pool.push(secretKey_address);
-
+		
 		// ---------- output ciphertext (buf)
-
+		
 		var ciphertext_length = (message_length + libsodium._crypto_box_macbytes()) | 0,
 		    ciphertext = new AllocatedBuf(ciphertext_length),
 		    ciphertext_address = ciphertext.address;
-
+		
 		address_pool.push(ciphertext_address);
-
+		
 		if ((libsodium._crypto_box_easy(ciphertext_address, message_address, message_length, 0, nonce_address, publicKey_address, secretKey_address) | 0) === 0) {
 			var ret = _format_output(ciphertext, outputFormat);
 			_free_all(address_pool);
 			return ret;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function crypto_box_easy_afternm(message, nonce, sharedKey, outputFormat) {
@@ -1211,14 +1214,14 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: message (unsized_buf)
-
+		
 		message = _any_to_Uint8Array(address_pool, message, "message");
 		var message_address = _to_allocated_buf_address(message),
 		    message_length = message.length;
 		address_pool.push(message_address);
-
+		
 		// ---------- input: nonce (buf)
-
+		
 		nonce = _any_to_Uint8Array(address_pool, nonce, "nonce");
 		var nonce_address, nonce_length = (libsodium._crypto_box_noncebytes()) | 0;
 		if (nonce.length !== nonce_length) {
@@ -1226,9 +1229,9 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		nonce_address = _to_allocated_buf_address(nonce);
 		address_pool.push(nonce_address);
-
+		
 		// ---------- input: sharedKey (buf)
-
+		
 		sharedKey = _any_to_Uint8Array(address_pool, sharedKey, "sharedKey");
 		var sharedKey_address, sharedKey_length = (libsodium._crypto_box_beforenmbytes()) | 0;
 		if (sharedKey.length !== sharedKey_length) {
@@ -1236,22 +1239,22 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		sharedKey_address = _to_allocated_buf_address(sharedKey);
 		address_pool.push(sharedKey_address);
-
+		
 		// ---------- output ciphertext (buf)
-
+		
 		var ciphertext_length = (message_length + libsodium._crypto_box_macbytes()) | 0,
 		    ciphertext = new AllocatedBuf(ciphertext_length),
 		    ciphertext_address = ciphertext.address;
-
+		
 		address_pool.push(ciphertext_address);
-
+		
 		if ((libsodium._crypto_box_easy_afternm(ciphertext_address, message_address, message_length, 0, nonce_address, sharedKey_address) | 0) === 0) {
 			var ret = _format_output(ciphertext, outputFormat);
 			_free_all(address_pool);
 			return ret;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function crypto_box_keypair(outputFormat) {
@@ -1259,28 +1262,28 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- output publicKey (buf)
-
+		
 		var publicKey_length = (libsodium._crypto_box_publickeybytes()) | 0,
 		    publicKey = new AllocatedBuf(publicKey_length),
 		    publicKey_address = publicKey.address;
-
+		
 		address_pool.push(publicKey_address);
-
+		
 		// ---------- output secretKey (buf)
-
+		
 		var secretKey_length = (libsodium._crypto_box_secretkeybytes()) | 0,
 		    secretKey = new AllocatedBuf(secretKey_length),
 		    secretKey_address = secretKey.address;
-
+		
 		address_pool.push(secretKey_address);
-
+		
 		if ((libsodium._crypto_box_keypair(publicKey_address, secretKey_address) | 0) === 0) {
 			var ret = _format_output({publicKey: publicKey, privateKey: secretKey, keyType: "curve25519"}, outputFormat);
 			_free_all(address_pool);
 			return ret;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function crypto_box_open_detached(ciphertext, mac, nonce, publicKey, secretKey, outputFormat) {
@@ -1288,14 +1291,14 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: ciphertext (unsized_buf)
-
+		
 		ciphertext = _any_to_Uint8Array(address_pool, ciphertext, "ciphertext");
 		var ciphertext_address = _to_allocated_buf_address(ciphertext),
 		    ciphertext_length = ciphertext.length;
 		address_pool.push(ciphertext_address);
-
+		
 		// ---------- input: mac (buf)
-
+		
 		mac = _any_to_Uint8Array(address_pool, mac, "mac");
 		var mac_address, mac_length = (libsodium._crypto_box_macbytes()) | 0;
 		if (mac.length !== mac_length) {
@@ -1303,9 +1306,9 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		mac_address = _to_allocated_buf_address(mac);
 		address_pool.push(mac_address);
-
+		
 		// ---------- input: nonce (buf)
-
+		
 		nonce = _any_to_Uint8Array(address_pool, nonce, "nonce");
 		var nonce_address, nonce_length = (libsodium._crypto_box_noncebytes()) | 0;
 		if (nonce.length !== nonce_length) {
@@ -1313,9 +1316,9 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		nonce_address = _to_allocated_buf_address(nonce);
 		address_pool.push(nonce_address);
-
+		
 		// ---------- input: publicKey (buf)
-
+		
 		publicKey = _any_to_Uint8Array(address_pool, publicKey, "publicKey");
 		var publicKey_address, publicKey_length = (libsodium._crypto_box_publickeybytes()) | 0;
 		if (publicKey.length !== publicKey_length) {
@@ -1323,9 +1326,9 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		publicKey_address = _to_allocated_buf_address(publicKey);
 		address_pool.push(publicKey_address);
-
+		
 		// ---------- input: secretKey (buf)
-
+		
 		secretKey = _any_to_Uint8Array(address_pool, secretKey, "secretKey");
 		var secretKey_address, secretKey_length = (libsodium._crypto_box_secretkeybytes()) | 0;
 		if (secretKey.length !== secretKey_length) {
@@ -1333,22 +1336,22 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		secretKey_address = _to_allocated_buf_address(secretKey);
 		address_pool.push(secretKey_address);
-
+		
 		// ---------- output plaintext (buf)
-
+		
 		var plaintext_length = (ciphertext_length) | 0,
 		    plaintext = new AllocatedBuf(plaintext_length),
 		    plaintext_address = plaintext.address;
-
+		
 		address_pool.push(plaintext_address);
-
+		
 		if ((libsodium._crypto_box_open_detached(plaintext_address, ciphertext_address, mac_address, ciphertext_length, 0, nonce_address, publicKey_address, secretKey_address) | 0) === 0) {
 			var ret = _format_output(plaintext, outputFormat);
 			_free_all(address_pool);
 			return ret;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function crypto_box_open_easy(ciphertext, nonce, publicKey, secretKey, outputFormat) {
@@ -1356,14 +1359,14 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: ciphertext (unsized_buf)
-
+		
 		ciphertext = _any_to_Uint8Array(address_pool, ciphertext, "ciphertext");
 		var ciphertext_address = _to_allocated_buf_address(ciphertext),
 		    ciphertext_length = ciphertext.length;
 		address_pool.push(ciphertext_address);
-
+		
 		// ---------- input: nonce (buf)
-
+		
 		nonce = _any_to_Uint8Array(address_pool, nonce, "nonce");
 		var nonce_address, nonce_length = (libsodium._crypto_box_noncebytes()) | 0;
 		if (nonce.length !== nonce_length) {
@@ -1371,9 +1374,9 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		nonce_address = _to_allocated_buf_address(nonce);
 		address_pool.push(nonce_address);
-
+		
 		// ---------- input: publicKey (buf)
-
+		
 		publicKey = _any_to_Uint8Array(address_pool, publicKey, "publicKey");
 		var publicKey_address, publicKey_length = (libsodium._crypto_box_publickeybytes()) | 0;
 		if (publicKey.length !== publicKey_length) {
@@ -1381,9 +1384,9 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		publicKey_address = _to_allocated_buf_address(publicKey);
 		address_pool.push(publicKey_address);
-
+		
 		// ---------- input: secretKey (buf)
-
+		
 		secretKey = _any_to_Uint8Array(address_pool, secretKey, "secretKey");
 		var secretKey_address, secretKey_length = (libsodium._crypto_box_secretkeybytes()) | 0;
 		if (secretKey.length !== secretKey_length) {
@@ -1391,22 +1394,22 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		secretKey_address = _to_allocated_buf_address(secretKey);
 		address_pool.push(secretKey_address);
-
+		
 		// ---------- output plaintext (buf)
-
+		
 		var plaintext_length = (ciphertext_length - libsodium._crypto_box_macbytes()) | 0,
 		    plaintext = new AllocatedBuf(plaintext_length),
 		    plaintext_address = plaintext.address;
-
+		
 		address_pool.push(plaintext_address);
-
+		
 		if ((libsodium._crypto_box_open_easy(plaintext_address, ciphertext_address, ciphertext_length, 0, nonce_address, publicKey_address, secretKey_address) | 0) === 0) {
 			var ret = _format_output(plaintext, outputFormat);
 			_free_all(address_pool);
 			return ret;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function crypto_box_open_easy_afternm(ciphertext, nonce, sharedKey, outputFormat) {
@@ -1414,14 +1417,14 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: ciphertext (unsized_buf)
-
+		
 		ciphertext = _any_to_Uint8Array(address_pool, ciphertext, "ciphertext");
 		var ciphertext_address = _to_allocated_buf_address(ciphertext),
 		    ciphertext_length = ciphertext.length;
 		address_pool.push(ciphertext_address);
-
+		
 		// ---------- input: nonce (buf)
-
+		
 		nonce = _any_to_Uint8Array(address_pool, nonce, "nonce");
 		var nonce_address, nonce_length = (libsodium._crypto_box_noncebytes()) | 0;
 		if (nonce.length !== nonce_length) {
@@ -1429,9 +1432,9 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		nonce_address = _to_allocated_buf_address(nonce);
 		address_pool.push(nonce_address);
-
+		
 		// ---------- input: sharedKey (buf)
-
+		
 		sharedKey = _any_to_Uint8Array(address_pool, sharedKey, "sharedKey");
 		var sharedKey_address, sharedKey_length = (libsodium._crypto_box_beforenmbytes()) | 0;
 		if (sharedKey.length !== sharedKey_length) {
@@ -1439,22 +1442,22 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		sharedKey_address = _to_allocated_buf_address(sharedKey);
 		address_pool.push(sharedKey_address);
-
+		
 		// ---------- output plaintext (buf)
-
+		
 		var plaintext_length = (ciphertext_length - libsodium._crypto_box_macbytes()) | 0,
 		    plaintext = new AllocatedBuf(plaintext_length),
 		    plaintext_address = plaintext.address;
-
+		
 		address_pool.push(plaintext_address);
-
+		
 		if ((libsodium._crypto_box_open_easy_afternm(plaintext_address, ciphertext_address, ciphertext_length, 0, nonce_address, sharedKey_address) | 0) === 0) {
 			var ret = _format_output(plaintext, outputFormat);
 			_free_all(address_pool);
 			return ret;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function crypto_box_seal(message, publicKey, outputFormat) {
@@ -1462,14 +1465,14 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: message (unsized_buf)
-
+		
 		message = _any_to_Uint8Array(address_pool, message, "message");
 		var message_address = _to_allocated_buf_address(message),
 		    message_length = message.length;
 		address_pool.push(message_address);
-
+		
 		// ---------- input: publicKey (buf)
-
+		
 		publicKey = _any_to_Uint8Array(address_pool, publicKey, "publicKey");
 		var publicKey_address, publicKey_length = (libsodium._crypto_box_publickeybytes()) | 0;
 		if (publicKey.length !== publicKey_length) {
@@ -1477,22 +1480,22 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		publicKey_address = _to_allocated_buf_address(publicKey);
 		address_pool.push(publicKey_address);
-
+		
 		// ---------- output ciphertext (buf)
-
+		
 		var ciphertext_length = (message_length + libsodium._crypto_box_sealbytes()) | 0,
 		    ciphertext = new AllocatedBuf(ciphertext_length),
 		    ciphertext_address = ciphertext.address;
-
+		
 		address_pool.push(ciphertext_address);
-
+		
 		if ((libsodium._crypto_box_seal(ciphertext_address, message_address, message_length, 0, publicKey_address) | 0) === 0) {
 			var ret = _format_output(ciphertext, outputFormat);
 			_free_all(address_pool);
 			return ret;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function crypto_box_seal_open(ciphertext, publicKey, secretKey, outputFormat) {
@@ -1500,14 +1503,14 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: ciphertext (unsized_buf)
-
+		
 		ciphertext = _any_to_Uint8Array(address_pool, ciphertext, "ciphertext");
 		var ciphertext_address = _to_allocated_buf_address(ciphertext),
 		    ciphertext_length = ciphertext.length;
 		address_pool.push(ciphertext_address);
-
+		
 		// ---------- input: publicKey (buf)
-
+		
 		publicKey = _any_to_Uint8Array(address_pool, publicKey, "publicKey");
 		var publicKey_address, publicKey_length = (libsodium._crypto_box_publickeybytes()) | 0;
 		if (publicKey.length !== publicKey_length) {
@@ -1515,9 +1518,9 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		publicKey_address = _to_allocated_buf_address(publicKey);
 		address_pool.push(publicKey_address);
-
+		
 		// ---------- input: secretKey (buf)
-
+		
 		secretKey = _any_to_Uint8Array(address_pool, secretKey, "secretKey");
 		var secretKey_address, secretKey_length = (libsodium._crypto_box_secretkeybytes()) | 0;
 		if (secretKey.length !== secretKey_length) {
@@ -1525,22 +1528,22 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		secretKey_address = _to_allocated_buf_address(secretKey);
 		address_pool.push(secretKey_address);
-
+		
 		// ---------- output plaintext (buf)
-
+		
 		var plaintext_length = (ciphertext_length - libsodium._crypto_box_sealbytes()) | 0,
 		    plaintext = new AllocatedBuf(plaintext_length),
 		    plaintext_address = plaintext.address;
-
+		
 		address_pool.push(plaintext_address);
-
+		
 		if ((libsodium._crypto_box_seal_open(plaintext_address, ciphertext_address, ciphertext_length, 0, publicKey_address, secretKey_address) | 0) === 0) {
 			var ret = _format_output(plaintext, outputFormat);
 			_free_all(address_pool);
 			return ret;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function crypto_box_seed_keypair(seed, outputFormat) {
@@ -1548,7 +1551,7 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: seed (buf)
-
+		
 		seed = _any_to_Uint8Array(address_pool, seed, "seed");
 		var seed_address, seed_length = (libsodium._crypto_box_seedbytes()) | 0;
 		if (seed.length !== seed_length) {
@@ -1556,30 +1559,30 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		seed_address = _to_allocated_buf_address(seed);
 		address_pool.push(seed_address);
-
+		
 		// ---------- output publicKey (buf)
-
+		
 		var publicKey_length = (libsodium._crypto_box_publickeybytes()) | 0,
 		    publicKey = new AllocatedBuf(publicKey_length),
 		    publicKey_address = publicKey.address;
-
+		
 		address_pool.push(publicKey_address);
-
+		
 		// ---------- output privateKey (buf)
-
+		
 		var privateKey_length = (libsodium._crypto_box_secretkeybytes()) | 0,
 		    privateKey = new AllocatedBuf(privateKey_length),
 		    privateKey_address = privateKey.address;
-
+		
 		address_pool.push(privateKey_address);
-
+		
 		if ((libsodium._crypto_box_seed_keypair(publicKey_address, privateKey_address, seed_address) | 0) === 0) {
 			var ret = _format_output({publicKey: publicKey, privateKey: privateKey}, outputFormat);
 			_free_all(address_pool);
 			return ret;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function crypto_generichash(hash_length, message, key, outputFormat) {
@@ -1587,22 +1590,22 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: hash_length (uint)
-
+		
 		_require_defined(address_pool, hash_length, "hash_length");
-
+		
 		if (!(typeof hash_length === "number" && (hash_length | 0) === hash_length) && (hash_length | 0) > 0) {
 			_free_and_throw_type_error(address_pool, "hash_length must be an unsigned integer");
 		}
-
+		
 		// ---------- input: message (unsized_buf)
-
+		
 		message = _any_to_Uint8Array(address_pool, message, "message");
 		var message_address = _to_allocated_buf_address(message),
 		    message_length = message.length;
 		address_pool.push(message_address);
-
+		
 		// ---------- input: key (unsized_buf_optional)
-
+		
 		var key_address = null, key_length = 0;
 		if (key != undefined) {
 			key = _any_to_Uint8Array(address_pool, key, "key");
@@ -1610,22 +1613,22 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 			key_length = key.length;
 			address_pool.push(key_address);
 		}
-
+		
 		// ---------- output hash (buf)
-
+		
 		var hash_length = (hash_length) | 0,
 		    hash = new AllocatedBuf(hash_length),
 		    hash_address = hash.address;
-
+		
 		address_pool.push(hash_address);
-
+		
 		if ((libsodium._crypto_generichash(hash_address, hash_length, message_address, message_length, 0, key_address, key_length) | 0) === 0) {
 			var ret = _format_output(hash, outputFormat);
 			_free_all(address_pool);
 			return ret;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function crypto_generichash_final(state_address, hash_length, outputFormat) {
@@ -1633,32 +1636,32 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: state_address (generichash_state_address)
-
+		
 		_require_defined(address_pool, state_address, "state_address");
-
+		
 		// ---------- input: hash_length (uint)
-
+		
 		_require_defined(address_pool, hash_length, "hash_length");
-
+		
 		if (!(typeof hash_length === "number" && (hash_length | 0) === hash_length) && (hash_length | 0) > 0) {
 			_free_and_throw_type_error(address_pool, "hash_length must be an unsigned integer");
 		}
-
+		
 		// ---------- output hash (buf)
-
+		
 		var hash_length = (hash_length) | 0,
 		    hash = new AllocatedBuf(hash_length),
 		    hash_address = hash.address;
-
+		
 		address_pool.push(hash_address);
-
+		
 		if ((libsodium._crypto_generichash_final(state_address, hash_address, hash_length) | 0) === 0) {
 			var ret = (libsodium._free(state_address), _format_output(hash, outputFormat));
 			_free_all(address_pool);
 			return ret;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function crypto_generichash_init(key, hash_length, outputFormat) {
@@ -1666,7 +1669,7 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: key (unsized_buf_optional)
-
+		
 		var key_address = null, key_length = 0;
 		if (key != undefined) {
 			key = _any_to_Uint8Array(address_pool, key, "key");
@@ -1674,26 +1677,26 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 			key_length = key.length;
 			address_pool.push(key_address);
 		}
-
+		
 		// ---------- input: hash_length (uint)
-
+		
 		_require_defined(address_pool, hash_length, "hash_length");
-
+		
 		if (!(typeof hash_length === "number" && (hash_length | 0) === hash_length) && (hash_length | 0) > 0) {
 			_free_and_throw_type_error(address_pool, "hash_length must be an unsigned integer");
 		}
-
+		
 		// ---------- output state (generichash_state)
-
+		
 		var state_address = new AllocatedBuf(357).address;
-
+		
 		if ((libsodium._crypto_generichash_init(state_address, key_address, key_length, hash_length) | 0) === 0) {
 			var ret = state_address;
 			_free_all(address_pool);
 			return ret;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function crypto_generichash_update(state_address, message_chunk, outputFormat) {
@@ -1701,22 +1704,22 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: state_address (generichash_state_address)
-
+		
 		_require_defined(address_pool, state_address, "state_address");
-
+		
 		// ---------- input: message_chunk (unsized_buf)
-
+		
 		message_chunk = _any_to_Uint8Array(address_pool, message_chunk, "message_chunk");
 		var message_chunk_address = _to_allocated_buf_address(message_chunk),
 		    message_chunk_length = message_chunk.length;
 		address_pool.push(message_chunk_address);
-
+		
 		if ((libsodium._crypto_generichash_update(state_address, message_chunk_address, message_chunk_length) | 0) === 0) {
 			_free_all(address_pool);
 			return;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function crypto_hash(message, outputFormat) {
@@ -1724,27 +1727,27 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: message (unsized_buf)
-
+		
 		message = _any_to_Uint8Array(address_pool, message, "message");
 		var message_address = _to_allocated_buf_address(message),
 		    message_length = message.length;
 		address_pool.push(message_address);
-
+		
 		// ---------- output hash (buf)
-
+		
 		var hash_length = (libsodium._crypto_hash_bytes()) | 0,
 		    hash = new AllocatedBuf(hash_length),
 		    hash_address = hash.address;
-
+		
 		address_pool.push(hash_address);
-
+		
 		if ((libsodium._crypto_hash(hash_address, message_address, message_length, 0) | 0) === 0) {
 			var ret = _format_output(hash, outputFormat);
 			_free_all(address_pool);
 			return ret;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function crypto_hash_sha256(message, outputFormat) {
@@ -1752,27 +1755,27 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: message (unsized_buf)
-
+		
 		message = _any_to_Uint8Array(address_pool, message, "message");
 		var message_address = _to_allocated_buf_address(message),
 		    message_length = message.length;
 		address_pool.push(message_address);
-
+		
 		// ---------- output hash (buf)
-
+		
 		var hash_length = (libsodium._crypto_hash_sha256_bytes()) | 0,
 		    hash = new AllocatedBuf(hash_length),
 		    hash_address = hash.address;
-
+		
 		address_pool.push(hash_address);
-
+		
 		if ((libsodium._crypto_hash_sha256(hash_address, message_address, message_length, 0) | 0) === 0) {
 			var ret = _format_output(hash, outputFormat);
 			_free_all(address_pool);
 			return ret;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function crypto_hash_sha512(message, outputFormat) {
@@ -1780,27 +1783,27 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: message (unsized_buf)
-
+		
 		message = _any_to_Uint8Array(address_pool, message, "message");
 		var message_address = _to_allocated_buf_address(message),
 		    message_length = message.length;
 		address_pool.push(message_address);
-
+		
 		// ---------- output hash (buf)
-
+		
 		var hash_length = (libsodium._crypto_hash_sha512_bytes()) | 0,
 		    hash = new AllocatedBuf(hash_length),
 		    hash_address = hash.address;
-
+		
 		address_pool.push(hash_address);
-
+		
 		if ((libsodium._crypto_hash_sha512(hash_address, message_address, message_length, 0) | 0) === 0) {
 			var ret = _format_output(hash, outputFormat);
 			_free_all(address_pool);
 			return ret;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function crypto_onetimeauth(message, key, outputFormat) {
@@ -1808,14 +1811,14 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: message (unsized_buf)
-
+		
 		message = _any_to_Uint8Array(address_pool, message, "message");
 		var message_address = _to_allocated_buf_address(message),
 		    message_length = message.length;
 		address_pool.push(message_address);
-
+		
 		// ---------- input: key (buf)
-
+		
 		key = _any_to_Uint8Array(address_pool, key, "key");
 		var key_address, key_length = (libsodium._crypto_onetimeauth_keybytes()) | 0;
 		if (key.length !== key_length) {
@@ -1823,22 +1826,22 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		key_address = _to_allocated_buf_address(key);
 		address_pool.push(key_address);
-
+		
 		// ---------- output hash (buf)
-
+		
 		var hash_length = (libsodium._crypto_onetimeauth_bytes()) | 0,
 		    hash = new AllocatedBuf(hash_length),
 		    hash_address = hash.address;
-
+		
 		address_pool.push(hash_address);
-
+		
 		if ((libsodium._crypto_onetimeauth(hash_address, message_address, message_length, 0, key_address) | 0) === 0) {
 			var ret = _format_output(hash, outputFormat);
 			_free_all(address_pool);
 			return ret;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function crypto_onetimeauth_final(state_address, outputFormat) {
@@ -1846,24 +1849,24 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: state_address (onetimeauth_state_address)
-
+		
 		_require_defined(address_pool, state_address, "state_address");
-
+		
 		// ---------- output hash (buf)
-
+		
 		var hash_length = (libsodium._crypto_onetimeauth_bytes()) | 0,
 		    hash = new AllocatedBuf(hash_length),
 		    hash_address = hash.address;
-
+		
 		address_pool.push(hash_address);
-
+		
 		if ((libsodium._crypto_onetimeauth_final(state_address, hash_address) | 0) === 0) {
 			var ret = (libsodium._free(state_address), _format_output(hash, outputFormat));
 			_free_all(address_pool);
 			return ret;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function crypto_onetimeauth_init(key, outputFormat) {
@@ -1871,7 +1874,7 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: key (unsized_buf_optional)
-
+		
 		var key_address = null, key_length = 0;
 		if (key != undefined) {
 			key = _any_to_Uint8Array(address_pool, key, "key");
@@ -1879,18 +1882,18 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 			key_length = key.length;
 			address_pool.push(key_address);
 		}
-
+		
 		// ---------- output state (onetimeauth_state)
-
+		
 		var state_address = new AllocatedBuf(144).address;
-
+		
 		if ((libsodium._crypto_onetimeauth_init(state_address, key_address) | 0) === 0) {
 			var ret = state_address;
 			_free_all(address_pool);
 			return ret;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function crypto_onetimeauth_update(state_address, message_chunk, outputFormat) {
@@ -1898,29 +1901,29 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: state_address (onetimeauth_state_address)
-
+		
 		_require_defined(address_pool, state_address, "state_address");
-
+		
 		// ---------- input: message_chunk (unsized_buf)
-
+		
 		message_chunk = _any_to_Uint8Array(address_pool, message_chunk, "message_chunk");
 		var message_chunk_address = _to_allocated_buf_address(message_chunk),
 		    message_chunk_length = message_chunk.length;
 		address_pool.push(message_chunk_address);
-
+		
 		if ((libsodium._crypto_onetimeauth_update(state_address, message_chunk_address, message_chunk_length) | 0) === 0) {
 			_free_all(address_pool);
 			return;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function crypto_onetimeauth_verify(hash, message, key) {
 		var address_pool = [];
 
 		// ---------- input: hash (buf)
-
+		
 		hash = _any_to_Uint8Array(address_pool, hash, "hash");
 		var hash_address, hash_length = (libsodium._crypto_onetimeauth_bytes()) | 0;
 		if (hash.length !== hash_length) {
@@ -1928,16 +1931,16 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		hash_address = _to_allocated_buf_address(hash);
 		address_pool.push(hash_address);
-
+		
 		// ---------- input: message (unsized_buf)
-
+		
 		message = _any_to_Uint8Array(address_pool, message, "message");
 		var message_address = _to_allocated_buf_address(message),
 		    message_length = message.length;
 		address_pool.push(message_address);
-
+		
 		// ---------- input: key (buf)
-
+		
 		key = _any_to_Uint8Array(address_pool, key, "key");
 		var key_address, key_length = (libsodium._crypto_onetimeauth_keybytes()) | 0;
 		if (key.length !== key_length) {
@@ -1945,12 +1948,12 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		key_address = _to_allocated_buf_address(key);
 		address_pool.push(key_address);
-
+		
 		var result = libsodium._crypto_onetimeauth_verify(hash_address, message_address, message_length, 0, key_address) | 0;
 		var ret = (result === 0);
 		_free_all(address_pool);
 		return ret;
-
+		
 	}
 
 	function crypto_pwhash_scryptsalsa208sha256(password, salt, opsLimit, memLimit, keyLength, outputFormat) {
@@ -1958,14 +1961,14 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: password (unsized_buf)
-
+		
 		password = _any_to_Uint8Array(address_pool, password, "password");
 		var password_address = _to_allocated_buf_address(password),
 		    password_length = password.length;
 		address_pool.push(password_address);
-
+		
 		// ---------- input: salt (buf)
-
+		
 		salt = _any_to_Uint8Array(address_pool, salt, "salt");
 		var salt_address, salt_length = (libsodium._crypto_pwhash_scryptsalsa208sha256_saltbytes()) | 0;
 		if (salt.length !== salt_length) {
@@ -1973,46 +1976,46 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		salt_address = _to_allocated_buf_address(salt);
 		address_pool.push(salt_address);
-
+		
 		// ---------- input: opsLimit (uint)
-
+		
 		_require_defined(address_pool, opsLimit, "opsLimit");
-
+		
 		if (!(typeof opsLimit === "number" && (opsLimit | 0) === opsLimit) && (opsLimit | 0) > 0) {
 			_free_and_throw_type_error(address_pool, "opsLimit must be an unsigned integer");
 		}
-
+		
 		// ---------- input: memLimit (uint)
-
+		
 		_require_defined(address_pool, memLimit, "memLimit");
-
+		
 		if (!(typeof memLimit === "number" && (memLimit | 0) === memLimit) && (memLimit | 0) > 0) {
 			_free_and_throw_type_error(address_pool, "memLimit must be an unsigned integer");
 		}
-
+		
 		// ---------- input: keyLength (uint)
-
+		
 		_require_defined(address_pool, keyLength, "keyLength");
-
+		
 		if (!(typeof keyLength === "number" && (keyLength | 0) === keyLength) && (keyLength | 0) > 0) {
 			_free_and_throw_type_error(address_pool, "keyLength must be an unsigned integer");
 		}
-
+		
 		// ---------- output derivedKey (buf)
-
+		
 		var derivedKey_length = (keyLength) | 0,
 		    derivedKey = new AllocatedBuf(derivedKey_length),
 		    derivedKey_address = derivedKey.address;
-
+		
 		address_pool.push(derivedKey_address);
-
+		
 		if ((libsodium._crypto_pwhash_scryptsalsa208sha256(derivedKey_address, keyLength, 0, password_address, password_length, 0, salt_address, opsLimit, 0, memLimit) | 0) === 0) {
 			var ret = _format_output(derivedKey, outputFormat);
 			_free_all(address_pool);
 			return ret;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function crypto_pwhash_scryptsalsa208sha256_ll(password, salt, opsLimit, r, p, keyLength, outputFormat) {
@@ -2020,66 +2023,66 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: password (unsized_buf)
-
+		
 		password = _any_to_Uint8Array(address_pool, password, "password");
 		var password_address = _to_allocated_buf_address(password),
 		    password_length = password.length;
 		address_pool.push(password_address);
-
+		
 		// ---------- input: salt (unsized_buf)
-
+		
 		salt = _any_to_Uint8Array(address_pool, salt, "salt");
 		var salt_address = _to_allocated_buf_address(salt),
 		    salt_length = salt.length;
 		address_pool.push(salt_address);
-
+		
 		// ---------- input: opsLimit (uint)
-
+		
 		_require_defined(address_pool, opsLimit, "opsLimit");
-
+		
 		if (!(typeof opsLimit === "number" && (opsLimit | 0) === opsLimit) && (opsLimit | 0) > 0) {
 			_free_and_throw_type_error(address_pool, "opsLimit must be an unsigned integer");
 		}
-
+		
 		// ---------- input: r (uint)
-
+		
 		_require_defined(address_pool, r, "r");
-
+		
 		if (!(typeof r === "number" && (r | 0) === r) && (r | 0) > 0) {
 			_free_and_throw_type_error(address_pool, "r must be an unsigned integer");
 		}
-
+		
 		// ---------- input: p (uint)
-
+		
 		_require_defined(address_pool, p, "p");
-
+		
 		if (!(typeof p === "number" && (p | 0) === p) && (p | 0) > 0) {
 			_free_and_throw_type_error(address_pool, "p must be an unsigned integer");
 		}
-
+		
 		// ---------- input: keyLength (uint)
-
+		
 		_require_defined(address_pool, keyLength, "keyLength");
-
+		
 		if (!(typeof keyLength === "number" && (keyLength | 0) === keyLength) && (keyLength | 0) > 0) {
 			_free_and_throw_type_error(address_pool, "keyLength must be an unsigned integer");
 		}
-
+		
 		// ---------- output derivedKey (buf)
-
+		
 		var derivedKey_length = (keyLength) | 0,
 		    derivedKey = new AllocatedBuf(derivedKey_length),
 		    derivedKey_address = derivedKey.address;
-
+		
 		address_pool.push(derivedKey_address);
-
+		
 		if ((libsodium._crypto_pwhash_scryptsalsa208sha256_ll(password_address, password_length, salt_address, salt_length, opsLimit, 0, r, p, derivedKey_address, keyLength) | 0) === 0) {
 			var ret = _format_output(derivedKey, outputFormat);
 			_free_all(address_pool);
 			return ret;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function crypto_pwhash_scryptsalsa208sha256_str(password, opsLimit, memLimit, outputFormat) {
@@ -2087,43 +2090,43 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: password (unsized_buf)
-
+		
 		password = _any_to_Uint8Array(address_pool, password, "password");
 		var password_address = _to_allocated_buf_address(password),
 		    password_length = password.length;
 		address_pool.push(password_address);
-
+		
 		// ---------- input: opsLimit (uint)
-
+		
 		_require_defined(address_pool, opsLimit, "opsLimit");
-
+		
 		if (!(typeof opsLimit === "number" && (opsLimit | 0) === opsLimit) && (opsLimit | 0) > 0) {
 			_free_and_throw_type_error(address_pool, "opsLimit must be an unsigned integer");
 		}
-
+		
 		// ---------- input: memLimit (uint)
-
+		
 		_require_defined(address_pool, memLimit, "memLimit");
-
+		
 		if (!(typeof memLimit === "number" && (memLimit | 0) === memLimit) && (memLimit | 0) > 0) {
 			_free_and_throw_type_error(address_pool, "memLimit must be an unsigned integer");
 		}
-
+		
 		// ---------- output hashed_password (buf)
-
+		
 		var hashed_password_length = (libsodium._crypto_pwhash_scryptsalsa208sha256_strbytes()) | 0,
 		    hashed_password = new AllocatedBuf(hashed_password_length),
 		    hashed_password_address = hashed_password.address;
-
+		
 		address_pool.push(hashed_password_address);
-
+		
 		if ((libsodium._crypto_pwhash_scryptsalsa208sha256_str(hashed_password_address, password_address, password_length, 0, opsLimit, 0, memLimit) | 0) === 0) {
 			var ret = libsodium.Pointer_stringify(hashed_password_address);
 			_free_all(address_pool);
 			return ret;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function crypto_pwhash_scryptsalsa208sha256_str_verify(hashed_password, password, outputFormat) {
@@ -2131,24 +2134,24 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: hashed_password (string)
-
+		
 		hashed_password = from_string(hashed_password + "\0");
 		var hashed_password_address = _to_allocated_buf_address(hashed_password),
 		    hashed_password_length = hashed_password.length - 1;
 		address_pool.push(hashed_password_address);
-
+		
 		// ---------- input: password (unsized_buf)
-
+		
 		password = _any_to_Uint8Array(address_pool, password, "password");
 		var password_address = _to_allocated_buf_address(password),
 		    password_length = password.length;
 		address_pool.push(password_address);
-
+		
 		var result = libsodium._crypto_pwhash_scryptsalsa208sha256_str_verify(hashed_password_address, password_address, password_length, 0) | 0;
 		var ret = (result === 0);
 		_free_all(address_pool);
 		return ret;
-
+		
 	}
 
 	function crypto_scalarmult(privateKey, publicKey, outputFormat) {
@@ -2156,7 +2159,7 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: privateKey (buf)
-
+		
 		privateKey = _any_to_Uint8Array(address_pool, privateKey, "privateKey");
 		var privateKey_address, privateKey_length = (libsodium._crypto_scalarmult_scalarbytes()) | 0;
 		if (privateKey.length !== privateKey_length) {
@@ -2164,9 +2167,9 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		privateKey_address = _to_allocated_buf_address(privateKey);
 		address_pool.push(privateKey_address);
-
+		
 		// ---------- input: publicKey (buf)
-
+		
 		publicKey = _any_to_Uint8Array(address_pool, publicKey, "publicKey");
 		var publicKey_address, publicKey_length = (libsodium._crypto_scalarmult_scalarbytes()) | 0;
 		if (publicKey.length !== publicKey_length) {
@@ -2174,22 +2177,22 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		publicKey_address = _to_allocated_buf_address(publicKey);
 		address_pool.push(publicKey_address);
-
+		
 		// ---------- output sharedSecret (buf)
-
+		
 		var sharedSecret_length = (libsodium._crypto_scalarmult_bytes()) | 0,
 		    sharedSecret = new AllocatedBuf(sharedSecret_length),
 		    sharedSecret_address = sharedSecret.address;
-
+		
 		address_pool.push(sharedSecret_address);
-
+		
 		if ((libsodium._crypto_scalarmult(sharedSecret_address, privateKey_address, publicKey_address) | 0) === 0) {
 			var ret = _format_output(sharedSecret, outputFormat);
 			_free_all(address_pool);
 			return ret;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function crypto_scalarmult_base(privateKey, outputFormat) {
@@ -2197,7 +2200,7 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: privateKey (buf)
-
+		
 		privateKey = _any_to_Uint8Array(address_pool, privateKey, "privateKey");
 		var privateKey_address, privateKey_length = (libsodium._crypto_scalarmult_scalarbytes()) | 0;
 		if (privateKey.length !== privateKey_length) {
@@ -2205,22 +2208,22 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		privateKey_address = _to_allocated_buf_address(privateKey);
 		address_pool.push(privateKey_address);
-
+		
 		// ---------- output publicKey (buf)
-
+		
 		var publicKey_length = (libsodium._crypto_scalarmult_scalarbytes()) | 0,
 		    publicKey = new AllocatedBuf(publicKey_length),
 		    publicKey_address = publicKey.address;
-
+		
 		address_pool.push(publicKey_address);
-
+		
 		if ((libsodium._crypto_scalarmult_base(publicKey_address, privateKey_address) | 0) === 0) {
 			var ret = _format_output(publicKey, outputFormat);
 			_free_all(address_pool);
 			return ret;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function crypto_secretbox_detached(message, nonce, key, outputFormat) {
@@ -2228,14 +2231,14 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: message (unsized_buf)
-
+		
 		message = _any_to_Uint8Array(address_pool, message, "message");
 		var message_address = _to_allocated_buf_address(message),
 		    message_length = message.length;
 		address_pool.push(message_address);
-
+		
 		// ---------- input: nonce (buf)
-
+		
 		nonce = _any_to_Uint8Array(address_pool, nonce, "nonce");
 		var nonce_address, nonce_length = (libsodium._crypto_secretbox_noncebytes()) | 0;
 		if (nonce.length !== nonce_length) {
@@ -2243,9 +2246,9 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		nonce_address = _to_allocated_buf_address(nonce);
 		address_pool.push(nonce_address);
-
+		
 		// ---------- input: key (buf)
-
+		
 		key = _any_to_Uint8Array(address_pool, key, "key");
 		var key_address, key_length = (libsodium._crypto_secretbox_keybytes()) | 0;
 		if (key.length !== key_length) {
@@ -2253,30 +2256,30 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		key_address = _to_allocated_buf_address(key);
 		address_pool.push(key_address);
-
+		
 		// ---------- output cipher (buf)
-
+		
 		var cipher_length = (message_length) | 0,
 		    cipher = new AllocatedBuf(cipher_length),
 		    cipher_address = cipher.address;
-
+		
 		address_pool.push(cipher_address);
-
+		
 		// ---------- output mac (buf)
-
+		
 		var mac_length = (libsodium._crypto_secretbox_macbytes()) | 0,
 		    mac = new AllocatedBuf(mac_length),
 		    mac_address = mac.address;
-
+		
 		address_pool.push(mac_address);
-
+		
 		if ((libsodium._crypto_secretbox_detached(cipher_address, mac_address, message_address, message_length, 0, nonce_address, key_address) | 0) === 0) {
 			var ret = _format_output({mac: mac, cipher: cipher}, outputFormat);
 			_free_all(address_pool);
 			return ret;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function crypto_secretbox_easy(message, nonce, key, outputFormat) {
@@ -2284,14 +2287,14 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: message (unsized_buf)
-
+		
 		message = _any_to_Uint8Array(address_pool, message, "message");
 		var message_address = _to_allocated_buf_address(message),
 		    message_length = message.length;
 		address_pool.push(message_address);
-
+		
 		// ---------- input: nonce (buf)
-
+		
 		nonce = _any_to_Uint8Array(address_pool, nonce, "nonce");
 		var nonce_address, nonce_length = (libsodium._crypto_secretbox_noncebytes()) | 0;
 		if (nonce.length !== nonce_length) {
@@ -2299,9 +2302,9 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		nonce_address = _to_allocated_buf_address(nonce);
 		address_pool.push(nonce_address);
-
+		
 		// ---------- input: key (buf)
-
+		
 		key = _any_to_Uint8Array(address_pool, key, "key");
 		var key_address, key_length = (libsodium._crypto_secretbox_keybytes()) | 0;
 		if (key.length !== key_length) {
@@ -2309,22 +2312,22 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		key_address = _to_allocated_buf_address(key);
 		address_pool.push(key_address);
-
+		
 		// ---------- output cipher (buf)
-
+		
 		var cipher_length = (message_length + libsodium._crypto_secretbox_macbytes()) | 0,
 		    cipher = new AllocatedBuf(cipher_length),
 		    cipher_address = cipher.address;
-
+		
 		address_pool.push(cipher_address);
-
+		
 		if ((libsodium._crypto_secretbox_easy(cipher_address, message_address, message_length, 0, nonce_address, key_address) | 0) === 0) {
 			var ret = _format_output(cipher, outputFormat);
 			_free_all(address_pool);
 			return ret;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function crypto_secretbox_open_detached(ciphertext, mac, nonce, key, outputFormat) {
@@ -2332,14 +2335,14 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: ciphertext (unsized_buf)
-
+		
 		ciphertext = _any_to_Uint8Array(address_pool, ciphertext, "ciphertext");
 		var ciphertext_address = _to_allocated_buf_address(ciphertext),
 		    ciphertext_length = ciphertext.length;
 		address_pool.push(ciphertext_address);
-
+		
 		// ---------- input: mac (buf)
-
+		
 		mac = _any_to_Uint8Array(address_pool, mac, "mac");
 		var mac_address, mac_length = (libsodium._crypto_secretbox_macbytes()) | 0;
 		if (mac.length !== mac_length) {
@@ -2347,9 +2350,9 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		mac_address = _to_allocated_buf_address(mac);
 		address_pool.push(mac_address);
-
+		
 		// ---------- input: nonce (buf)
-
+		
 		nonce = _any_to_Uint8Array(address_pool, nonce, "nonce");
 		var nonce_address, nonce_length = (libsodium._crypto_secretbox_noncebytes()) | 0;
 		if (nonce.length !== nonce_length) {
@@ -2357,9 +2360,9 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		nonce_address = _to_allocated_buf_address(nonce);
 		address_pool.push(nonce_address);
-
+		
 		// ---------- input: key (buf)
-
+		
 		key = _any_to_Uint8Array(address_pool, key, "key");
 		var key_address, key_length = (libsodium._crypto_secretbox_keybytes()) | 0;
 		if (key.length !== key_length) {
@@ -2367,22 +2370,22 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		key_address = _to_allocated_buf_address(key);
 		address_pool.push(key_address);
-
+		
 		// ---------- output message (buf)
-
+		
 		var message_length = (ciphertext_length) | 0,
 		    message = new AllocatedBuf(message_length),
 		    message_address = message.address;
-
+		
 		address_pool.push(message_address);
-
+		
 		if ((libsodium._crypto_secretbox_open_detached(message_address, ciphertext_address, mac_address, ciphertext_length, 0, nonce_address, key_address) | 0) === 0) {
 			var ret = _format_output(message, outputFormat);
 			_free_all(address_pool);
 			return ret;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function crypto_secretbox_open_easy(ciphertext, nonce, key, outputFormat) {
@@ -2390,14 +2393,14 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: ciphertext (unsized_buf)
-
+		
 		ciphertext = _any_to_Uint8Array(address_pool, ciphertext, "ciphertext");
 		var ciphertext_address = _to_allocated_buf_address(ciphertext),
 		    ciphertext_length = ciphertext.length;
 		address_pool.push(ciphertext_address);
-
+		
 		// ---------- input: nonce (buf)
-
+		
 		nonce = _any_to_Uint8Array(address_pool, nonce, "nonce");
 		var nonce_address, nonce_length = (libsodium._crypto_secretbox_noncebytes()) | 0;
 		if (nonce.length !== nonce_length) {
@@ -2405,9 +2408,9 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		nonce_address = _to_allocated_buf_address(nonce);
 		address_pool.push(nonce_address);
-
+		
 		// ---------- input: key (buf)
-
+		
 		key = _any_to_Uint8Array(address_pool, key, "key");
 		var key_address, key_length = (libsodium._crypto_secretbox_keybytes()) | 0;
 		if (key.length !== key_length) {
@@ -2415,22 +2418,22 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		key_address = _to_allocated_buf_address(key);
 		address_pool.push(key_address);
-
+		
 		// ---------- output message (buf)
-
+		
 		var message_length = (ciphertext_length - libsodium._crypto_secretbox_macbytes()) | 0,
 		    message = new AllocatedBuf(message_length),
 		    message_address = message.address;
-
+		
 		address_pool.push(message_address);
-
+		
 		if ((libsodium._crypto_secretbox_open_easy(message_address, ciphertext_address, ciphertext_length, 0, nonce_address, key_address) | 0) === 0) {
 			var ret = _format_output(message, outputFormat);
 			_free_all(address_pool);
 			return ret;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function crypto_shorthash(message, key, outputFormat) {
@@ -2438,14 +2441,14 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: message (unsized_buf)
-
+		
 		message = _any_to_Uint8Array(address_pool, message, "message");
 		var message_address = _to_allocated_buf_address(message),
 		    message_length = message.length;
 		address_pool.push(message_address);
-
+		
 		// ---------- input: key (buf)
-
+		
 		key = _any_to_Uint8Array(address_pool, key, "key");
 		var key_address, key_length = (libsodium._crypto_shorthash_keybytes()) | 0;
 		if (key.length !== key_length) {
@@ -2453,22 +2456,22 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		key_address = _to_allocated_buf_address(key);
 		address_pool.push(key_address);
-
+		
 		// ---------- output hash (buf)
-
+		
 		var hash_length = (libsodium._crypto_shorthash_bytes()) | 0,
 		    hash = new AllocatedBuf(hash_length),
 		    hash_address = hash.address;
-
+		
 		address_pool.push(hash_address);
-
+		
 		if ((libsodium._crypto_shorthash(hash_address, message_address, message_length, 0, key_address) | 0) === 0) {
 			var ret = _format_output(hash, outputFormat);
 			_free_all(address_pool);
 			return ret;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function crypto_sign(message, privateKey, outputFormat) {
@@ -2476,14 +2479,14 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: message (unsized_buf)
-
+		
 		message = _any_to_Uint8Array(address_pool, message, "message");
 		var message_address = _to_allocated_buf_address(message),
 		    message_length = message.length;
 		address_pool.push(message_address);
-
+		
 		// ---------- input: privateKey (buf)
-
+		
 		privateKey = _any_to_Uint8Array(address_pool, privateKey, "privateKey");
 		var privateKey_address, privateKey_length = (libsodium._crypto_sign_secretkeybytes()) | 0;
 		if (privateKey.length !== privateKey_length) {
@@ -2491,22 +2494,22 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		privateKey_address = _to_allocated_buf_address(privateKey);
 		address_pool.push(privateKey_address);
-
+		
 		// ---------- output signature (buf)
-
+		
 		var signature_length = (message.length + libsodium._crypto_sign_bytes()) | 0,
 		    signature = new AllocatedBuf(signature_length),
 		    signature_address = signature.address;
-
+		
 		address_pool.push(signature_address);
-
+		
 		if ((libsodium._crypto_sign(signature_address, null, message_address, message_length, 0, privateKey_address) | 0) === 0) {
 			var ret = _format_output(signature, outputFormat);
 			_free_all(address_pool);
 			return ret;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function crypto_sign_detached(message, privateKey, outputFormat) {
@@ -2514,14 +2517,14 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: message (unsized_buf)
-
+		
 		message = _any_to_Uint8Array(address_pool, message, "message");
 		var message_address = _to_allocated_buf_address(message),
 		    message_length = message.length;
 		address_pool.push(message_address);
-
+		
 		// ---------- input: privateKey (buf)
-
+		
 		privateKey = _any_to_Uint8Array(address_pool, privateKey, "privateKey");
 		var privateKey_address, privateKey_length = (libsodium._crypto_sign_secretkeybytes()) | 0;
 		if (privateKey.length !== privateKey_length) {
@@ -2529,22 +2532,22 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		privateKey_address = _to_allocated_buf_address(privateKey);
 		address_pool.push(privateKey_address);
-
+		
 		// ---------- output signature (buf)
-
+		
 		var signature_length = (libsodium._crypto_sign_bytes()) | 0,
 		    signature = new AllocatedBuf(signature_length),
 		    signature_address = signature.address;
-
+		
 		address_pool.push(signature_address);
-
+		
 		if ((libsodium._crypto_sign_detached(signature_address, null, message_address, message_length, 0, privateKey_address) | 0) === 0) {
 			var ret = _format_output(signature, outputFormat);
 			_free_all(address_pool);
 			return ret;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function crypto_sign_ed25519_pk_to_curve25519(edPk, outputFormat) {
@@ -2552,7 +2555,7 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: edPk (buf)
-
+		
 		edPk = _any_to_Uint8Array(address_pool, edPk, "edPk");
 		var edPk_address, edPk_length = (libsodium._crypto_sign_publickeybytes()) | 0;
 		if (edPk.length !== edPk_length) {
@@ -2560,22 +2563,22 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		edPk_address = _to_allocated_buf_address(edPk);
 		address_pool.push(edPk_address);
-
+		
 		// ---------- output cPk (buf)
-
+		
 		var cPk_length = (libsodium._crypto_scalarmult_scalarbytes()) | 0,
 		    cPk = new AllocatedBuf(cPk_length),
 		    cPk_address = cPk.address;
-
+		
 		address_pool.push(cPk_address);
-
+		
 		if ((libsodium._crypto_sign_ed25519_pk_to_curve25519(cPk_address, edPk_address) | 0) === 0) {
 			var ret = _format_output(cPk, outputFormat);
 			_free_all(address_pool);
 			return ret;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function crypto_sign_ed25519_sk_to_curve25519(edSk, outputFormat) {
@@ -2583,7 +2586,7 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: edSk (buf)
-
+		
 		edSk = _any_to_Uint8Array(address_pool, edSk, "edSk");
 		var edSk_address, edSk_length = (libsodium._crypto_sign_secretkeybytes()) | 0;
 		if (edSk.length !== edSk_length) {
@@ -2591,22 +2594,22 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		edSk_address = _to_allocated_buf_address(edSk);
 		address_pool.push(edSk_address);
-
+		
 		// ---------- output cSk (buf)
-
+		
 		var cSk_length = (libsodium._crypto_scalarmult_scalarbytes()) | 0,
 		    cSk = new AllocatedBuf(cSk_length),
 		    cSk_address = cSk.address;
-
+		
 		address_pool.push(cSk_address);
-
+		
 		if ((libsodium._crypto_sign_ed25519_sk_to_curve25519(cSk_address, edSk_address) | 0) === 0) {
 			var ret = _format_output(cSk, outputFormat);
 			_free_all(address_pool);
 			return ret;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function crypto_sign_ed25519_sk_to_pk(privateKey, outputFormat) {
@@ -2614,7 +2617,7 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: privateKey (buf)
-
+		
 		privateKey = _any_to_Uint8Array(address_pool, privateKey, "privateKey");
 		var privateKey_address, privateKey_length = (libsodium._crypto_sign_secretkeybytes()) | 0;
 		if (privateKey.length !== privateKey_length) {
@@ -2622,22 +2625,22 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		privateKey_address = _to_allocated_buf_address(privateKey);
 		address_pool.push(privateKey_address);
-
+		
 		// ---------- output publicKey (buf)
-
+		
 		var publicKey_length = (libsodium._crypto_sign_publickeybytes()) | 0,
 		    publicKey = new AllocatedBuf(publicKey_length),
 		    publicKey_address = publicKey.address;
-
+		
 		address_pool.push(publicKey_address);
-
+		
 		if ((libsodium._crypto_sign_ed25519_sk_to_pk(publicKey_address, privateKey_address) | 0) === 0) {
 			var ret = _format_output(publicKey, outputFormat);
 			_free_all(address_pool);
 			return ret;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function crypto_sign_ed25519_sk_to_seed(privateKey, outputFormat) {
@@ -2645,7 +2648,7 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: privateKey (buf)
-
+		
 		privateKey = _any_to_Uint8Array(address_pool, privateKey, "privateKey");
 		var privateKey_address, privateKey_length = (libsodium._crypto_sign_secretkeybytes()) | 0;
 		if (privateKey.length !== privateKey_length) {
@@ -2653,22 +2656,22 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		privateKey_address = _to_allocated_buf_address(privateKey);
 		address_pool.push(privateKey_address);
-
+		
 		// ---------- output seed (buf)
-
+		
 		var seed_length = (libsodium._crypto_sign_seedbytes()) | 0,
 		    seed = new AllocatedBuf(seed_length),
 		    seed_address = seed.address;
-
+		
 		address_pool.push(seed_address);
-
+		
 		if ((libsodium._crypto_sign_ed25519_sk_to_seed(seed_address, privateKey_address) | 0) === 0) {
 			var ret = _format_output(seed, outputFormat);
 			_free_all(address_pool);
 			return ret;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function crypto_sign_keypair(outputFormat) {
@@ -2676,28 +2679,28 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- output publicKey (buf)
-
+		
 		var publicKey_length = (libsodium._crypto_sign_publickeybytes()) | 0,
 		    publicKey = new AllocatedBuf(publicKey_length),
 		    publicKey_address = publicKey.address;
-
+		
 		address_pool.push(publicKey_address);
-
+		
 		// ---------- output privateKey (buf)
-
+		
 		var privateKey_length = (libsodium._crypto_sign_secretkeybytes()) | 0,
 		    privateKey = new AllocatedBuf(privateKey_length),
 		    privateKey_address = privateKey.address;
-
+		
 		address_pool.push(privateKey_address);
-
+		
 		if ((libsodium._crypto_sign_keypair(publicKey_address, privateKey_address) | 0) === 0) {
 			var ret = _format_output({publicKey: publicKey, privateKey: privateKey, keyType: 'ed25519'}, outputFormat);
 			_free_all(address_pool);
 			return ret;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function crypto_sign_open(signedMessage, publicKey, outputFormat) {
@@ -2705,14 +2708,14 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: signedMessage (unsized_buf)
-
+		
 		signedMessage = _any_to_Uint8Array(address_pool, signedMessage, "signedMessage");
 		var signedMessage_address = _to_allocated_buf_address(signedMessage),
 		    signedMessage_length = signedMessage.length;
 		address_pool.push(signedMessage_address);
-
+		
 		// ---------- input: publicKey (buf)
-
+		
 		publicKey = _any_to_Uint8Array(address_pool, publicKey, "publicKey");
 		var publicKey_address, publicKey_length = (libsodium._crypto_sign_publickeybytes()) | 0;
 		if (publicKey.length !== publicKey_length) {
@@ -2720,22 +2723,22 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		publicKey_address = _to_allocated_buf_address(publicKey);
 		address_pool.push(publicKey_address);
-
+		
 		// ---------- output message (buf)
-
+		
 		var message_length = (signedMessage_length - libsodium._crypto_sign_bytes()) | 0,
 		    message = new AllocatedBuf(message_length),
 		    message_address = message.address;
-
+		
 		address_pool.push(message_address);
-
+		
 		if ((libsodium._crypto_sign_open(message_address, null, signedMessage_address, signedMessage_length, 0, publicKey_address) | 0) === 0) {
 			var ret = _format_output(message, outputFormat);
 			_free_all(address_pool);
 			return ret;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function crypto_sign_seed_keypair(seed, outputFormat) {
@@ -2743,7 +2746,7 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: seed (buf)
-
+		
 		seed = _any_to_Uint8Array(address_pool, seed, "seed");
 		var seed_address, seed_length = (libsodium._crypto_sign_seedbytes()) | 0;
 		if (seed.length !== seed_length) {
@@ -2751,37 +2754,37 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		seed_address = _to_allocated_buf_address(seed);
 		address_pool.push(seed_address);
-
+		
 		// ---------- output publicKey (buf)
-
+		
 		var publicKey_length = (libsodium._crypto_sign_publickeybytes()) | 0,
 		    publicKey = new AllocatedBuf(publicKey_length),
 		    publicKey_address = publicKey.address;
-
+		
 		address_pool.push(publicKey_address);
-
+		
 		// ---------- output privateKey (buf)
-
+		
 		var privateKey_length = (libsodium._crypto_sign_secretkeybytes()) | 0,
 		    privateKey = new AllocatedBuf(privateKey_length),
 		    privateKey_address = privateKey.address;
-
+		
 		address_pool.push(privateKey_address);
-
+		
 		if ((libsodium._crypto_sign_seed_keypair(publicKey_address, privateKey_address, seed_address) | 0) === 0) {
 			var ret = _format_output({publicKey: publicKey, privateKey: privateKey, keyType: "ed25519"}, outputFormat);
 			_free_all(address_pool);
 			return ret;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function crypto_sign_verify_detached(signature, message, publicKey) {
 		var address_pool = [];
 
 		// ---------- input: signature (buf)
-
+		
 		signature = _any_to_Uint8Array(address_pool, signature, "signature");
 		var signature_address, signature_length = (libsodium._crypto_sign_bytes()) | 0;
 		if (signature.length !== signature_length) {
@@ -2789,16 +2792,16 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		signature_address = _to_allocated_buf_address(signature);
 		address_pool.push(signature_address);
-
+		
 		// ---------- input: message (unsized_buf)
-
+		
 		message = _any_to_Uint8Array(address_pool, message, "message");
 		var message_address = _to_allocated_buf_address(message),
 		    message_length = message.length;
 		address_pool.push(message_address);
-
+		
 		// ---------- input: publicKey (buf)
-
+		
 		publicKey = _any_to_Uint8Array(address_pool, publicKey, "publicKey");
 		var publicKey_address, publicKey_length = (libsodium._crypto_sign_publickeybytes()) | 0;
 		if (publicKey.length !== publicKey_length) {
@@ -2806,12 +2809,12 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		publicKey_address = _to_allocated_buf_address(publicKey);
 		address_pool.push(publicKey_address);
-
+		
 		var verificationResult = libsodium._crypto_sign_verify_detached(signature_address, message_address, message_length, 0, publicKey_address) | 0;
 		var ret = (verificationResult === 0);
 		_free_all(address_pool);
 		return ret;
-
+		
 	}
 
 	function crypto_stream_chacha20_xor(input_message, nonce, key, outputFormat) {
@@ -2819,14 +2822,14 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: input_message (unsized_buf)
-
+		
 		input_message = _any_to_Uint8Array(address_pool, input_message, "input_message");
 		var input_message_address = _to_allocated_buf_address(input_message),
 		    input_message_length = input_message.length;
 		address_pool.push(input_message_address);
-
+		
 		// ---------- input: nonce (buf)
-
+		
 		nonce = _any_to_Uint8Array(address_pool, nonce, "nonce");
 		var nonce_address, nonce_length = (libsodium._crypto_stream_chacha20_noncebytes()) | 0;
 		if (nonce.length !== nonce_length) {
@@ -2834,9 +2837,9 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		nonce_address = _to_allocated_buf_address(nonce);
 		address_pool.push(nonce_address);
-
+		
 		// ---------- input: key (buf)
-
+		
 		key = _any_to_Uint8Array(address_pool, key, "key");
 		var key_address, key_length = (libsodium._crypto_stream_chacha20_keybytes()) | 0;
 		if (key.length !== key_length) {
@@ -2844,22 +2847,22 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		key_address = _to_allocated_buf_address(key);
 		address_pool.push(key_address);
-
+		
 		// ---------- output output_message (buf)
-
+		
 		var output_message_length = (input_message_length) | 0,
 		    output_message = new AllocatedBuf(output_message_length),
 		    output_message_address = output_message.address;
-
+		
 		address_pool.push(output_message_address);
-
+		
 		if ((libsodium._crypto_stream_chacha20_xor(output_message_address, input_message_address, input_message_length, 0, nonce_address, key_address)) === 0) {
 			var ret = _format_output(output_message, outputFormat);
 			_free_all(address_pool);
 			return ret;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function crypto_stream_chacha20_xor_ic(input_message, nonce, nonce_increment, key, outputFormat) {
@@ -2867,14 +2870,14 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: input_message (unsized_buf)
-
+		
 		input_message = _any_to_Uint8Array(address_pool, input_message, "input_message");
 		var input_message_address = _to_allocated_buf_address(input_message),
 		    input_message_length = input_message.length;
 		address_pool.push(input_message_address);
-
+		
 		// ---------- input: nonce (buf)
-
+		
 		nonce = _any_to_Uint8Array(address_pool, nonce, "nonce");
 		var nonce_address, nonce_length = (libsodium._crypto_stream_chacha20_noncebytes()) | 0;
 		if (nonce.length !== nonce_length) {
@@ -2882,17 +2885,17 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		nonce_address = _to_allocated_buf_address(nonce);
 		address_pool.push(nonce_address);
-
+		
 		// ---------- input: nonce_increment (uint)
-
+		
 		_require_defined(address_pool, nonce_increment, "nonce_increment");
-
+		
 		if (!(typeof nonce_increment === "number" && (nonce_increment | 0) === nonce_increment) && (nonce_increment | 0) > 0) {
 			_free_and_throw_type_error(address_pool, "nonce_increment must be an unsigned integer");
 		}
-
+		
 		// ---------- input: key (buf)
-
+		
 		key = _any_to_Uint8Array(address_pool, key, "key");
 		var key_address, key_length = (libsodium._crypto_stream_chacha20_keybytes()) | 0;
 		if (key.length !== key_length) {
@@ -2900,22 +2903,22 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		}
 		key_address = _to_allocated_buf_address(key);
 		address_pool.push(key_address);
-
+		
 		// ---------- output output_message (buf)
-
+		
 		var output_message_length = (input_message_length) | 0,
 		    output_message = new AllocatedBuf(output_message_length),
 		    output_message_address = output_message.address;
-
+		
 		address_pool.push(output_message_address);
-
+		
 		if ((libsodium._crypto_stream_chacha20_xor_ic(output_message_address, input_message_address, input_message_length, 0, nonce_address, nonce_increment, 0, key_address)) === 0) {
 			var ret = _format_output(output_message, outputFormat);
 			_free_all(address_pool);
 			return ret;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function randombytes_buf(length, outputFormat) {
@@ -2923,26 +2926,26 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: length (uint)
-
+		
 		_require_defined(address_pool, length, "length");
-
+		
 		if (!(typeof length === "number" && (length | 0) === length) && (length | 0) > 0) {
 			_free_and_throw_type_error(address_pool, "length must be an unsigned integer");
 		}
-
+		
 		// ---------- output output (buf)
-
+		
 		var output_length = (length) | 0,
 		    output = new AllocatedBuf(output_length),
 		    output_address = output.address;
-
+		
 		address_pool.push(output_address);
-
+		
 		libsodium._randombytes_buf(output_address, length);
 		var ret = (_format_output(output, outputFormat));
 		_free_all(address_pool);
 		return ret;
-
+		
 	}
 
 	function randombytes_close(outputFormat) {
@@ -2950,7 +2953,7 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		libsodium._randombytes_close();
-
+		
 	}
 
 	function randombytes_random(outputFormat) {
@@ -2961,7 +2964,7 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		var ret = (random_value);
 		_free_all(address_pool);
 		return ret;
-
+		
 	}
 
 	function randombytes_set_implementation(implementation, outputFormat) {
@@ -2969,7 +2972,7 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: implementation (randombytes_implementation)
-
+		
 		var implementation_address = libsodium._malloc(6 * 4);
 		for (var i = 0; i < 6; i++) {
 			libsodium.setValue(implementation_address + i * 4,
@@ -2977,13 +2980,13 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 			    [["implementation_name", "random", "stir", "uniform", "buf", "close"][i]]),
 			    "i32");
 		}
-
+		
 		if ((libsodium._randombytes_set_implementation(implementation_address) | 0) === 0) {
 			_free_all(address_pool);
 			return;
 		}
 		_free_and_throw_error(address_pool);
-
+		
 	}
 
 	function randombytes_stir(outputFormat) {
@@ -2991,7 +2994,7 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		libsodium._randombytes_stir();
-
+		
 	}
 
 	function randombytes_uniform(upper_bound, outputFormat) {
@@ -2999,18 +3002,18 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		_check_output_format(outputFormat);
 
 		// ---------- input: upper_bound (uint)
-
+		
 		_require_defined(address_pool, upper_bound, "upper_bound");
-
+		
 		if (!(typeof upper_bound === "number" && (upper_bound | 0) === upper_bound) && (upper_bound | 0) > 0) {
 			_free_and_throw_type_error(address_pool, "upper_bound must be an unsigned integer");
 		}
-
+		
 		var random_value = libsodium._randombytes_uniform(upper_bound) >>> 0;
 		var ret = (random_value);
 		_free_all(address_pool);
 		return ret;
-
+		
 	}
 
 	function sodium_version_string() {
@@ -3020,7 +3023,7 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		var ret = (libsodium.Pointer_stringify(version));
 		_free_all(address_pool);
 		return ret;
-
+		
 	}
 
 
@@ -3064,7 +3067,7 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 		exports.crypto_stream_chacha20_xor = sn.crypto_stream_chacha20_xor;
 		exports.crypto_auth_hmacsha256_KEYBYTES = sn.crypto_auth_hmacsha256_KEYBYTES;
 	} else {
-
+	
 	var exported_functions = ["crypto_aead_chacha20poly1305_decrypt", "crypto_aead_chacha20poly1305_encrypt", "crypto_aead_chacha20poly1305_ietf_decrypt", "crypto_aead_chacha20poly1305_ietf_encrypt", "crypto_auth", "crypto_auth_hmacsha256", "crypto_auth_hmacsha256_verify", "crypto_auth_hmacsha512", "crypto_auth_hmacsha512_verify", "crypto_auth_verify", "crypto_box_beforenm", "crypto_box_detached", "crypto_box_easy", "crypto_box_easy_afternm", "crypto_box_keypair", "crypto_box_open_detached", "crypto_box_open_easy", "crypto_box_open_easy_afternm", "crypto_box_seal", "crypto_box_seal_open", "crypto_box_seed_keypair", "crypto_generichash", "crypto_generichash_final", "crypto_generichash_init", "crypto_generichash_update", "crypto_hash", "crypto_hash_sha256", "crypto_hash_sha512", "crypto_onetimeauth", "crypto_onetimeauth_final", "crypto_onetimeauth_init", "crypto_onetimeauth_update", "crypto_onetimeauth_verify", "crypto_pwhash_scryptsalsa208sha256", "crypto_pwhash_scryptsalsa208sha256_ll", "crypto_pwhash_scryptsalsa208sha256_str", "crypto_pwhash_scryptsalsa208sha256_str_verify", "crypto_scalarmult", "crypto_scalarmult_base", "crypto_secretbox_detached", "crypto_secretbox_easy", "crypto_secretbox_open_detached", "crypto_secretbox_open_easy", "crypto_shorthash", "crypto_sign", "crypto_sign_detached", "crypto_sign_ed25519_pk_to_curve25519", "crypto_sign_ed25519_sk_to_curve25519", "crypto_sign_ed25519_sk_to_pk", "crypto_sign_ed25519_sk_to_seed", "crypto_sign_keypair", "crypto_sign_open", "crypto_sign_seed_keypair", "crypto_sign_verify_detached", "crypto_stream_chacha20_xor", "crypto_stream_chacha20_xor_ic", "randombytes_buf", "randombytes_close", "randombytes_random", "randombytes_set_implementation", "randombytes_stir", "randombytes_uniform", "sodium_version_string"],
 		functions = [crypto_aead_chacha20poly1305_decrypt, crypto_aead_chacha20poly1305_encrypt, crypto_aead_chacha20poly1305_ietf_decrypt, crypto_aead_chacha20poly1305_ietf_encrypt, crypto_auth, crypto_auth_hmacsha256, crypto_auth_hmacsha256_verify, crypto_auth_hmacsha512, crypto_auth_hmacsha512_verify, crypto_auth_verify, crypto_box_beforenm, crypto_box_detached, crypto_box_easy, crypto_box_easy_afternm, crypto_box_keypair, crypto_box_open_detached, crypto_box_open_easy, crypto_box_open_easy_afternm, crypto_box_seal, crypto_box_seal_open, crypto_box_seed_keypair, crypto_generichash, crypto_generichash_final, crypto_generichash_init, crypto_generichash_update, crypto_hash, crypto_hash_sha256, crypto_hash_sha512, crypto_onetimeauth, crypto_onetimeauth_final, crypto_onetimeauth_init, crypto_onetimeauth_update, crypto_onetimeauth_verify, crypto_pwhash_scryptsalsa208sha256, crypto_pwhash_scryptsalsa208sha256_ll, crypto_pwhash_scryptsalsa208sha256_str, crypto_pwhash_scryptsalsa208sha256_str_verify, crypto_scalarmult, crypto_scalarmult_base, crypto_secretbox_detached, crypto_secretbox_easy, crypto_secretbox_open_detached, crypto_secretbox_open_easy, crypto_shorthash, crypto_sign, crypto_sign_detached, crypto_sign_ed25519_pk_to_curve25519, crypto_sign_ed25519_sk_to_curve25519, crypto_sign_ed25519_sk_to_pk, crypto_sign_ed25519_sk_to_seed, crypto_sign_keypair, crypto_sign_open, crypto_sign_seed_keypair, crypto_sign_verify_detached, crypto_stream_chacha20_xor, crypto_stream_chacha20_xor_ic, randombytes_buf, randombytes_close, randombytes_random, randombytes_set_implementation, randombytes_stir, randombytes_uniform, sodium_version_string];
 	for (var i = 0; i < functions.length; i++) {
@@ -3249,7 +3252,7 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 
   /*
   Construct a long-term identity key pair.
-
+  
   Every client has a long-term identity key pair.
   Long-term identity keys are used to initialise “sessions” with other clients (triple DH).
    */
@@ -4446,7 +4449,7 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 
     /*
     This function can be used to compute a message signature.
-
+    
     @param message [String] Message to be signed
     @return [Uint8Array] A message signature
      */
@@ -4458,7 +4461,7 @@ define("proteus", [], function(__WEBPACK_EXTERNAL_MODULE_46__) { return /******/
 
     /*
     This function can be used to compute a shared secret given a user's secret key and another user's public key.
-
+    
     @param public_key [Proteus.keys.PublicKey] Another user's public key
     @return [Uint8Array] Array buffer view of the computed shared secret
      */
@@ -6325,7 +6328,7 @@ process.umask = function() { return 0; };
     @param pending [] Pending pre-key
     @param tag [Proteus.message.SessionTag] Session tag
     @param plaintext [String, Uint8Array] The plaintext to encrypt
-
+    
     @return [Proteus.message.Envelope]
      */
 
@@ -6469,12 +6472,12 @@ process.umask = function() { return 0; };
 
       /*
       HMAC-based Key Derivation Function
-
+      
       @param salt [Uint8Array, String] Salt
       @param input [Uint8Array, String] Initial Keying Material (IKM)
       @param info [Uint8Array, String] Key Derivation Data (Info)
       @param length [Integer] Length of the derived key in bytes (L)
-
+      
       @return [Uint8Array] Output Keying Material (OKM)
        */
       hkdf: function(salt, input, info, length) {
@@ -10078,8 +10081,8 @@ nacl.setPRNG = function(fn) {
 /* 46 */
 /***/ function(module, exports) {
 
-if(typeof __WEBPACK_EXTERNAL_MODULE_46__ === 'undefined') {var e = new Error("Cannot find module \"undefined\""); e.code = 'MODULE_NOT_FOUND'; throw e;}
-module.exports = __WEBPACK_EXTERNAL_MODULE_46__;
+if(typeof undefined === 'undefined') {var e = new Error("Cannot find module \"undefined\""); e.code = 'MODULE_NOT_FOUND'; throw e;}
+module.exports = undefined;
 
 /***/ },
 /* 47 */
@@ -10125,5 +10128,5 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_46__;
 
 
 /***/ }
-/******/ ])});;
+/******/ ]);
 //# sourceMappingURL=proteus.js.map
