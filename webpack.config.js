@@ -8,9 +8,9 @@ module.exports = {
   },
   output: {
     filename: 'proteus.js',
-    library: 'proteus',
-    libraryTarget: 'amd',
-    path: './dist/amd'
+    library: 'Proteus',
+    libraryTarget: 'var',
+    path: './dist/window'
   },
   node: {
     fs: 'empty',
@@ -22,7 +22,6 @@ module.exports = {
     }
   },
   plugins: [
-    new webpack.optimize.DedupePlugin(),
     new webpack.BannerPlugin(`${pkg.name} v${pkg.version}`)
   ]
 };

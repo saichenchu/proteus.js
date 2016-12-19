@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<!-- Wire, Copyright (C) 2016 Wire Swiss GmbH -->
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Demo</title>
+    <link rel="shortcut icon" href="data:image/x-icon;" type="image/x-icon" />
+    <script src="window/proteus.js"></script>
+  </head>
+  <body>
+    <script>
+      var lastResort = Proteus.keys.PreKey.MAX_PREKEY_ID;
+      var preKey = Proteus.keys.PreKey.new(lastResort);
+      var serializedPreKey = preKey.serialise();
+      document.write(serializedPreKey);
+    </script>
+  </body>
+</html>

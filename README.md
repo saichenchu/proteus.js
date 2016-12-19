@@ -10,25 +10,29 @@ For licensing information, see the attached LICENSE file and the list of third-p
 
 [![Build Status](https://travis-ci.org/wireapp/proteus.js.svg?branch=master)](https://travis-ci.org/wireapp/proteus.js)
 
-## Usage
+## Instructions
+
+### Installation
 
 ```bash
 npm install wire-webapp-proteus
 ```
 
+### Import
+
+**CommonJS**
+
 ```javascript
 var Proteus = require('wire-webapp-proteus');
-
-var ikp = Proteus.keys.IdentityKeyPair.new();
-var buffer = ikp.serialise();
-var view = new Uint8Array(buffer);
-
-console.log('Identity Key Pair', view);
 ```
 
-## Run Tests
+### Usage
 
-```bash
-npm install
-npm test
-```
+**Browser**
+
+- [index.html](./dist/index.html)
+
+**Node.js**
+
+- [index.js](./dist/index.js) 
+
