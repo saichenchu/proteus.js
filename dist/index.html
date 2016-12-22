@@ -12,7 +12,11 @@
       var lastResort = Proteus.keys.PreKey.MAX_PREKEY_ID;
       var preKey = Proteus.keys.PreKey.new(lastResort);
       var serializedPreKey = preKey.serialise();
-      document.write(serializedPreKey);
+
+      var uint8array = new TextEncoder("utf-8").encode("¢");
+      var base64 = sodium.to_base64(uint8array);
+
+      document.write(base64 + ' ' + serializedPreKey);
     </script>
   </body>
 </html>

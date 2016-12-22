@@ -4,12 +4,10 @@ var webpack = require('webpack');
 module.exports = {
   devtool: 'source-map',
   entry: {
-    filename: './dist/commonjs/proteus.js'
+    filename: './dist/commonjs/proteus.window.js'
   },
   output: {
     filename: 'proteus.js',
-    library: 'Proteus',
-    libraryTarget: 'var',
     path: './dist/window'
   },
   node: {
