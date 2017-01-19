@@ -73,9 +73,9 @@ describe 'Session', ->
       assert(alice.session_states[alice.session_tag].state.recv_chains.length is 1)
       assert_serialise_deserialise alice_ident, alice
 
-  it 'encrypts and decrypts messsages', (done) ->
-    [alice_ident, bob_ident] = [0..1].map(-> Proteus.keys.IdentityKeyPair.new())
-    [alice_store, bob_store] = [0..1].map(-> new TestStore Proteus.keys.PreKey.generate_prekeys 0, 10)
+  it 'encrypts and decrypts messages', (done) ->
+    [alice_ident, bob_ident] = [0..1].map -> Proteus.keys.IdentityKeyPair.new()
+    [alice_store, bob_store] = [0..1].map -> new TestStore Proteus.keys.PreKey.generate_prekeys 0, 10
 
     bob_prekey = bob_store.prekeys[0]
     bob_bundle = Proteus.keys.PreKeyBundle.new bob_ident.public_key, bob_prekey
@@ -555,8 +555,8 @@ describe 'Session', ->
       bob = s
 
       Promise.all(alices.map (a) ->
-        return new Promise (resolve, reject) ->
-          Promise.all([0..900].map(-> a.encrypt 'hello'))
+        return new Promise (resolve) ->
+          Promise.all [0..900].map -> a.encrypt 'hello'
           .then ->
             a.encrypt 'Hello Bob!'
 

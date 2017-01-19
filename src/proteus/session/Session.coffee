@@ -164,7 +164,6 @@ module.exports = class Session
     delete @session_states[oldest.tag]
 
   get_local_identity: ->
-    # XXX: can we do this as a getter?
     return @local_identity.public_key
 
   ###
@@ -189,34 +188,30 @@ module.exports = class Session
       switch
         when msg instanceof CipherMessage
           return resolve @_decrypt_cipher_message envelope, envelope.message
-
         when msg instanceof PreKeyMessage
-          if msg.identity_key.fingerprint() != @remote_identity.fingerprint()
-            throw new DecryptError.RemoteIdentityChanged
+          throw new DecryptError.RemoteIdentityChanged if msg.identity_key.fingerprint() isnt @remote_identity.fingerprint()
+          return resolve @_decrypt_prekey_message envelope, msg, prekey_store
+        else
+          throw new DecryptError 'Unknown message type.'
 
-          decrypt_error = null
+  _decrypt_prekey_message: (envelope, msg, prekey_store) =>
+    return Promise.resolve()
+    .then =>
+      return @_decrypt_cipher_message envelope, msg.message
+    .catch (error) =>
+      if error instanceof DecryptError.InvalidSignature or error instanceof DecryptError.InvalidMessage
+        return @_new_state(prekey_store, msg)
+        .then (state) =>
+          plaintext = state.decrypt envelope, msg.message
 
-          try
-            return resolve @_decrypt_cipher_message envelope, msg.message
-          catch e
-            decrypt_error = e
+          if msg.prekey_id != PreKey.MAX_PREKEY_ID
+            prekey_store.remove msg.prekey_id
 
-            if not (e instanceof DecryptError.InvalidSignature or
-                    e instanceof DecryptError.InvalidMessage)
-              throw e
+          @_insert_session_state msg.message.session_tag, state
+          @pending_prekey = null
 
-          @_new_state prekey_store, msg
-          .then (state) =>
-            plaintext = state.decrypt envelope, msg.message
-            if msg.prekey_id != PreKey.MAX_PREKEY_ID
-              prekey_store.remove(msg.prekey_id)
-
-            @_insert_session_state msg.message.session_tag, state
-            @pending_prekey = null
-
-            return resolve plaintext
-          .catch =>
-            throw decrypt_error
+          return plaintext
+      throw error
 
   _decrypt_cipher_message: (envelope, msg) ->
     state = @session_states[msg.session_tag]

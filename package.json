@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "ed2curve": "0.1.4",
+    "ed2curve": "0.2.1",
     "libsodium": "wireapp/libsodium.js#792aff8d7e124aff366cb71e7cab21bced143426",
     "wire-webapp-cbor": "1.1.1"
   },
@@ -22,7 +22,7 @@
   "scripts": {
     "build": "coffee -co dist/commonjs src",
     "bundle": "npm run build && webpack --progress",
-    "prepublish": "npm run bundle",
+    "prepublish": "npm run bundle && npm test",
     "test": "mocha --compilers coffee:coffee-script/register -s 30000 -t 30000 --recursive test/harness.js test --trace-warnings"
   },
   "typings": "dist/typings/proteus.d.ts",
