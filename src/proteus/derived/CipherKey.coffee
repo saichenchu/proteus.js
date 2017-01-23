@@ -45,9 +45,8 @@ module.exports = class CipherKey
     if plaintext instanceof ArrayBuffer and plaintext.byteLength isnt undefined
       plaintext = new Uint8Array plaintext
 
-    # return sodium.crypto_stream_chacha20_xor plaintext, nonce, @key, 'uint8array'
-    encrypted_buffer = chacha20.encrypt(nonce.buffer, @key.buffer, new Buffer(plaintext))
-    return encrypted_buffer
+    encrypted_buffer = chacha20.encrypt nonce.buffer, @key.buffer, new Buffer(plaintext)
+    return new Uint8Array encrypted_buffer
 
   decrypt: (ciphertext, nonce) ->
     return @encrypt ciphertext, nonce
