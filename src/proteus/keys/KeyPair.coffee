@@ -18,7 +18,7 @@
 
 CBOR = require 'wire-webapp-cbor'
 ed2curve = require 'ed2curve'
-sodium = require 'libsodium'
+sodium = require 'libsodium-wrappers-sumo'
 
 DontCallConstructor = require '../errors/DontCallConstructor'
 ClassUtil = require '../util/ClassUtil'
@@ -35,6 +35,7 @@ module.exports = class KeyPair
     throw new DontCallConstructor @
 
   @new: ->
+    console.warn 'AUTSCH', sodium
     ed25519_key_pair = sodium.crypto_sign_keypair()
 
     kp = ClassUtil.new_instance KeyPair

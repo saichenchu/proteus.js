@@ -3,7 +3,7 @@ require('module').Module._initPaths();
 
 assert = require('chai').assert;
 
-global.sodium = require('libsodium');
+global.sodium = require('libsodium-wrappers-sumo');
 Proteus = require('proteus');
 Proteus.derived = {
   DerivedSecrets: require('proteus/derived/DerivedSecrets'),

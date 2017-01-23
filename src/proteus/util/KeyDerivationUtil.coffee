@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-sodium = require 'libsodium'
+sodium = require 'libsodium-wrappers-sumo'
 
 TypeUtil = require '../util/TypeUtil'
 ArrayUtil = require '../util/ArrayUtil'
