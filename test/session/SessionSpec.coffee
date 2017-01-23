@@ -764,7 +764,7 @@ describe 'Session', ->
       assert(Object.keys(bob.session_states).length is 1)
 
       Promise.all(Array.apply(null, Array(1001)).map((_, i) ->
-        return new Promise (resolve, reject) ->
+        return new Promise (resolve) ->
           alice.encrypt 'Hello Bob2!'
           .then (hello_bob2) ->
             assert_decrypt 'Hello Bob2!', bob.decrypt bob_store, hello_bob2
