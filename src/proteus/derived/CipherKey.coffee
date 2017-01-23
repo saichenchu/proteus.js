@@ -38,7 +38,7 @@ module.exports = class CipherKey
   ###
   @param plaintext [String, Uint8Array, ArrayBuffer] The text to encrypt
   @param nonce [Uint8Array] Counter as nonce
-  @return [Uint8Array] Encypted payload
+  @return [Uint8Array] Encrypted payload
   ###
   encrypt: (plaintext, nonce) ->
     # @todo Re-validate if the ArrayBuffer check is needed (Prerequisite: Integration tests)
