@@ -772,3 +772,49 @@ describe 'Session', ->
             resolve()))
 
     .then((() -> done()), (err) -> done(err))
+
+  it 'should limit the number of sessions', (done) ->
+    [alice_ident, bob_ident] = [0, 1].map -> Proteus.keys.IdentityKeyPair.new()
+    bob_store = new TestStore Proteus.keys.PreKey.generate_prekeys 0, (Proteus.session.Session.MAX_SESSION_STATES + 2)
+
+    obj_size = (obj) -> Object.keys(obj).length
+    bob_bundle = (index, store) ->
+      Proteus.keys.PreKeyBundle.new bob_ident.public_key, store.prekeys[index]
+
+    alice = null
+    bob = null
+    hello_bob = null
+
+    Proteus.session.Session.init_from_prekey alice_ident, bob_bundle 1, bob_store
+    .then (session) ->
+      alice = session
+      alice.encrypt 'Hello Bob!'
+    .then (message) ->
+      hello_bob = message
+      assert_init_from_message bob_ident, bob_store, hello_bob, 'Hello Bob!'
+    .then (session) ->
+      bob = session
+      assert obj_size(bob.session_states) is 1
+
+      Promise.all(
+        [0..(Proteus.session.Session.MAX_SESSION_STATES - 1)].map (obj, index) ->
+          new Promise (resolve, reject) ->
+            Proteus.session.Session.init_from_prekey alice_ident, bob_bundle (index + 2), bob_store
+            .then (session) ->
+              alice = session
+              alice.encrypt 'Hello Bob!'
+            .then (message) ->
+              hello_bob = message
+              assert_decrypt 'Hello Bob!', bob.decrypt bob_store, hello_bob
+            .then ->
+              resolve()
+            .catch (err) ->
+              reject err
+      )
+    .then ->
+      assert.isAtMost obj_size(alice.session_states), Proteus.session.Session.MAX_SESSION_STATES
+      assert.isAtMost obj_size(bob.session_states), Proteus.session.Session.MAX_SESSION_STATES
+    .then ->
+      done()
+    .catch (err) ->
+      done err
