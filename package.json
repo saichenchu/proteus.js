@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "ed2curve": "0.2.1",
+    "ed2curve": "~0.2",
     "libsodium": "wireapp/libsodium.js#792aff8d7e124aff366cb71e7cab21bced143426",
     "wire-webapp-cbor": "1.1.1"
   },
@@ -9,7 +9,7 @@
     "chai": "3.5.0",
     "coffee-script": "1.11.1",
     "mocha": "2.5.3",
-    "webpack": "^2.2.0-rc.0"
+    "webpack": "~2.2"
   },
   "homepage": "https://github.com/wireapp/proteus.js",
   "license": "GPL-3.0",
