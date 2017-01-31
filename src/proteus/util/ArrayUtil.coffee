@@ -17,6 +17,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 TypeUtil = require '../util/TypeUtil'
+ProteusError = require '../errors/ProteusError'
 
 module.exports = do ->
   ###
@@ -105,3 +106,12 @@ module.exports = do ->
       out.push bit_array_to_partial_word(8 * (i & 3), tmp)
     out
 
+  assert_is_not_zeroes: (array) ->
+    only_zeroes = true
+    for val in array
+      if val > 0
+        only_zeroes = false
+        break
+
+    if only_zeroes
+      throw new ProteusError 'Array consists only of zeroes.'

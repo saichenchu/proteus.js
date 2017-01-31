@@ -20,8 +20,9 @@ CBOR = require 'wire-webapp-cbor'
 ed2curve = require 'ed2curve'
 sodium = require 'libsodium'
 
-DontCallConstructor = require '../errors/DontCallConstructor'
+ArrayUtil = require '../util/ArrayUtil'
 ClassUtil = require '../util/ClassUtil'
+DontCallConstructor = require '../errors/DontCallConstructor'
 TypeUtil = require '../util/TypeUtil'
 
 PublicKey = require './PublicKey'
@@ -59,7 +60,11 @@ module.exports = class SecretKey
   shared_secret: (public_key) ->
     TypeUtil.assert_is_instance PublicKey, public_key
 
-    return sodium.crypto_scalarmult @sec_curve, public_key.pub_curve
+    shared_secret = sodium.crypto_scalarmult @sec_curve, public_key.pub_curve
+
+    ArrayUtil.assert_is_not_zeroes shared_secret
+
+    return shared_secret
 
   encode: (e) ->
     e.object 1
