@@ -17,8 +17,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 CBOR = require 'wire-webapp-cbor'
-chacha20 = require 'chacha20'
-sodium = require 'libsodium-wrappers-sumo'
+libsodium = require 'libsodium-sumo'
 
 DontCallConstructor = require '../errors/DontCallConstructor'
 ClassUtil = require '../util/ClassUtil'
@@ -45,8 +44,7 @@ module.exports = class CipherKey
     if plaintext instanceof ArrayBuffer and plaintext.byteLength isnt undefined
       plaintext = new Uint8Array plaintext
 
-    encrypted_buffer = chacha20.encrypt nonce.buffer, @key.buffer, new Buffer(plaintext)
-    return new Uint8Array encrypted_buffer
+    return libsodium._crypto_stream_chacha20_xor plaintext, nonce, @key, 'uint8array'
 
   decrypt: (ciphertext, nonce) ->
     return @encrypt ciphertext, nonce
