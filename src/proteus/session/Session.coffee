@@ -149,19 +149,12 @@ module.exports = class Session
     @_evict_oldest_session_state()
 
   _evict_oldest_session_state: ->
-    states = ([k, v] for k, v in @session_states \
-                          when k.toString() isnt @session_tag.toString())
+    oldest = Object.keys @session_states
+    .filter (obj) => obj.toString() isnt @session_tag
+    .reduce (lowest, obj, index) =>
+      if @session_states[obj].idx < @session_states[lowest].idx then obj.toString() else lowest
 
-    reduction = (accumulator, item) ->
-      tag = item[0]
-      val = item[1]
-
-      if not accumulator or val.idx < accumulator.idx
-        return {idx: val.idx, tag: k}
-      return accumulator
-
-    oldest = states.reduce(reduction, null)
-    delete @session_states[oldest.tag]
+    delete @session_states[oldest]
 
   get_local_identity: ->
     return @local_identity.public_key
