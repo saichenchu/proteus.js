@@ -17,6 +17,8 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 module.exports = class PreKeyStore
+  @prekeys = []
+
   get_prekey: (prekey_id) ->
     throw Error 'Virtual function unimplemented'
 
