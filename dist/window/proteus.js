@@ -1,4 +1,4 @@
-/*! wire-webapp-proteus v3.1.0 */
+/*! wire-webapp-proteus v3.1.1 */
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -194,7 +194,9 @@
 
 	var output_format = "uint8array";
 
-	libsodium._sodium_init();
+	if (libsodium._sodium_init() !== 0) {
+		throw new Error("libsodium was not correctly initialized.");
+	}
 
 	// List of functions and constants defined in the wrapped libsodium
 	function symbols() {
@@ -10198,7 +10200,7 @@ nacl.setPRNG = function(fn) {
 /* 48 */
 /***/ (function(module, exports) {
 
-if(typeof undefined === 'undefined') {var e = new Error("Cannot find module \"undefined\""); e.code = 'MODULE_NOT_FOUND'; throw e;}
+if(typeof undefined === 'undefined') {var e = new Error("Cannot find module \"undefined\""); e.code = 'MODULE_NOT_FOUND';; throw e;}
 module.exports = undefined;
 
 /***/ }),
