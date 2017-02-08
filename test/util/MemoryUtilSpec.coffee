@@ -17,23 +17,24 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 describe 'MemoryUtil', ->
-  it 'should zeroize an Uint8Array', ->
-    array_random = Uint8Array.from { length: 32 }, () -> (Math.random() * 10) + 1
+  describe 'zeroize', ->
+    it 'zeroizes an ArrayBuffer', ->
+      buffer_random = new ArrayBuffer 32
+      new Uint8Array(buffer_random).fill (Math.random() * 10) + 1
 
-    assert.lengthOf array_random, 32
-    Proteus.util.MemoryUtil.zeroize_object array_random
-    array_random.every (value) -> assert.strictEqual value, 0
+      Proteus.util.MemoryUtil.zeroize buffer_random
+      new Uint8Array(buffer_random).every (value) -> assert.strictEqual value, 0
 
-  it 'should zeroize an ArrayBuffer', ->
-    buffer_random = new ArrayBuffer 32
-    new Uint8Array(buffer_random).fill (Math.random() * 10) + 1
+    it 'zeroizes an Uint8Array', ->
+      array_random = Uint8Array.from { length: 32 }, () -> (Math.random() * 10) + 1
 
-    Proteus.util.MemoryUtil.zeroize_buffer buffer_random
-    new Uint8Array(buffer_random).every (value) -> assert.strictEqual value, 0
+      assert.lengthOf array_random, 32
+      Proteus.util.MemoryUtil.zeroize array_random
+      array_random.every (value) -> assert.strictEqual value, 0
 
-  it 'should deeply zeroize a KeyPair', ->
-    key_pair = Proteus.keys.KeyPair.new()
+    it 'deeply zeroizes a KeyPair', ->
+      key_pair = Proteus.keys.KeyPair.new()
 
-    Proteus.util.MemoryUtil.zeroize_object key_pair
-    key_pair.secret_key.sec_edward.every (value) -> assert.strictEqual value, 0
-    key_pair.secret_key.sec_curve.every (value) -> assert.strictEqual value, 0
+      Proteus.util.MemoryUtil.zeroize key_pair
+      key_pair.secret_key.sec_edward.every (value) -> assert.strictEqual value, 0
+      key_pair.secret_key.sec_curve.every (value) -> assert.strictEqual value, 0

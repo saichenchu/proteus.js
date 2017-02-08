@@ -74,7 +74,7 @@ module.exports = do ->
 
     key = extract salt, input
 
-    MemoryUtil.zeroize_object input
-    MemoryUtil.zeroize_object salt
+    MemoryUtil.zeroize input
+    MemoryUtil.zeroize salt
 
     return expand key, info, length

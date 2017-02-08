@@ -16,23 +16,16 @@
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-sodium = require 'libsodium'
-
 ProteusError = require '../errors/ProteusError'
-
+sodium = require 'libsodium'
 TypeUtil = require '../util/TypeUtil'
 
 module.exports = do ->
-  zeroize_object: (object) ->
+  zeroize: (object) ->
     if object instanceof Uint8Array
       sodium.memzero object
     else if object instanceof ArrayBuffer
-      @zeroize_buffer object
+      sodium.memzero new Uint8Array object
     else if typeof object is 'object'
       for key, val of object
-        @zeroize_object val
-
-  zeroize_buffer: (buffer) ->
-    TypeUtil.assert_is_instance ArrayBuffer, buffer
-
-    sodium.memzero new Uint8Array buffer
+        @zeroize val

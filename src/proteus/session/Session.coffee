@@ -108,7 +108,7 @@ module.exports = class Session
         session._insert_session_state(pkmsg.message.session_tag, state)
 
         if pkmsg.prekey_id < PreKey.MAX_PREKEY_ID
-          MemoryUtil.zeroize_object prekey_store.prekeys[pkmsg.prekey_id]
+          MemoryUtil.zeroize prekey_store.prekeys[pkmsg.prekey_id]
           prekey_store.remove(pkmsg.prekey_id)
           .then ->
             resolve [session, plain]
@@ -156,7 +156,7 @@ module.exports = class Session
     .reduce (lowest, obj, index) =>
       if @session_states[obj].idx < @session_states[lowest].idx then obj.toString() else lowest
 
-    MemoryUtil.zeroize_object @session_states[oldest]
+    MemoryUtil.zeroize @session_states[oldest]
     delete @session_states[oldest]
 
   get_local_identity: ->
@@ -201,7 +201,7 @@ module.exports = class Session
           plaintext = state.decrypt envelope, msg.message
 
           if msg.prekey_id != PreKey.MAX_PREKEY_ID
-            MemoryUtil.zeroize_object prekey_store.prekeys[msg.prekey_id]
+            MemoryUtil.zeroize prekey_store.prekeys[msg.prekey_id]
             prekey_store.remove msg.prekey_id
 
           @_insert_session_state msg.message.session_tag, state

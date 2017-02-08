@@ -37,7 +37,7 @@ module.exports = class DerivedSecrets
     cipher_key = new Uint8Array output_key_material.buffer.slice 0, 32
     mac_key = new Uint8Array output_key_material.buffer.slice 32, 64
 
-    MemoryUtil.zeroize_buffer output_key_material.buffer
+    MemoryUtil.zeroize output_key_material.buffer
 
     ds = ClassUtil.new_instance DerivedSecrets
     ds.cipher_key = CipherKey.new cipher_key
