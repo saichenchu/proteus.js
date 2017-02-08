@@ -18,6 +18,7 @@
 
 DontCallConstructor = require '../errors/DontCallConstructor'
 ClassUtil = require '../util/ClassUtil'
+MemoryUtil = require '../util/MemoryUtil'
 
 KeyDerivationUtil = require '../util/KeyDerivationUtil'
 
@@ -31,10 +32,12 @@ module.exports = class DerivedSecrets
   @kdf: (input, salt, info) ->
     byte_length = 64
 
-    okm = KeyDerivationUtil.hkdf salt, input, info, byte_length
+    output_key_material = KeyDerivationUtil.hkdf salt, input, info, byte_length
 
-    cipher_key = new Uint8Array okm.buffer.slice 0, 32
-    mac_key = new Uint8Array okm.buffer.slice 32, 64
+    cipher_key = new Uint8Array output_key_material.buffer.slice 0, 32
+    mac_key = new Uint8Array output_key_material.buffer.slice 32, 64
+
+    MemoryUtil.zeroize_buffer output_key_material.buffer
 
     ds = ClassUtil.new_instance DerivedSecrets
     ds.cipher_key = CipherKey.new cipher_key

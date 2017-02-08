@@ -19,9 +19,10 @@
 CBOR = require 'wire-webapp-cbor'
 
 DontCallConstructor = require '../errors/DontCallConstructor'
-ClassUtil = require '../util/ClassUtil'
-TypeUtil = require '../util/TypeUtil'
 ArrayUtil = require '../util/ArrayUtil'
+ClassUtil = require '../util/ClassUtil'
+MemoryUtil = require '../util/MemoryUtil'
+TypeUtil = require '../util/TypeUtil'
 
 DecryptError = require '../errors/DecryptError'
 
@@ -64,6 +65,7 @@ module.exports = class SessionState
       alice_base.secret_key.shared_secret(bob_pkbundle.public_key)])
 
     dsecs = DerivedSecrets.kdf_without_salt master_key, "handshake"
+    MemoryUtil.zeroize_object master_key
 
     rootkey = RootKey.from_cipher_key dsecs.cipher_key
     chainkey = ChainKey.from_mac_key dsecs.mac_key, 0
@@ -93,6 +95,7 @@ module.exports = class SessionState
       bob_prekey.secret_key.shared_secret(alice_base)])
 
     dsecs = DerivedSecrets.kdf_without_salt master_key, "handshake"
+    MemoryUtil.zeroize_object master_key
 
     rootkey = RootKey.from_cipher_key dsecs.cipher_key
     chainkey = ChainKey.from_mac_key dsecs.mac_key, 0
@@ -121,6 +124,9 @@ module.exports = class SessionState
     @recv_chains.unshift recv_chain
 
     if @recv_chains.length > Session.MAX_RECV_CHAINS
+      for index in [Session.MAX_RECV_CHAINS...@recv_chains.length]
+        MemoryUtil.zeroize_object @recv_chains[index]
+
       @recv_chains = @recv_chains.slice 0, Session.MAX_RECV_CHAINS
 
     return

@@ -18,8 +18,9 @@
 
 sodium = require 'libsodium'
 
-TypeUtil = require '../util/TypeUtil'
 ArrayUtil = require '../util/ArrayUtil'
+TypeUtil = require '../util/TypeUtil'
+MemoryUtil = require '../util/MemoryUtil'
 
 module.exports = do ->
   ###
@@ -72,4 +73,8 @@ module.exports = do ->
       return new Uint8Array result.buffer.slice 0, length
 
     key = extract salt, input
+
+    MemoryUtil.zeroize_object input
+    MemoryUtil.zeroize_object salt
+
     return expand key, info, length

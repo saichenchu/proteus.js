@@ -16,5 +16,6 @@ Proteus.message.SessionTag = require('proteus/message/SessionTag');
 Proteus.util = {
   KeyDerivationUtil: require('proteus/util/KeyDerivationUtil'),
   ArrayUtil: require('proteus/util/ArrayUtil'),
+  MemoryUtil: require('proteus/util/MemoryUtil'),
   TypeUtil: require('proteus/util/TypeUtil')
 };
