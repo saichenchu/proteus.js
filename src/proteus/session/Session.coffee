@@ -185,7 +185,11 @@ module.exports = class Session
         when msg instanceof CipherMessage
           return resolve @_decrypt_cipher_message envelope, envelope.message
         when msg instanceof PreKeyMessage
-          throw new DecryptError.RemoteIdentityChanged if msg.identity_key.fingerprint() isnt @remote_identity.fingerprint()
+          actual_fingerprint = msg.identity_key.fingerprint()
+          expected_fingerprint = @remote_identity.fingerprint()
+          if actual_fingerprint isnt expected_fingerprint
+            message = "Fingerprints do not match: We expected '#{expected_fingerprint}', but received '#{actual_fingerprint}'."
+            throw new DecryptError.RemoteIdentityChanged message
           return resolve @_decrypt_prekey_message envelope, msg, prekey_store
         else
           throw new DecryptError 'Unknown message type.'
