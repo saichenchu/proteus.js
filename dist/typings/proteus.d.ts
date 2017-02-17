@@ -45,11 +45,6 @@ export declare module derived {
 }
 
 export declare module errors {
-   class DecodeError extends ProteusError {
-    message: string;
-    constructor(message: string);
-  }
-
   class DecodeError extends ProteusError {
     message: string;
     constructor(message: string);
