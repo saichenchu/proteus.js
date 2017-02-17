@@ -44,6 +44,33 @@ export declare module derived {
   }
 }
 
+export declare module errors {
+   class DecodeError extends ProteusError {
+    message: string;
+    constructor(message: string);
+  }
+
+  class DecodeError extends ProteusError {
+    message: string;
+    constructor(message: string);
+  }
+
+  class DecryptError extends ProteusError {
+    message: string;
+    constructor(message: string);
+  }
+
+  class DontCallConstructor extends ProteusError {
+    message: string;
+    constructor(message: string);
+  }
+
+  class ProteusError extends Error {
+    message: string;
+    constructor(message: string);
+  }
+}
+
 export declare module keys {
   class IdentityKey {
     constructor();
