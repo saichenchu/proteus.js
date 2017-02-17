@@ -1,4 +1,4 @@
-/*! wire-webapp-proteus v3.1.1 */
+/*! wire-webapp-proteus v3.1.2 */
 /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -5326,6 +5326,8 @@
   module.exports = PreKeyStore = (function() {
     function PreKeyStore() {}
 
+    PreKeyStore.prekeys = [];
+
     PreKeyStore.prototype.get_prekey = function(prekey_id) {
       throw Error('Virtual function unimplemented');
     };
@@ -5560,7 +5562,7 @@
     Session.prototype.decrypt = function(prekey_store, envelope) {
       return new Promise((function(_this) {
         return function(resolve) {
-          var msg;
+          var actual_fingerprint, expected_fingerprint, message, msg;
           TypeUtil.assert_is_instance(PreKeyStore, prekey_store);
           TypeUtil.assert_is_instance(Envelope, envelope);
           msg = envelope.message;
@@ -5568,8 +5570,11 @@
             case !(msg instanceof CipherMessage):
               return resolve(_this._decrypt_cipher_message(envelope, envelope.message));
             case !(msg instanceof PreKeyMessage):
-              if (msg.identity_key.fingerprint() !== _this.remote_identity.fingerprint()) {
-                throw new DecryptError.RemoteIdentityChanged;
+              actual_fingerprint = msg.identity_key.fingerprint();
+              expected_fingerprint = _this.remote_identity.fingerprint();
+              if (actual_fingerprint !== expected_fingerprint) {
+                message = "Fingerprints do not match: We expected '" + expected_fingerprint + "', but received '" + actual_fingerprint + "'.";
+                throw new DecryptError.RemoteIdentityChanged(message);
               }
               return resolve(_this._decrypt_prekey_message(envelope, msg, prekey_store));
             default:
