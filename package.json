@@ -4,7 +4,7 @@
     "libsodium-wrappers-sumo": "0.4.9",
     "wire-webapp-cbor": "1.1.1"
   },
-  "description": "Axolotl protocol implementation for JavaScript",
+  "description": "Axolotl protocol implementation for JavaScript.",
   "devDependencies": {
     "chai": "3.5.0",
     "coffee-script": "1.11.1",
@@ -26,5 +26,5 @@
     "test": "mocha --compilers coffee:coffee-script/register -s 30000 -t 30000 --recursive test/harness.js test --trace-warnings"
   },
   "typings": "dist/typings/proteus.d.ts",
-  "version": "3.1.3"
+  "version": "3.1.4"
 }
