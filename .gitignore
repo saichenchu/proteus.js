@@ -1,4 +1,5 @@
 /.idea
+/bower_components
 /dist/commonjs
 !/dist/commonjs/proteus.window.js
 /node_modules
