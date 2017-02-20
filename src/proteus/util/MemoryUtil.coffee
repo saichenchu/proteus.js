@@ -17,7 +17,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 ProteusError = require '../errors/ProteusError'
-sodium = require 'libsodium'
+sodium = require 'libsodium-wrappers-sumo'
 TypeUtil = require '../util/TypeUtil'
 
 module.exports = do ->

@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "ed2curve": "0.2.1",
-    "libsodium": "wireapp/libsodium.js#02ce7ac62a07a5ee0546a01e4da8bc2095ce320d",
+    "libsodium-wrappers-sumo": "0.4.9",
     "wire-webapp-cbor": "1.1.1"
   },
   "description": "Axolotl protocol implementation for JavaScript",

@@ -18,7 +18,7 @@
 
 CBOR = require 'wire-webapp-cbor'
 ed2curve = require 'ed2curve'
-sodium = require 'libsodium'
+sodium = require 'libsodium-wrappers-sumo'
 
 DontCallConstructor = require '../errors/DontCallConstructor'
 ClassUtil = require '../util/ClassUtil'
