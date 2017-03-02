@@ -26,5 +26,5 @@
     "test": "mocha -s 30000 -t 30000 --recursive test/harness.js test --trace-warnings"
   },
   "typings": "dist/typings/proteus.d.ts",
-  "version": "4.0.0"
+  "version": "5.0.0"
 }
