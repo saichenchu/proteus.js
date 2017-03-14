@@ -26,11 +26,19 @@ const ClassUtil = require('../util/ClassUtil');
 const DontCallConstructor = require('../errors/DontCallConstructor');
 const TypeUtil = require('../util/TypeUtil');
 
-module.exports = class CipherKey {
+/**
+ * @class
+ * @public
+ */
+class CipherKey {
   constructor() {
     throw new DontCallConstructor(this);
   }
 
+  /**
+   * @param key {Uint8Array}
+   * @returns {CipherKey}
+   */
   static new(key) {
     TypeUtil.assert_is_instance(Uint8Array, key);
 
@@ -40,9 +48,9 @@ module.exports = class CipherKey {
   }
 
   /*
-   * @param plaintext [String, Uint8Array, ArrayBuffer] The text to encrypt
-   * @param nonce [Uint8Array] Counter as nonce
-   * @return [Uint8Array] Encypted payload
+   * @param plaintext {String|Array<number>|ArrayBuffer} The text to encrypt
+   * @param nonce {Array<number>} Counter as nonce
+   * @return {Array<number>} Encrypted payload
    */
   encrypt(plaintext, nonce) {
     // @todo Re-validate if the ArrayBuffer check is needed (Prerequisite: Integration tests)
@@ -69,7 +77,7 @@ module.exports = class CipherKey {
     let key_bytes = null;
 
     const nprops = d.object();
-    for (let i = 0; i <= nprops - 1; i++) {
+    for (let i = 0; i < nprops; i++) {
       switch (d.u8()) {
         case 0:
           key_bytes = new Uint8Array(d.bytes());
@@ -81,3 +89,5 @@ module.exports = class CipherKey {
     return CipherKey.new(key_bytes);
   }
 };
+
+module.exports = CipherKey;

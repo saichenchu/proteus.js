@@ -8,7 +8,9 @@
   "devDependencies": {
     "chai": "3.5.0",
     "cpx": "1.5.0",
+    "jsdoc": "^3.4.3",
     "mocha": "2.5.3",
+    "tsd-jsdoc": "^2.0.0-beta.2",
     "webpack": "2.2.0"
   },
   "homepage": "https://github.com/wireapp/proteus.js",
@@ -20,8 +22,9 @@
     "url": "git://github.com/wireapp/proteus.js.git"
   },
   "scripts": {
-    "copy": "cpx 'src/**/*' dist/commonjs",
     "bundle": "npm run copy && webpack --progress",
+    "copy": "cpx 'src/**/*' dist/commonjs",
+    "generate": "jsdoc -c jsdoc.json src/",
     "prepublish": "npm run bundle && npm test",
     "test": "mocha -s 30000 -t 30000 --recursive test/harness.js test --trace-warnings"
   },

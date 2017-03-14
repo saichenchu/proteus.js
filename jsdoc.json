@@ -1,0 +1,7 @@
+{
+  "opts": {
+    "destination": "./dist/typings",
+    "recurse": true,
+    "template": "./node_modules/tsd-jsdoc"
+  }
+}
