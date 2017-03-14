@@ -27,9 +27,8 @@ const DontCallConstructor = require('../errors/DontCallConstructor');
 const TypeUtil = require('../util/TypeUtil');
 
 /**
- * @class
+ * @class MacKey
  * @public
- * @type {MacKey}
  */
 class MacKey {
   constructor() {

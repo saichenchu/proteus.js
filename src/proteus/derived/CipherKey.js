@@ -27,8 +27,7 @@ const DontCallConstructor = require('../errors/DontCallConstructor');
 const TypeUtil = require('../util/TypeUtil');
 
 /**
- * @class
- * @public
+ * @class CipherKey
  */
 class CipherKey {
   constructor() {
@@ -37,7 +36,7 @@ class CipherKey {
 
   /**
    * @param key {Uint8Array}
-   * @returns {CipherKey}
+   * @returns {MacKeyga}
    */
   static new(key) {
     TypeUtil.assert_is_instance(Uint8Array, key);
@@ -47,10 +46,10 @@ class CipherKey {
     return ck;
   }
 
-  /*
-   * @param plaintext {String|Array<number>|ArrayBuffer} The text to encrypt
-   * @param nonce {Array<number>} Counter as nonce
-   * @return {Array<number>} Encrypted payload
+  /**
+   * @param plaintext {ArrayBuffer|String|Uint8Array} The text to encrypt
+   * @param nonce {Uint8Array} Counter as nonce
+   * @returns {Uint8Array} Encrypted payload
    */
   encrypt(plaintext, nonce) {
     // @todo Re-validate if the ArrayBuffer check is needed (Prerequisite: Integration tests)
@@ -61,16 +60,29 @@ class CipherKey {
     return sodium.crypto_stream_chacha20_xor(plaintext, nonce, this.key, 'uint8array');
   }
 
+  /**
+   * @param ciphertext {Uint8Array}
+   * @param nonce {Uint8Array}
+   * @returns {Uint8Array}
+   */
   decrypt(ciphertext, nonce) {
     return this.encrypt(ciphertext, nonce);
   }
 
+  /**
+   * @param e {CBOR.Encoder}
+   * @returns {CBOR.Encoder}
+   */
   encode(e) {
     e.object(1);
     e.u8(0);
     return e.bytes(this.key);
   }
 
+  /**
+   * @param d {CBOR.Encoder}
+   * @returns {CipherKey}
+   */
   static decode(d) {
     TypeUtil.assert_is_instance(CBOR.Decoder, d);
 

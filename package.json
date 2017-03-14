@@ -24,7 +24,7 @@
   "scripts": {
     "bundle": "npm run copy && webpack --progress",
     "copy": "cpx 'src/**/*' dist/commonjs",
-    "generate": "jsdoc -c jsdoc.json src/",
+    "generate": "jsdoc --verbose --pedantic --configure jsdoc.json src/",
     "prepublish": "npm run bundle && npm test",
     "test": "mocha -s 30000 -t 30000 --recursive test/harness.js test --trace-warnings"
   },

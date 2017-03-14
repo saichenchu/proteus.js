@@ -19,13 +19,17 @@
 
 'use strict';
 
+/** @namespace derived */
+
 module.exports = {
+  /** @namespace errors */
   errors: {
     ProteusError: require('./proteus/errors/ProteusError'),
     DecodeError: require('./proteus/errors/DecodeError'),
     DecryptError: require('./proteus/errors/DecryptError')
   },
 
+  /** @namespace keys */
   keys: {
     IdentityKey: require('./proteus/keys/IdentityKey'),
     IdentityKeyPair: require('./proteus/keys/IdentityKeyPair'),
@@ -37,6 +41,7 @@ module.exports = {
     SecretKey: require('./proteus/keys/SecretKey')
   },
 
+  /** @namespace message */
   message: {
     Message: require('./proteus/message/Message'),
     CipherMessage: require('./proteus/message/CipherMessage'),
@@ -44,6 +49,7 @@ module.exports = {
     Envelope: require('./proteus/message/Envelope')
   },
 
+  /** @namespace session */
   session: {
     PreKeyStore: require('./proteus/session/PreKeyStore'),
     Session: require('./proteus/session/Session')

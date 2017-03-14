@@ -1,65 +1,80 @@
 /**
- * @class
- * @public
+ * @class CipherKey
  */
 declare class CipherKey {
    /**
-    * @class
-    * @public
+    * @class CipherKey
     */
    constructor();
 
    /**
     * @param key {Uint8Array}
+    * @returns {MacKeyga}
+    */
+   static new(key: Uint8Array): MacKeyga;
+
+   /**
+    * @param plaintext {ArrayBuffer|String|Uint8Array} The text to encrypt
+    * @param nonce {Uint8Array} Counter as nonce
+    * @returns {Uint8Array} Encrypted payload
+    */
+   encrypt(plaintext: (ArrayBuffer|String|Uint8Array), nonce: Uint8Array): Uint8Array;
+
+   /**
+    * @param ciphertext {Uint8Array}
+    * @param nonce {Uint8Array}
+    * @returns {Uint8Array}
+    */
+   decrypt(ciphertext: Uint8Array, nonce: Uint8Array): Uint8Array;
+
+   /**
+    * @param e {CBOR.Encoder}
+    * @returns {CBOR.Encoder}
+    */
+   encode(e: CBOR.Encoder): CBOR.Encoder;
+
+   /**
+    * @param d {CBOR.Encoder}
     * @returns {CipherKey}
     */
-   static new(key: Uint8Array): CipherKey;
+   static decode(d: CBOR.Encoder): CipherKey;
 
 }
 
 /**
- * @class
- * @public
- * @type {DerivedSecrets}
+ * @class DerivedSecrets
  */
 declare class DerivedSecrets {
    /**
-    * @class
-    * @public
-    * @type {DerivedSecrets}
+    * @class DerivedSecrets
     */
    constructor();
 
    /**
-    *
     * @param input {Array<number>}
-    * @param salt {Array<number>}
+    * @param salt {Uint8Array}
     * @param info {string}
-    * @public
     * @returns {DerivedSecrets}
     */
-   public static kdf(input: number[], salt: number[], info: string): DerivedSecrets;
+   static kdf(input: number[], salt: Uint8Array, info: string): DerivedSecrets;
 
    /**
     * @param input {Array<number>} Initial key material (usually the Master Key) in byte array format
     * @param info {string} Key Derivation Data
-    * @public
     * @returns {DerivedSecrets}
     */
-   public static kdf_without_salt(input: number[], info: string): DerivedSecrets;
+   static kdf_without_salt(input: number[], info: string): DerivedSecrets;
 
 }
 
 /**
- * @class
+ * @class MacKey
  * @public
- * @type {MacKey}
  */
 declare class MacKey {
    /**
-    * @class
+    * @class MacKey
     * @public
-    * @type {MacKey}
     */
    constructor();
 
@@ -83,5 +98,25 @@ declare class MacKey {
     */
    static decode(d: CBOR.Decoder): MacKey;
 
+}
+
+/** @namespace derived */
+declare module derived {
+}
+
+/** @namespace errors */
+declare module errors {
+}
+
+/** @namespace keys */
+declare module keys {
+}
+
+/** @namespace message */
+declare module message {
+}
+
+/** @namespace session */
+declare module session {
 }
 
