@@ -1,27 +1,19 @@
 /**
  * @class
- */
-declare class TestClass {
-    /**
-     * @param arr {Uint8Array}
-     * @returns {Uint8Array}
-     */
-    testReturn(arr: any): any;
-
-}
-
-/**
- * @class
  * @public
  */
 declare class CipherKey {
-    constructor();
+   /**
+    * @class
+    * @public
+    */
+   constructor();
 
-    /**
-     * @param key {Uint8Array}
-     * @returns {CipherKey}
-     */
-    static new(key: any): CipherKey;
+   /**
+    * @param key {Uint8Array}
+    * @returns {CipherKey}
+    */
+   static new(key: Uint8Array): CipherKey;
 
 }
 
@@ -31,24 +23,30 @@ declare class CipherKey {
  * @type {DerivedSecrets}
  */
 declare class DerivedSecrets {
-    constructor();
+   /**
+    * @class
+    * @public
+    * @type {DerivedSecrets}
+    */
+   constructor();
 
-    /**
-     * @param input {Array<number>}
-     * @param salt {Array<number>}
-     * @param info {string}
-     * @public
-     * @returns {DerivedSecrets}
-     */
-    static kdf(input: number[], salt: number[], info: string): DerivedSecrets;
+   /**
+    *
+    * @param input {Array<number>}
+    * @param salt {Array<number>}
+    * @param info {string}
+    * @public
+    * @returns {DerivedSecrets}
+    */
+   public static kdf(input: number[], salt: number[], info: string): DerivedSecrets;
 
-    /**
-     * @param input {Array<number>} Initial key material (usually the Master Key) in byte array format
-     * @param info {string} Key Derivation Data
-     * @public
-     * @returns {DerivedSecrets}
-     */
-    static kdf_without_salt(input: number[], info: string): DerivedSecrets;
+   /**
+    * @param input {Array<number>} Initial key material (usually the Master Key) in byte array format
+    * @param info {string} Key Derivation Data
+    * @public
+    * @returns {DerivedSecrets}
+    */
+   public static kdf_without_salt(input: number[], info: string): DerivedSecrets;
 
 }
 
@@ -58,26 +56,32 @@ declare class DerivedSecrets {
  * @type {MacKey}
  */
 declare class MacKey {
-    constructor();
+   /**
+    * @class
+    * @public
+    * @type {MacKey}
+    */
+   constructor();
 
-    /**
-     * @param msg {string|Array<number>}
-     * Hash-based message authentication code
-     */
-    sign(msg: string | number[]): void;
+   /**
+    * @param msg {string|Uint8Array}
+    * Hash-based message authentication code
+    */
+   sign(msg: (string|Uint8Array)): void;
 
-    /**
-     * @param signature {Array<number>}
-     * @param msg {Array<number>}
-     * @returns {boolean}
-     */
-    verify(signature: number[], msg: number[]): boolean;
+   /**
+    * @param signature {Uint8Array}
+    * @param msg {Array<number>}
+    * @returns {boolean}
+    */
+   verify(signature: Uint8Array, msg: number[]): boolean;
 
-    /**
-     * @param d {*}
-     * @returns {MacKey}
-     */
-    static decode(d: any): MacKey;
+   /**
+    *
+    * @param d {CBOR.Decoder}
+    * @returns {MacKey}
+    */
+   static decode(d: CBOR.Decoder): MacKey;
 
 }
 
