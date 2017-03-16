@@ -20,7 +20,6 @@
 'use strict';
 
 const ProteusError = require('../errors/ProteusError');
-const TypeUtil = require('../util/TypeUtil');
 
 const sodium = require('libsodium-wrappers-sumo');
 
