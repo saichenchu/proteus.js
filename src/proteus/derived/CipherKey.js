@@ -36,7 +36,7 @@ class CipherKey {
 
   /**
    * @param key {Uint8Array}
-   * @returns {MacKeyga}
+   * @returns {MacKey}
    */
   static new(key) {
     TypeUtil.assert_is_instance(Uint8Array, key);

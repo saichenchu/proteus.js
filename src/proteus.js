@@ -21,6 +21,8 @@
 
 /** @namespace derived */
 
+/** @namespace CBOR */
+
 module.exports = {
   /** @namespace errors */
   errors: {
