@@ -42,6 +42,7 @@ class CipherKey {
     TypeUtil.assert_is_instance(Uint8Array, key);
 
     const ck = ClassUtil.new_instance(CipherKey);
+    /** @type {Uint8Array} */
     ck.key = key;
     return ck;
   }
@@ -81,7 +82,7 @@ class CipherKey {
 
   /**
    * @param d {CBOR.Encoder}
-   * @returns {CipherKey}
+   * @returns {derived.CipherKey}
    */
   static decode(d) {
     TypeUtil.assert_is_instance(CBOR.Decoder, d);

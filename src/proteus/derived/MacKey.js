@@ -42,6 +42,7 @@ class MacKey {
     TypeUtil.assert_is_instance(Uint8Array, key);
 
     const mk = ClassUtil.new_instance(MacKey);
+    /** @type {Uint8Array} */
     mk.key = key;
     return mk;
   }

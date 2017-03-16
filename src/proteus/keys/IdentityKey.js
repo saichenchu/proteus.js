@@ -28,17 +28,22 @@ const TypeUtil = require('../util/TypeUtil');
 
 const PublicKey = require('./PublicKey');
 
-/*
+/** @module keys */
+
+/**
  * Construct a long-term identity key pair.
- *
- * Every client has a long-term identity key pair.
- * Long-term identity keys are used to initialise “sessions” with other clients (triple DH).
+ * @classdesc Every client has a long-term identity key pair.
+ * Long-term identity keys are used to initialise "sessions" with other clients (triple DH).
  */
-module.exports = class IdentityKey {
+class IdentityKey {
   constructor() {
     throw new DontCallConstructor(this);
   }
 
+  /**
+   * @param public_key {keys.IdentityKey}
+   * @returns {keys.IdentityKey}
+   */
   static new(public_key) {
     TypeUtil.assert_is_instance(PublicKey, public_key);
 
@@ -47,20 +52,30 @@ module.exports = class IdentityKey {
     return key;
   }
 
+  /** @returns {string} */
   fingerprint() {
     return this.public_key.fingerprint();
   }
 
+  /** @returns {string} */
   toString() {
     return sodium.to_hex(this.public_key);
   }
 
+  /**
+   * @param e {CBOR.Encoder}
+   * @returns {CBOR.Encoder}
+   */
   encode(e) {
     e.object(1);
     e.u8(0);
     return this.public_key.encode(e);
   }
 
+  /**
+   * @param d {CBOR.Decoder}
+   * @returns {keys.IdentityKey}
+   */
   static decode(d) {
     TypeUtil.assert_is_instance(CBOR.Decoder, d);
 
@@ -80,3 +95,5 @@ module.exports = class IdentityKey {
     return IdentityKey.new(public_key);
   }
 };
+
+module.exports = IdentityKey;

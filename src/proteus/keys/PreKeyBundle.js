@@ -32,14 +32,18 @@ const PreKey = require('./PreKey');
 const PreKeyAuth = require('./PreKeyAuth');
 const PublicKey = require('./PublicKey');
 
-module.exports = class PreKeyBundle {
+/** @module keys */
+
+/** @class PreKeyBundle */
+class PreKeyBundle {
   constructor() {
     throw new DontCallConstructor(this);
   }
 
-  /*
-   * @param public_identity_key [Proteus.keys.IdentityKey]
-   * @param prekey [Proteus.keys.PreKey]
+  /**
+   * @param public_identity_key {keys.IdentityKey}
+   * @param prekey {keys.PreKey}
+   * @returns {keys.PreKeyBundle}
    */
   static new(public_identity_key, prekey) {
     TypeUtil.assert_is_instance(IdentityKey, public_identity_key);
@@ -56,13 +60,21 @@ module.exports = class PreKeyBundle {
     return bundle;
   }
 
+  /**
+   * @param identity_pair {keys.IdentityKeyPair}
+   * @param prekey {keys.PreKey}
+   * @returns {keys.PreKeyBundle}
+   */
   static signed(identity_pair, prekey) {
     TypeUtil.assert_is_instance(IdentityKeyPair, identity_pair);
     TypeUtil.assert_is_instance(PreKey, prekey);
 
+    /** @type {keys.PublicKey} */
     const ratchet_key = prekey.key_pair.public_key;
+    /** @type {Uint8Array} */
     const signature = identity_pair.secret_key.sign(ratchet_key.pub_edward);
 
+    /** @type {keys.PreyKeyBundle} */
     const bundle = ClassUtil.new_instance(PreKeyBundle);
 
     bundle.version = 1;
@@ -74,6 +86,7 @@ module.exports = class PreKeyBundle {
     return bundle;
   }
 
+  /** @returns {keys.PreKeyAuth} */
   verify() {
     if (!this.signature) {
       return PreKeyAuth.UNKNOWN;
@@ -85,12 +98,14 @@ module.exports = class PreKeyBundle {
     return PreKeyAuth.INVALID;
   }
 
+  /** @returns {ArrayBuffer} */
   serialise() {
     const e = new CBOR.Encoder();
     this.encode(e);
     return e.get_buffer();
   }
 
+  /** @returns {{id: (number), key: *}} */
   serialised_json() {
     return {
       'id': this.prekey_id,
@@ -98,11 +113,19 @@ module.exports = class PreKeyBundle {
     };
   }
 
+  /**
+   * @param buf {ArrayBuffer}
+   * @returns {keys.PreKeyBundle}
+   */
   static deserialise(buf) {
     TypeUtil.assert_is_instance(ArrayBuffer, buf);
     return PreKeyBundle.decode(new CBOR.Decoder(buf));
   }
 
+  /**
+   * @param e {CBOR.Encoder}
+   * @returns {CBOR.Encoder}
+   */
   encode(e) {
     TypeUtil.assert_is_instance(CBOR.Encoder, e);
 
@@ -124,6 +147,10 @@ module.exports = class PreKeyBundle {
     }
   }
 
+  /**
+   * @param d {CBOR.Decoder}
+   * @returns {keys.PreKeyBundle}
+   */
   static decode(d) {
     TypeUtil.assert_is_instance(CBOR.Decoder, d);
 
@@ -160,3 +187,5 @@ module.exports = class PreKeyBundle {
     return self;
   }
 };
+
+module.exports = PreKeyBundle;

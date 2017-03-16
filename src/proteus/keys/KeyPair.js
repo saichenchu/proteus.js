@@ -30,14 +30,18 @@ const TypeUtil = require('../util/TypeUtil');
 const PublicKey = require('./PublicKey');
 const SecretKey = require('./SecretKey');
 
-/*
+/** @module keys */
+
+/**
  * Construct an ephemeral key pair.
+ * @class KeyPair
  */
-module.exports = class KeyPair {
+class KeyPair {
   constructor() {
     throw new DontCallConstructor(this);
   }
 
+  /** @returns {key.KeyPair} */
   static new() {
     const ed25519_key_pair = sodium.crypto_sign_keypair();
 
@@ -48,14 +52,11 @@ module.exports = class KeyPair {
     return kp;
   }
 
-  /*
-   * @note Ed25519 keys can be converted to Curve25519 keys, so that the same key pair can be
+  /**
+   * @description Ed25519 keys can be converted to Curve25519 keys, so that the same key pair can be
    * used both for authenticated encryption (crypto_box) and for signatures (crypto_sign).
-   * @param ed25519_key_pair [Object] Key pair based on Edwards-curve (Ed25519)
-   * @option ed25519_key_pair [Uint8Array[32]] publicKey
-   * @option ed25519_key_pair [Uint8Array[64]] privateKey
-   * @option ed25519_key_pair [String] keyType
-   * @return [Proteus.keys.SecretKey] Constructed private key
+   * @param ed25519_key_pair {Uint8Array} Key pair based on Edwards-curve (Ed25519)
+   * @returns {keys.SecretKey} Constructed private key
    * @see https://download.libsodium.org/doc/advanced/ed25519-curve25519.html
    */
   _construct_private_key(ed25519_key_pair) {
@@ -64,9 +65,9 @@ module.exports = class KeyPair {
     return SecretKey.new(sk_ed25519, sk_curve25519);
   }
 
-  /*
-   * @param ed25519_key_pair [libsodium.KeyPair] Key pair based on Edwards-curve (Ed25519)
-   * @return [Proteus.keys.PublicKey] Constructed public key
+  /**
+   * @param ed25519_key_pair {libsodium.KeyPair} Key pair based on Edwards-curve (Ed25519)
+   * @returns {keys.PublicKey} Constructed public key
    */
   _construct_public_key(ed25519_key_pair) {
     const pk_ed25519 = ed25519_key_pair.publicKey;
@@ -74,6 +75,10 @@ module.exports = class KeyPair {
     return PublicKey.new(pk_ed25519, pk_curve25519);
   }
 
+  /**
+   * @param e {CBOR.Encoder}
+   * @returns {CBOR.Encoder}
+   */
   encode(e) {
     e.object(2);
 
@@ -84,6 +89,10 @@ module.exports = class KeyPair {
     return this.public_key.encode(e);
   }
 
+  /**
+   * @param d {CBOR.Decoder}
+   * @returns {keys.KeyPair}
+   */
   static decode(d) {
     TypeUtil.assert_is_instance(CBOR.Decoder, d);
 
@@ -109,3 +118,5 @@ module.exports = class KeyPair {
     return self;
   }
 };
+
+module.exports = KeyPair;

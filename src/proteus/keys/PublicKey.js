@@ -27,44 +27,64 @@ const ClassUtil = require('../util/ClassUtil');
 const DontCallConstructor = require('../errors/DontCallConstructor');
 const TypeUtil = require('../util/TypeUtil');
 
-module.exports = class PublicKey {
+/** @module keys */
+
+/** @class PublicKey */
+class PublicKey {
   constructor() {
     throw new DontCallConstructor(this);
   }
 
+  /**
+   * @param pub_edward {Uint8Array}
+   * @param pub_curve {Uint8Array}
+   * @returns {keys.PublicKey}
+   */
   static new(pub_edward, pub_curve) {
     TypeUtil.assert_is_instance(Uint8Array, pub_edward);
     TypeUtil.assert_is_instance(Uint8Array, pub_curve);
 
+    /** @type keys.PublicKey */
     const pk = ClassUtil.new_instance(PublicKey);
 
+    /** @type {Uint8Array} */
     pk.pub_edward = pub_edward;
+    /** @type {Uint8Array} */
     pk.pub_curve = pub_curve;
     return pk;
   }
 
-  /*
+  /**
    * This function can be used to verify a message signature.
    *
-   * @param signature [Uint8Array] The signature to verify
-   * @param message [String] The message from which the signature was computed.
-   * @return [bool] `true` if the signature is valid, `false` otherwise.
+   * @param signature {Uint8Array} The signature to verify
+   * @param message {string} The message from which the signature was computed.
+   * @returns {boolean} `true` if the signature is valid, `false` otherwise.
    */
   verify(signature, message) {
     TypeUtil.assert_is_instance(Uint8Array, signature);
     return sodium.crypto_sign_verify_detached(signature, message, this.pub_edward);
   }
 
+  /** @returns {string} */
   fingerprint() {
     return sodium.to_hex(this.pub_edward);
   }
 
+  /**
+   * @param e {CBOR.Encoder}
+   * @returns {CBOR.Encoder}
+   */
   encode(e) {
     e.object(1);
     e.u8(0);
     return e.bytes(this.pub_edward);
   }
 
+  /**
+   * @param d {CBOR.Decoder}
+   * @returns {keys.PublicKey}
+   */
   static decode(d) {
     TypeUtil.assert_is_instance(CBOR.Decoder, d);
 
@@ -87,3 +107,5 @@ module.exports = class PublicKey {
     return self;
   }
 };
+
+module.exports = PublicKey;

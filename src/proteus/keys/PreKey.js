@@ -26,8 +26,11 @@ const DontCallConstructor = require('../errors/DontCallConstructor');
 const TypeUtil = require('../util/TypeUtil');
 
 const KeyPair = require('./KeyPair');
-/*
- * Pre-generated (and regularly refreshed) pre-keys.
+
+/** @module keys **/
+
+/**
+ * @classdesc Pre-generated (and regularly refreshed) pre-keys.
  * A Pre-Shared Key contains the public long-term identity and ephemeral handshake keys for the initial triple DH.
  */
 class PreKey {
@@ -35,8 +38,9 @@ class PreKey {
     throw new DontCallConstructor(this);
   }
 
-  /*
-   * @param pre_key_id [Integer]
+  /**
+   * @param pre_key_id {number}
+   * @returns {keys.PreKey}
    */
   static new(pre_key_id) {
     TypeUtil.assert_is_integer(pre_key_id);
@@ -55,10 +59,16 @@ class PreKey {
     return pk;
   }
 
+  /** @returns {keys.PreKey} */
   static last_resort() {
     return PreKey.new(PreKey.MAX_PREKEY_ID);
   }
 
+  /**
+   * @param start {number}
+   * @param size {number}
+   * @returns {Array<keys.PreKey>}
+   */
   static generate_prekeys(start, size) {
     const check_integer = (value) => {
       TypeUtil.assert_is_integer(value);
@@ -80,17 +90,26 @@ class PreKey {
     return [...Array(size).keys()].map((x) => PreKey.new((start + x) % PreKey.MAX_PREKEY_ID));
   }
 
+  /** @returns {ArrayBuffer} */
   serialise() {
     const e = new CBOR.Encoder();
     this.encode(e);
     return e.get_buffer();
   }
 
+  /**
+   * @param buf {ArrayBuffer}
+   * @returns {keys.PreKey}
+   */
   static deserialise(buf) {
     TypeUtil.assert_is_instance(ArrayBuffer, buf);
     return PreKey.decode(new CBOR.Decoder(buf));
   }
 
+  /**
+   * @param e {CBOR.Encoder}
+   * @returns {CBOR.Encoder}
+   */
   encode(e) {
     TypeUtil.assert_is_instance(CBOR.Encoder, e);
     e.object(3);
@@ -102,6 +121,10 @@ class PreKey {
     return this.key_pair.encode(e);
   }
 
+  /**
+   * @param d {CBOR.Decoder}
+   * @returns {keys.PreKey}
+   */
   static decode(d) {
     TypeUtil.assert_is_instance(CBOR.Decoder, d);
 
@@ -130,7 +153,11 @@ class PreKey {
 
     return self;
   }
-}
+};
 
+/**
+ * @static
+ * @type {number}
+ */
 PreKey.MAX_PREKEY_ID = 0xFFFF;
 module.exports = PreKey;

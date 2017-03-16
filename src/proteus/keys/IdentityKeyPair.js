@@ -29,14 +29,19 @@ const IdentityKey = require('./IdentityKey');
 const KeyPair = require('./KeyPair');
 const SecretKey = require('./SecretKey');
 
-module.exports = class IdentityKeyPair {
+/** @module keys */
+
+/** @class IndentityKeyPair */
+class IdentityKeyPair {
   constructor() {
     throw new DontCallConstructor(this);
   }
 
+  /** @returns {keys.IdentityKeyPair} */
   static new() {
     const key_pair = KeyPair.new();
 
+    /** @type {keys.IdentityKeyPair} */
     const ikp = ClassUtil.new_instance(IdentityKeyPair);
     ikp.version = 1;
     ikp.secret_key = key_pair.secret_key;
@@ -45,12 +50,17 @@ module.exports = class IdentityKeyPair {
     return ikp;
   }
 
+  /** @returns {ArrayBuffer} */
   serialise() {
     const e = new CBOR.Encoder();
     this.encode(e);
     return e.get_buffer();
   }
 
+  /**
+   * @param buf {ArrayBuffer}
+   * @returns {keys.IdentityKeyPair}
+   */
   static deserialise(buf) {
     TypeUtil.assert_is_instance(ArrayBuffer, buf);
 
@@ -58,6 +68,10 @@ module.exports = class IdentityKeyPair {
     return IdentityKeyPair.decode(d);
   }
 
+  /**
+   * @param e {CBOR.Encoder}
+   * @returns {CBOR.Encoder}
+   */
   encode(e) {
     e.object(3);
     e.u8(0);
@@ -68,6 +82,10 @@ module.exports = class IdentityKeyPair {
     return this.public_key.encode(e);
   }
 
+  /**
+   * @param d {CBOR.Decoder}
+   * @returns {keys.IdentityKeyPair}
+   */
   static decode(d) {
     TypeUtil.assert_is_instance(CBOR.Decoder, d);
 
@@ -97,3 +115,5 @@ module.exports = class IdentityKeyPair {
     return self;
   }
 };
+
+module.exports = IdentityKeyPair;

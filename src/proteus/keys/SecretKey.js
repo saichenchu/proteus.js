@@ -28,38 +28,48 @@ const DontCallConstructor = require('../errors/DontCallConstructor');
 const PublicKey = require('./PublicKey');
 const TypeUtil = require('../util/TypeUtil');
 
-module.exports = class SecretKey {
+/** @module keys */
+
+/** @class SecretKey */
+class SecretKey {
   constructor() {
     throw new DontCallConstructor(this);
   }
 
+  /**
+   * @param sec_edward {Uint8Array}
+   * @param sec_curve {Uint8Array}
+   * @returns {*}
+   */
   static new(sec_edward, sec_curve) {
     TypeUtil.assert_is_instance(Uint8Array, sec_edward);
     TypeUtil.assert_is_instance(Uint8Array, sec_curve);
 
     const sk = ClassUtil.new_instance(SecretKey);
 
+    /** @type {Uint8Array} */
     sk.sec_edward = sec_edward;
+    /** @type {Uint8Array} */
     sk.sec_curve = sec_curve;
     return sk;
   }
 
-  /*
+  /**
    * This function can be used to compute a message signature.
    *
-   * @param message [String] Message to be signed
-   * @return [Uint8Array] A message signature
+   * @param message {string} Message to be signed
+   * @returns {Uint8Array} A message signature
    */
   sign(message) {
     return sodium.crypto_sign_detached(message, this.sec_edward);
   }
 
-  /*
+  /**
    * This function can be used to compute a shared secret given a user's secret key and another
    * user's public key.
    *
-   * @param public_key [Proteus.keys.PublicKey] Another user's public key
-   * @return [Uint8Array] Array buffer view of the computed shared secret
+   * @param public_key {keys.PublicKey} Another user's public key
+   * @returns {Uint8Array} Array buffer view of the computed shared secret
    */
   shared_secret(public_key) {
     TypeUtil.assert_is_instance(PublicKey, public_key);
@@ -67,12 +77,20 @@ module.exports = class SecretKey {
     return sodium.crypto_scalarmult(this.sec_curve, public_key.pub_curve);
   }
 
+  /**
+   * @param e {CBOR.Encoder}
+   * @returns {CBOR.Encoder}
+   */
   encode(e) {
     e.object(1);
     e.u8(0);
     return e.bytes(this.sec_edward);
   }
 
+  /**
+   * @param d {CBOR.Decoder}
+   * @returns {keys.SecretKey}
+   */
   static decode(d) {
     TypeUtil.assert_is_instance(CBOR.Decoder, d);
 
@@ -95,3 +113,5 @@ module.exports = class SecretKey {
     return self;
   }
 };
+
+module.exports = SecretKey;

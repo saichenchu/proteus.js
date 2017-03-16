@@ -33,9 +33,9 @@ module derived {
 
        /**
         * @param d {CBOR.Encoder}
-        * @returns {CipherKey}
+        * @returns {derived.CipherKey}
         */
-       static decode(d: CBOR.Encoder): CipherKey;
+       static decode(d: CBOR.Encoder): derived.CipherKey;
 
    }
 
@@ -198,6 +198,284 @@ module errors {
         * @extends Error
         */
        constructor();
+
+   }
+
+}
+
+/** @module keys */
+module keys {
+   /**
+    * Construct a long-term identity key pair.
+    * @classdesc Every client has a long-term identity key pair.
+    * Long-term identity keys are used to initialise "sessions" with other clients (triple DH).
+    */
+   class IdentityKey {
+       /**
+        * Construct a long-term identity key pair.
+        * @classdesc Every client has a long-term identity key pair.
+        * Long-term identity keys are used to initialise "sessions" with other clients (triple DH).
+        */
+       constructor();
+
+       /**
+        * @param public_key {keys.IdentityKey}
+        * @returns {keys.IdentityKey}
+        */
+       static new(public_key: keys.IdentityKey): keys.IdentityKey;
+
+       /** @returns {string} */
+       fingerprint(): string;
+
+       /** @returns {string} */
+       toString(): string;
+
+       /**
+        * @param e {CBOR.Encoder}
+        * @returns {CBOR.Encoder}
+        */
+       encode(e: CBOR.Encoder): CBOR.Encoder;
+
+       /**
+        * @param d {CBOR.Decoder}
+        * @returns {keys.IdentityKey}
+        */
+       static decode(d: CBOR.Decoder): keys.IdentityKey;
+
+   }
+
+   /** @class IndentityKeyPair */
+   class IndentityKeyPair {
+       /** @class IndentityKeyPair */
+       constructor();
+
+   }
+
+   /**
+    * Construct an ephemeral key pair.
+    * @class KeyPair
+    */
+   class KeyPair {
+       /**
+        * Construct an ephemeral key pair.
+        * @class KeyPair
+        */
+       constructor();
+
+       /** @returns {key.KeyPair} */
+       static new(): key.KeyPair;
+
+       /**
+        * @description Ed25519 keys can be converted to Curve25519 keys, so that the same key pair can be
+        * used both for authenticated encryption (crypto_box) and for signatures (crypto_sign).
+        * @param ed25519_key_pair {Uint8Array} Key pair based on Edwards-curve (Ed25519)
+        * @returns {keys.SecretKey} Constructed private key
+        * @see https://download.libsodium.org/doc/advanced/ed25519-curve25519.html
+        */
+       _construct_private_key(ed25519_key_pair: Uint8Array): keys.SecretKey;
+
+       /**
+        * @param ed25519_key_pair {libsodium.KeyPair} Key pair based on Edwards-curve (Ed25519)
+        * @returns {keys.PublicKey} Constructed public key
+        */
+       _construct_public_key(ed25519_key_pair: libsodium.KeyPair): keys.PublicKey;
+
+       /**
+        * @param e {CBOR.Encoder}
+        * @returns {CBOR.Encoder}
+        */
+       encode(e: CBOR.Encoder): CBOR.Encoder;
+
+       /**
+        * @param d {CBOR.Decoder}
+        * @returns {keys.KeyPair}
+        */
+       static decode(d: CBOR.Decoder): keys.KeyPair;
+
+   }
+
+   /**
+    * @classdesc Pre-generated (and regularly refreshed) pre-keys.
+    * A Pre-Shared Key contains the public long-term identity and ephemeral handshake keys for the initial triple DH.
+    */
+   class PreKey {
+       /**
+        * @classdesc Pre-generated (and regularly refreshed) pre-keys.
+        * A Pre-Shared Key contains the public long-term identity and ephemeral handshake keys for the initial triple DH.
+        */
+       constructor();
+
+       /**
+        * @param pre_key_id {number}
+        * @returns {keys.PreKey}
+        */
+       static new(pre_key_id: number): keys.PreKey;
+
+       /** @returns {keys.PreKey} */
+       static last_resort(): keys.PreKey;
+
+       /**
+        * @param start {number}
+        * @param size {number}
+        * @returns {Array<keys.PreKey>}
+        */
+       static generate_prekeys(start: number, size: number): keys.PreKey[];
+
+       /** @returns {ArrayBuffer} */
+       serialise(): ArrayBuffer;
+
+       /**
+        * @param buf {ArrayBuffer}
+        * @returns {keys.PreKey}
+        */
+       static deserialise(buf: ArrayBuffer): keys.PreKey;
+
+       /**
+        * @param e {CBOR.Encoder}
+        * @returns {CBOR.Encoder}
+        */
+       encode(e: CBOR.Encoder): CBOR.Encoder;
+
+       /**
+        * @param d {CBOR.Decoder}
+        * @returns {keys.PreKey}
+        */
+       static decode(d: CBOR.Decoder): keys.PreKey;
+
+       /**
+        * @static
+        * @type {number}
+        */
+       static MAX_PREKEY_ID: number;
+
+   }
+
+   /** @class PreKeyBundle */
+   class PreKeyBundle {
+       /** @class PreKeyBundle */
+       constructor();
+
+       /**
+        * @param public_identity_key {keys.IdentityKey}
+        * @param prekey {keys.PreKey}
+        * @returns {keys.PreKeyBundle}
+        */
+       static new(public_identity_key: keys.IdentityKey, prekey: keys.PreKey): keys.PreKeyBundle;
+
+       /**
+        * @param identity_pair {keys.IdentityKeyPair}
+        * @param prekey {keys.PreKey}
+        * @returns {keys.PreKeyBundle}
+        */
+       static signed(identity_pair: keys.IdentityKeyPair, prekey: keys.PreKey): keys.PreKeyBundle;
+
+       /** @returns {keys.PreKeyAuth} */
+       verify(): keys.PreKeyAuth;
+
+       /** @returns {ArrayBuffer} */
+       serialise(): ArrayBuffer;
+
+       /** @returns {{id: (number), key: *}} */
+       serialised_json(): Object;
+
+       /**
+        * @param buf {ArrayBuffer}
+        * @returns {keys.PreKeyBundle}
+        */
+       static deserialise(buf: ArrayBuffer): keys.PreKeyBundle;
+
+       /**
+        * @param e {CBOR.Encoder}
+        * @returns {CBOR.Encoder}
+        */
+       encode(e: CBOR.Encoder): CBOR.Encoder;
+
+       /**
+        * @param d {CBOR.Decoder}
+        * @returns {keys.PreKeyBundle}
+        */
+       static decode(d: CBOR.Decoder): keys.PreKeyBundle;
+
+   }
+
+   /** @class PublicKey */
+   class PublicKey {
+       /** @class PublicKey */
+       constructor();
+
+       /**
+        * @param pub_edward {Uint8Array}
+        * @param pub_curve {Uint8Array}
+        * @returns {keys.PublicKey}
+        */
+       static new(pub_edward: Uint8Array, pub_curve: Uint8Array): keys.PublicKey;
+
+       /**
+        * This function can be used to verify a message signature.
+        *
+        * @param signature {Uint8Array} The signature to verify
+        * @param message {string} The message from which the signature was computed.
+        * @returns {boolean} `true` if the signature is valid, `false` otherwise.
+        */
+       verify(signature: Uint8Array, message: string): boolean;
+
+       /** @returns {string} */
+       fingerprint(): string;
+
+       /**
+        * @param e {CBOR.Encoder}
+        * @returns {CBOR.Encoder}
+        */
+       encode(e: CBOR.Encoder): CBOR.Encoder;
+
+       /**
+        * @param d {CBOR.Decoder}
+        * @returns {keys.PublicKey}
+        */
+       static decode(d: CBOR.Decoder): keys.PublicKey;
+
+   }
+
+   /** @class SecretKey */
+   class SecretKey {
+       /** @class SecretKey */
+       constructor();
+
+       /**
+        * @param sec_edward {Uint8Array}
+        * @param sec_curve {Uint8Array}
+        * @returns {*}
+        */
+       static new(sec_edward: Uint8Array, sec_curve: Uint8Array): any;
+
+       /**
+        * This function can be used to compute a message signature.
+        *
+        * @param message {string} Message to be signed
+        * @returns {Uint8Array} A message signature
+        */
+       sign(message: string): Uint8Array;
+
+       /**
+        * This function can be used to compute a shared secret given a user's secret key and another
+        * user's public key.
+        *
+        * @param public_key {keys.PublicKey} Another user's public key
+        * @returns {Uint8Array} Array buffer view of the computed shared secret
+        */
+       shared_secret(public_key: keys.PublicKey): Uint8Array;
+
+       /**
+        * @param e {CBOR.Encoder}
+        * @returns {CBOR.Encoder}
+        */
+       encode(e: CBOR.Encoder): CBOR.Encoder;
+
+       /**
+        * @param d {CBOR.Decoder}
+        * @returns {keys.SecretKey}
+        */
+       static decode(d: CBOR.Decoder): keys.SecretKey;
 
    }
 

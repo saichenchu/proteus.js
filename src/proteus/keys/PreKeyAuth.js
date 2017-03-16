@@ -19,6 +19,8 @@
 
 'use strict';
 
+/** @module keys */
+
 module.exports = {
   INVALID: 'Invalid',
   UNKNOWN: 'Unknown',

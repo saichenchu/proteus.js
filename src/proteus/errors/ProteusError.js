@@ -28,7 +28,6 @@
 module.exports = (function() {
   /**
    * @param message {string}
-   * @returns {string}
    */
   const ProteusError = function(message) {
     this.name = this.constructor.name;
