@@ -22,6 +22,12 @@
 const ProteusError = require('../errors/ProteusError');
 
 const sodium = require('libsodium-wrappers-sumo');
+if (typeof window === 'undefined') {
+  try {
+    const sodium_neon = require('libsodium-neon');
+    Object.assign(sodium, sodium_neon);
+  } catch (err) {}
+}
 
 module.exports = {
   zeroize(object) {

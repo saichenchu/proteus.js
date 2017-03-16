@@ -4,6 +4,12 @@ require('module').Module._initPaths();
 assert = require('chai').assert;
 
 global.sodium = require('libsodium-wrappers-sumo');
+if (typeof window === 'undefined') {
+  try {
+    const sodium_neon = require('libsodium-neon');
+    Object.assign(global.sodium, sodium_neon);
+  } catch (err) {}
+}
 Proteus = require('proteus');
 Proteus.derived = {
   DerivedSecrets: require('proteus/derived/DerivedSecrets'),
