@@ -31,7 +31,7 @@ const SecretKey = require('./SecretKey');
 
 /** @module keys */
 
-/** @class IndentityKeyPair */
+/** @class IdentityKeyPair */
 class IdentityKeyPair {
   constructor() {
     throw new DontCallConstructor(this);

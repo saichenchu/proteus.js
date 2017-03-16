@@ -96,7 +96,7 @@ class CipherKey {
     let key_bytes = null;
 
     const nprops = d.object();
-    for (let i = 0; i < nprops; i++) {
+    for (let i = 0; i <= nprops - 1; i++) {
       switch (d.u8()) {
         case 0:
           key_bytes = new Uint8Array(d.bytes());

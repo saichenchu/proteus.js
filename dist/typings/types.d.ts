@@ -244,10 +244,34 @@ module keys {
 
    }
 
-   /** @class IndentityKeyPair */
-   class IndentityKeyPair {
-       /** @class IndentityKeyPair */
+   /** @class IdentityKeyPair */
+   class IdentityKeyPair {
+       /** @class IdentityKeyPair */
        constructor();
+
+       /** @returns {keys.IdentityKeyPair} */
+       static new(): keys.IdentityKeyPair;
+
+       /** @returns {ArrayBuffer} */
+       serialise(): ArrayBuffer;
+
+       /**
+        * @param buf {ArrayBuffer}
+        * @returns {keys.IdentityKeyPair}
+        */
+       static deserialise(buf: ArrayBuffer): keys.IdentityKeyPair;
+
+       /**
+        * @param e {CBOR.Encoder}
+        * @returns {CBOR.Encoder}
+        */
+       encode(e: CBOR.Encoder): CBOR.Encoder;
+
+       /**
+        * @param d {CBOR.Decoder}
+        * @returns {keys.IdentityKeyPair}
+        */
+       static decode(d: CBOR.Decoder): keys.IdentityKeyPair;
 
    }
 
