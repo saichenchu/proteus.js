@@ -15,7 +15,8 @@ module.exports = {
     crypto: 'empty'
   },
   externals: {
-    'libsodium-wrappers-sumo': 'sodium'
+    'libsodium-wrappers-sumo': 'sodium',
+    'libsodium-neon': 'empty'
   },
   plugins: [
     new webpack.BannerPlugin(`${pkg.name} v${pkg.version}`)
