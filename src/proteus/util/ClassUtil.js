@@ -21,7 +21,13 @@
 
 const DontCallConstructor = require('../errors/DontCallConstructor');
 
-module.exports = {
+/** @module util */
+
+const ClassUtil = {
+  /**
+   * @param klass
+   * @returns {Function}
+   */
   new_instance(klass) {
     try {
       return new klass();
@@ -33,3 +39,5 @@ module.exports = {
     }
   }
 };
+
+module.exports = ClassUtil;

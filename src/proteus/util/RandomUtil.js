@@ -19,7 +19,9 @@
 
 'use strict';
 
-module.exports = (() => {
+/** @module util */
+
+const RandomUtil = (() => {
   let crypto = (typeof window !== 'undefined') && (window.crypto || window.msCrypto);
   if (crypto) {
     // browser
@@ -40,3 +42,5 @@ module.exports = (() => {
     };
   }
 })();
+
+module.exports = RandomUtil;

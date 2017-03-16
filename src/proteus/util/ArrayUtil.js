@@ -22,9 +22,15 @@
 const ProteusError = require('../errors/ProteusError');
 const TypeUtil = require('../util/TypeUtil');
 
-module.exports = {
-  /*
-   * Concatenates array buffers (usually 8-bit unsigned).
+/** @module util */
+
+/**
+ * Concatenates array buffers (usually 8-bit unsigned).
+ */
+const ArrayUtil = {
+  /**
+   * @param buffers {Array}
+   * @returns {Array}
    */
   concatenate_array_buffers(buffers) {
     TypeUtil.assert_is_instance(Array, buffers);
@@ -37,9 +43,10 @@ module.exports = {
     });
   },
 
+  /** @param array {Array} */
   assert_is_not_zeros(array) {
     let only_zeroes = true;
-    for (val in array) {
+    for (let val in array) {
       if (val > 0) {
         only_zeroes = false;
         break;
@@ -51,3 +58,5 @@ module.exports = {
     }
   }
 };
+
+module.exports = ArrayUtil;

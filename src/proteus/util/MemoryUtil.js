@@ -29,7 +29,10 @@ if (typeof window === 'undefined') {
   } catch (err) {}
 }
 
-module.exports = {
+/** @module util */
+
+const MemoryUtil = {
+  /** @param object {Uint8Array|ArrayBuffer|Object} */
   zeroize(object) {
     if (object instanceof Uint8Array) {
       sodium.memzero(object);
@@ -40,3 +43,5 @@ module.exports = {
     }
   }
 };
+
+module.exports = MemoryUtil;

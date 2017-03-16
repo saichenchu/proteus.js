@@ -31,16 +31,18 @@ const ArrayUtil = require('../util/ArrayUtil');
 const MemoryUtil = require('../util/MemoryUtil');
 const TypeUtil = require('../util/TypeUtil');
 
-module.exports = {
-  /*
+/** @module util */
+
+const KeyDerivationUtil = {
+  /**
    * HMAC-based Key Derivation Function
    *
-   * @param salt [Uint8Array, String] Salt
-   * @param input [Uint8Array, String] Initial Keying Material (IKM)
-   * @param info [Uint8Array, String] Key Derivation Data (Info)
-   * @param length [Integer] Length of the derived key in bytes (L)
+   * @param salt {Uint8Array|string) Salt
+   * @param input {Uint8Array|string} Initial Keying Material (IKM)
+   * @param info {Uint8Array|string} Key Derivation Data (Info)
+   * @param length {number} Length of the derived key in bytes (L)
    *
-   * @return [Uint8Array] Output Keying Material (OKM)
+   * @returns {Uint8Array} Output Keying Material (OKM)
    */
   hkdf(salt, input, info, length) {
     const convert_type = (value) => {
@@ -59,6 +61,10 @@ module.exports = {
 
     const HASH_LEN = 32;
 
+    /**
+     * @param salt {*}
+     * @returns {Uint8Array}
+     */
     const salt_to_key = (salt) => {
       const keybytes = sodium.crypto_auth_hmacsha256_KEYBYTES;
       if (salt.length > keybytes) {
@@ -70,10 +76,21 @@ module.exports = {
       return key;
     };
 
+    /**
+     * @param salt {*}
+     * @param input {*}
+     * @returns {*}
+     */
     const extract = (salt, input) => {
       return sodium.crypto_auth_hmacsha256(input, salt_to_key(salt));
     };
 
+    /**
+     * @param tag {*}
+     * @param info {*}
+     * @param length {number}
+     * @returns {Uint8Array}
+     */
     const expand = (tag, info, length) => {
       let num_blocks = Math.ceil(length / HASH_LEN);
       let hmac = new Uint8Array(0);
@@ -96,3 +113,5 @@ module.exports = {
     return expand(key, info, length);
   }
 };
+
+module.exports = KeyDerivationUtil;

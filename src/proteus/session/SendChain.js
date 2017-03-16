@@ -58,6 +58,10 @@ class SendChain {
     return this.ratchet_key.encode(e);
   }
 
+  /**
+   * @param d {CBOR.Decoder}
+   * @returns {session.SendChain}
+   */
   static decode(d) {
     TypeUtil.assert_is_instance(CBOR.Decoder, d);
     const self = ClassUtil.new_instance(SendChain);

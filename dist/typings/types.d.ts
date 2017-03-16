@@ -804,6 +804,12 @@ module session {
         */
        encode(e: CBOR.Encoder): CBOR.Encoder;
 
+       /**
+        * @param d {CBOR.Decoder}
+        * @returns {session.SendChain}
+        */
+       static decode(d: CBOR.Decoder): session.SendChain;
+
    }
 
    /** @class Session */
@@ -882,6 +888,15 @@ module session {
        static decode(d: CBOR.Decoder): session.SessionState;
 
    }
+
+}
+
+/** @module util */
+module util {
+   /**
+    * Concatenates array buffers (usually 8-bit unsigned).
+    */
+   const ArrayUtil: any;
 
 }
 
