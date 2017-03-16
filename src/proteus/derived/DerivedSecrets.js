@@ -27,9 +27,9 @@ const MemoryUtil = require('../util/MemoryUtil');
 const CipherKey = require('./CipherKey');
 const MacKey = require('./MacKey');
 
-/**
- * @class DerivedSecrets
- */
+/** @module derived */
+
+/** @class DerivedSecrets */
 class DerivedSecrets {
   constructor() {
     throw new DontCallConstructor(this);
@@ -39,7 +39,7 @@ class DerivedSecrets {
    * @param input {Array<number>}
    * @param salt {Uint8Array}
    * @param info {string}
-   * @returns {DerivedSecrets}
+   * @returns {derived.DerivedSecrets}
    */
   static kdf(input, salt, info) {
     const byte_length = 64;
@@ -60,7 +60,7 @@ class DerivedSecrets {
   /**
    * @param input {Array<number>} Initial key material (usually the Master Key) in byte array format
    * @param info {string} Key Derivation Data
-   * @returns {DerivedSecrets}
+   * @returns {derived.DerivedSecrets}
    */
   static kdf_without_salt(input, info) {
     return this.kdf(input, new Uint8Array(0), info);

@@ -26,9 +26,9 @@ const ClassUtil = require('../util/ClassUtil');
 const DontCallConstructor = require('../errors/DontCallConstructor');
 const TypeUtil = require('../util/TypeUtil');
 
-/**
- * @class CipherKey
- */
+/** @module derived */
+
+/** @class CipherKey */
 class CipherKey {
   constructor() {
     throw new DontCallConstructor(this);
@@ -36,7 +36,7 @@ class CipherKey {
 
   /**
    * @param key {Uint8Array}
-   * @returns {MacKey}
+   * @returns {derived.MacKey}
    */
   static new(key) {
     TypeUtil.assert_is_instance(Uint8Array, key);

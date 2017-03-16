@@ -21,56 +21,74 @@
 
 const ProteusError = require('./ProteusError');
 
+/** @module errors */
+
+/** @extends ProteusError */
 const DecryptError = class DecryptError extends ProteusError {
+  /** @param message {string} */
   constructor(message = 'Unknown decryption error') {
     super();
     this.message = message;
   }
 };
 
-DecryptError.RemoteIdentityChanged = class RemoteIdentityChanged extends DecryptError {
+/** @extends DecryptError */
+class RemoteIdentityChanged extends DecryptError {
+  /** @param message {string} */
   constructor(message = 'Remote identity changed') {
     super();
     this.message = message;
   }
 };
 
-DecryptError.InvalidSignature = class InvalidSignature extends DecryptError {
+/** @extends DecryptError */
+class InvalidSignature extends DecryptError {
+  /** @param message {string} */
   constructor(message = 'Invalid signature') {
     super();
     this.message = message;
   }
 };
 
-DecryptError.InvalidMessage = class InvalidMessage extends DecryptError {
+/** @extends DecryptError */
+class InvalidMessage extends DecryptError {
+  /** @param message {string} */
   constructor(message = 'Invalid message') {
     super();
     this.message = message;
   }
 };
 
-DecryptError.DuplicateMessage = class DuplicateMessage extends DecryptError {
+/** @extends DecryptError */
+class DuplicateMessage extends DecryptError {
+  /** @param message {string} */
   constructor(message = 'Duplicate message') {
     super();
     this.message = message;
   }
 };
 
-DecryptError.TooDistantFuture = class TooDistantFuture extends DecryptError {
+/** @extends DecryptError */
+class TooDistantFuture extends DecryptError {
+  /** @param message {string} */
   constructor(message = 'Message is from too distant in the future') {
     super();
     this.message = message;
   }
 };
 
-DecryptError.OutdatedMessage = class OutdatedMessage extends DecryptError {
+/** @extends DecryptError */
+class OutdatedMessage extends DecryptError {
+  /** @param message {string} */
   constructor(message = 'Outdated message') {
     super();
     this.message = message;
   }
 };
 
-DecryptError.PrekeyNotFound = class PrekeyNotFound extends DecryptError {
+/** @extends DecryptError */
+class PrekeyNotFound extends DecryptError {
+  /** @param message {string} */
   constructor(message = 'Pre-key not found') {
     super();
     this.message = message;

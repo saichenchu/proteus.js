@@ -19,7 +19,17 @@
 
 'use strict';
 
+/** @module errors */
+
+/**
+ * @class ProteusError
+ * @extends Error
+ */
 module.exports = (function() {
+  /**
+   * @param message {string}
+   * @returns {string}
+   */
   const ProteusError = function(message) {
     this.name = this.constructor.name;
     this.message = message;

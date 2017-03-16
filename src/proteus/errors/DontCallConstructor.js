@@ -21,6 +21,8 @@
 
 const ProteusError = require('./ProteusError');
 
+/** @module errors */
+
 const extend = function(child, parent) {
   for (let key in parent) {
     if ({}.hasOwnProperty.call(parent, key)) child[key] = parent[key];
