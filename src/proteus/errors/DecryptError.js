@@ -26,55 +26,55 @@ const DecryptError = class DecryptError extends ProteusError {
     super();
     this.message = message;
   }
-}
+};
 
 DecryptError.RemoteIdentityChanged = class RemoteIdentityChanged extends DecryptError {
   constructor(message = 'Remote identity changed') {
     super();
     this.message = message;
   }
-}
+};
 
 DecryptError.InvalidSignature = class InvalidSignature extends DecryptError {
   constructor(message = 'Invalid signature') {
     super();
     this.message = message;
   }
-}
+};
 
 DecryptError.InvalidMessage = class InvalidMessage extends DecryptError {
   constructor(message = 'Invalid message') {
     super();
     this.message = message;
   }
-}
+};
 
 DecryptError.DuplicateMessage = class DuplicateMessage extends DecryptError {
   constructor(message = 'Duplicate message') {
     super();
     this.message = message;
   }
-}
+};
 
 DecryptError.TooDistantFuture = class TooDistantFuture extends DecryptError {
   constructor(message = 'Message is from too distant in the future') {
     super();
     this.message = message;
   }
-}
+};
 
 DecryptError.OutdatedMessage = class OutdatedMessage extends DecryptError {
   constructor(message = 'Outdated message') {
     super();
     this.message = message;
   }
-}
+};
 
 DecryptError.PrekeyNotFound = class PrekeyNotFound extends DecryptError {
   constructor(message = 'Pre-key not found') {
     super();
     this.message = message;
   }
-}
+};
 
 module.exports = ProteusError.DecryptError = DecryptError;

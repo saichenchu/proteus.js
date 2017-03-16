@@ -24,7 +24,7 @@ module.exports = (function() {
     this.name = this.constructor.name;
     this.message = message;
     this.stack = (new Error).stack;
-  }
+  };
 
   ProteusError.prototype = new Error;
   ProteusError.prototype.constructor = ProteusError;

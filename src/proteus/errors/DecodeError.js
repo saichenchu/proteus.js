@@ -19,7 +19,6 @@
 
 'use strict';
 
-const ClassUtil = require('../util/ClassUtil');
 const ProteusError = require('./ProteusError');
 
 const DecodeError = class DecodeError extends ProteusError {
@@ -27,27 +26,27 @@ const DecodeError = class DecodeError extends ProteusError {
     super();
     this.message = message;
   }
-}
+};
 
 DecodeError.InvalidType = class InvalidType extends DecodeError {
   constructor(message = 'Invalid type') {
     super();
     this.message = message;
   }
-}
+};
 
 DecodeError.InvalidArrayLen = class InvalidArrayLen extends DecodeError {
   constructor(message = 'Invalid array length') {
     super();
     this.message = message;
   }
-}
+};
 
 DecodeError.LocalIdentityChanged = class LocalIdentityChanged extends DecodeError {
   constructor(message = 'Local identity changed') {
     super();
     this.message = message;
   }
-}
+};
 
 module.exports = ProteusError.DecodeError = DecodeError;
