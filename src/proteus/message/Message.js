@@ -26,11 +26,15 @@ const TypeUtil = require('../util/TypeUtil');
 
 const DecodeError = require('../errors/DecodeError');
 
-module.exports = class Message {
+/** @module message */
+
+/** @class Message */
+class Message {
   constructor() {
     throw new DontCallConstructor(this);
   }
 
+  /** @returns {ArrayBuffer} */
   serialise() {
     const e = new CBOR.Encoder();
     if (this instanceof CipherMessage) {
@@ -45,6 +49,10 @@ module.exports = class Message {
     return e.get_buffer();
   }
 
+  /**
+   * @param buf {ArrayBuffer}
+   * @returns {message.Message}
+   */
   static deserialise(buf) {
     TypeUtil.assert_is_instance(ArrayBuffer, buf);
 
@@ -59,9 +67,11 @@ module.exports = class Message {
         throw new DecodeError.InvalidType('Unrecognised message type');
     }
   }
-};
+}
 
 // these require lines have to come after the Message definition because otherwise
 // it creates a circular dependency with the message subtypes
 const CipherMessage = require('./CipherMessage');
 const PreKeyMessage = require('./PreKeyMessage');
+
+module.exports = Message;

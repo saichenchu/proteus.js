@@ -106,6 +106,6 @@ class PublicKey {
     self.pub_curve = ed2curve.convertPublicKey(self.pub_edward);
     return self;
   }
-};
+}
 
 module.exports = PublicKey;

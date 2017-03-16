@@ -112,6 +112,6 @@ class SecretKey {
     self.sec_curve = ed2curve.convertSecretKey(self.sec_edward);
     return self;
   }
-};
+}
 
 module.exports = SecretKey;

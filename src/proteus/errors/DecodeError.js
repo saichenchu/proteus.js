@@ -33,7 +33,7 @@ class DecodeError extends ProteusError {
     super();
     this.message = message;
   }
-};
+}
 
 /** @extends DecryptError */
 class InvalidType extends DecodeError {
@@ -45,7 +45,7 @@ class InvalidType extends DecodeError {
     super();
     this.message = message;
   }
-};
+}
 
 /** @extends DecryptError */
 class InvalidArrayLen extends DecodeError {
@@ -57,7 +57,7 @@ class InvalidArrayLen extends DecodeError {
     super();
     this.message = message;
   }
-};
+}
 
 /** @extends DecryptError */
 class LocalIdentityChanged extends DecodeError {
@@ -69,6 +69,6 @@ class LocalIdentityChanged extends DecodeError {
     super();
     this.message = message;
   }
-};
+}
 
 module.exports = ProteusError.DecodeError = DecodeError;

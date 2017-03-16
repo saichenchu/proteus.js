@@ -101,6 +101,6 @@ class CipherKey {
     }
     return CipherKey.new(key_bytes);
   }
-};
+}
 
 module.exports = CipherKey;

@@ -153,7 +153,7 @@ class PreKey {
 
     return self;
   }
-};
+}
 
 /**
  * @static

@@ -24,7 +24,7 @@ const ProteusError = require('./ProteusError');
 /** @module errors */
 
 /** @extends ProteusError */
-const DecryptError = class DecryptError extends ProteusError {
+class DecryptError extends ProteusError {
   /** @param message {string} */
   constructor(message = 'Unknown decryption error') {
     super();
@@ -39,7 +39,7 @@ class RemoteIdentityChanged extends DecryptError {
     super();
     this.message = message;
   }
-};
+}
 
 /** @extends DecryptError */
 class InvalidSignature extends DecryptError {
@@ -48,7 +48,7 @@ class InvalidSignature extends DecryptError {
     super();
     this.message = message;
   }
-};
+}
 
 /** @extends DecryptError */
 class InvalidMessage extends DecryptError {
@@ -66,7 +66,7 @@ class DuplicateMessage extends DecryptError {
     super();
     this.message = message;
   }
-};
+}
 
 /** @extends DecryptError */
 class TooDistantFuture extends DecryptError {
@@ -75,7 +75,7 @@ class TooDistantFuture extends DecryptError {
     super();
     this.message = message;
   }
-};
+}
 
 /** @extends DecryptError */
 class OutdatedMessage extends DecryptError {
@@ -84,7 +84,7 @@ class OutdatedMessage extends DecryptError {
     super();
     this.message = message;
   }
-};
+}
 
 /** @extends DecryptError */
 class PrekeyNotFound extends DecryptError {
@@ -93,6 +93,6 @@ class PrekeyNotFound extends DecryptError {
     super();
     this.message = message;
   }
-};
+}
 
 module.exports = ProteusError.DecryptError = DecryptError;

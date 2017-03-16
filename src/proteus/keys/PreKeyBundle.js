@@ -186,6 +186,6 @@ class PreKeyBundle {
 
     return self;
   }
-};
+}
 
 module.exports = PreKeyBundle;

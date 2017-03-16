@@ -26,14 +26,21 @@ const DontCallConstructor = require('../errors/DontCallConstructor');
 const TypeUtil = require('../util/TypeUtil');
 
 const MacKey = require('../derived/MacKey');
-
 const Message = require('./Message');
 
-module.exports = class Envelope {
+/** @module message */
+
+/** @class Envelope */
+class Envelope {
   constructor() {
     throw new DontCallConstructor(this);
   }
 
+  /**
+   * @param mac_key {derived.MacKey}
+   * @param message {message.Message}
+   * @returns {message.Envelope}
+   */
   static new(mac_key, message) {
     TypeUtil.assert_is_instance(MacKey, mac_key);
     TypeUtil.assert_is_instance(Message, message);
@@ -51,20 +58,26 @@ module.exports = class Envelope {
     return env;
   }
 
+  /**
+   * @param mac_key {derived.MacKey}
+   * @returns {boolean}
+   */
   verify(mac_key) {
     TypeUtil.assert_is_instance(MacKey, mac_key);
     return mac_key.verify(this.mac, this._message_enc);
   }
 
-  /*
-   * @return [ArrayBuffer] The serialized message envelope
-   */
+  /** @returns {ArrayBuffer} The serialized message envelope */
   serialise() {
     const e = new CBOR.Encoder();
     this.encode(e);
     return e.get_buffer();
   }
 
+  /**
+   * @param buf {ArrayBuffer}
+   * @returns {message.Envelope}
+   */
   static deserialise(buf) {
     TypeUtil.assert_is_instance(ArrayBuffer, buf);
 
@@ -72,6 +85,10 @@ module.exports = class Envelope {
     return Envelope.decode(d);
   }
 
+  /**
+   * @param e {CBOR.Encoder}
+   * @returns {CBOR.Encoder}
+   */
   encode(e) {
     e.object(3);
     e.u8(0);
@@ -86,6 +103,10 @@ module.exports = class Envelope {
     return e.bytes(this._message_enc);
   }
 
+  /**
+   * @param d {CBOR.Decoder}
+   * @returns {message.Envelope}
+   */
   static decode(d) {
     TypeUtil.assert_is_instance(CBOR.Decoder, d);
 
@@ -125,4 +146,6 @@ module.exports = class Envelope {
     Object.freeze(env);
     return env;
   }
-};
+}
+
+module.exports = Envelope;

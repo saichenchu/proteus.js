@@ -114,6 +114,6 @@ class IdentityKeyPair {
 
     return self;
   }
-};
+}
 
 module.exports = IdentityKeyPair;

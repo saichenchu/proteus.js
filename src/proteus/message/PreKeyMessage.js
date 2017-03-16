@@ -31,12 +31,22 @@ const PublicKey = require('../keys/PublicKey');
 const CipherMessage = require('./CipherMessage');
 const Message = require('./Message');
 
-module.exports = class PreKeyMessage extends Message {
+/** @module message */
+
+/** @extends Message */
+class PreKeyMessage extends Message {
   constructor() {
     super();
     throw new DontCallConstructor(this);
   }
 
+  /**
+   * @param prekey_id {number}
+   * @param base_key {keys.PublicKey}
+   * @param identity_key {keys.IdentityKey}
+   * @param message {message.CipherMessage}
+   * @returns {message.PreKeyMessage}
+   */
   static new(prekey_id, base_key, identity_key, message) {
     TypeUtil.assert_is_integer(prekey_id);
     TypeUtil.assert_is_instance(PublicKey, base_key);
@@ -54,6 +64,10 @@ module.exports = class PreKeyMessage extends Message {
     return pkm;
   }
 
+  /**
+   * @param e {CBOR.Encoder}
+   * @returns {CBOR.Encoder}
+   */
   encode(e) {
     e.object(4);
     e.u8(0);
@@ -66,6 +80,10 @@ module.exports = class PreKeyMessage extends Message {
     return this.message.encode(e);
   }
 
+  /**
+   * @param d {CBOR.Decoder}
+   * @returns {message.PreKeyMessage}
+   */
   static decode(d) {
     TypeUtil.assert_is_instance(CBOR.Decoder, d);
 
@@ -97,4 +115,6 @@ module.exports = class PreKeyMessage extends Message {
     // checks for missing variables happens in constructor
     return PreKeyMessage.new(prekey_id, base_key, identity_key, message);
   }
-};
+}
+
+module.exports = PreKeyMessage;

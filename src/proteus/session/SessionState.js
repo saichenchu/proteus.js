@@ -48,7 +48,10 @@ const RootKey = require('./RootKey');
 const SendChain = require('./SendChain');
 const Session = require('./Session');
 
-module.exports = class SessionState {
+/** @module session */
+
+/** @class SessionState */
+class SessionState {
   constructor() {
     this.recv_chains = null;
     this.send_chain = null;
@@ -58,6 +61,12 @@ module.exports = class SessionState {
     throw new DontCallConstructor(this);
   }
 
+  /**
+   * @param alice_identity_pair {keys.IdentityKeyPair}
+   * @param alice_base {keys.PublicKey}
+   * @param bob_pkbundle {keys.PreKeyBundle}
+   * @returns {session.SessionState}
+   */
   static init_as_alice(alice_identity_pair, alice_base, bob_pkbundle) {
     TypeUtil.assert_is_instance(IdentityKeyPair, alice_identity_pair);
     TypeUtil.assert_is_instance(KeyPair, alice_base);
@@ -89,6 +98,13 @@ module.exports = class SessionState {
     return state;
   }
 
+  /**
+   * @param bob_ident {keys.IdentityKeyPair}
+   * @param bob_prekey {keys.KeyPair}
+   * @param alice_ident {keys.IdentityKey}
+   * @param alice_base {keys.PublicKey}
+   * @returns {session.SessionState}
+   */
   static init_as_bob(bob_ident, bob_prekey, alice_ident, alice_base) {
     TypeUtil.assert_is_instance(IdentityKeyPair, bob_ident);
     TypeUtil.assert_is_instance(KeyPair, bob_prekey);
@@ -116,6 +132,7 @@ module.exports = class SessionState {
     return state;
   }
 
+  /** @param ratchet_key {keys.KeyPair} */
   ratchet(ratchet_key) {
     const new_ratchet = KeyPair.new();
 
@@ -143,13 +160,12 @@ module.exports = class SessionState {
     }
   }
 
-  /*
-   * @param identity_key [Proteus.keys.IdentityKey] Public identity key of the local identity key pair
-   * @param pending [] Pending pre-key
-   * @param tag [Proteus.message.SessionTag] Session tag
-   * @param plaintext [String, Uint8Array] The plaintext to encrypt
-   *
-   * @return [Proteus.message.Envelope]
+  /**
+   * @param identity_key {keys.IdentityKey} Public identity key of the local identity key pair
+   * @param pending {Array<number>} Pending pre-key
+   * @param tag {message.SessionTag} Session tag
+   * @param plaintext {string|Uint8Array} The plaintext to encrypt
+   * @returns {message.Envelope}
    */
   encrypt(identity_key, pending, tag, plaintext) {
     if (pending) {
@@ -178,6 +194,11 @@ module.exports = class SessionState {
     return env;
   }
 
+  /**
+   * @param envelope {message.Envelope}
+   * @param msg {message.CipherMessage}
+   * @returns {Uint8Array}
+   */
   decrypt(envelope, msg) {
     TypeUtil.assert_is_instance(Envelope, envelope);
     TypeUtil.assert_is_instance(CipherMessage, msg);
@@ -222,6 +243,7 @@ module.exports = class SessionState {
     }
   }
 
+  /** @returns {ArrayBuffer} */
   serialise() {
     const e = new CBOR.Encoder();
     this.encode(e);
@@ -233,6 +255,10 @@ module.exports = class SessionState {
     return SessionState.decode(new CBOR.Decoder(buf));
   }
 
+  /**
+   * @param e {CBOR.Encoder}
+   * @returns {CBOR.Encoder}
+   */
   encode(e) {
     e.object(4);
     e.u8(0);
@@ -246,6 +272,10 @@ module.exports = class SessionState {
     return e.u32(this.prev_counter);
   }
 
+  /**
+   * @param d {CBOR.Decoder}
+   * @returns {session.SessionState}
+   */
   static decode(d) {
     TypeUtil.assert_is_instance(CBOR.Decoder, d);
 
@@ -282,4 +312,6 @@ module.exports = class SessionState {
 
     return self;
   }
-};
+}
+
+module.exports = SessionState;

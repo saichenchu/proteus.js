@@ -97,6 +97,6 @@ class MacKey {
 
     return MacKey.new(key_bytes);
   }
-};
+}
 
 module.exports = MacKey;

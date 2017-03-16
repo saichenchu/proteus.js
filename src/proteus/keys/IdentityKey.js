@@ -94,6 +94,6 @@ class IdentityKey {
 
     return IdentityKey.new(public_key);
   }
-};
+}
 
 module.exports = IdentityKey;

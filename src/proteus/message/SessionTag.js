@@ -30,25 +30,38 @@ const TypeUtil = require('../util/TypeUtil');
 const DecodeError = require('../errors/DecodeError');
 const RandomUtil = require('../util/RandomUtil');
 
-module.exports = class SessionTag {
+/** @module message */
+
+/** @class SessionTag */
+class SessionTag {
   constructor() {
     throw new DontCallConstructor(this);
   }
 
+  /** @returns {message.SessionTag} */
   static new() {
     const st = ClassUtil.new_instance(SessionTag);
     st.tag = RandomUtil.random_bytes(16);
     return st;
   }
 
+  /** @returns {string} */
   toString() {
     return sodium.to_hex(this.tag);
   }
 
+  /**
+   * @param e {CBOR.Encoder}
+   * @returns {CBOR.Encoder}
+   */
   encode(e) {
     return e.bytes(this.tag);
   }
 
+  /**
+   * @param d {CBOR.Decoder}
+   * @returns {message.SessionTag}
+   */
   static decode(d) {
     TypeUtil.assert_is_instance(CBOR.Decoder, d);
 
@@ -63,4 +76,6 @@ module.exports = class SessionTag {
     st.tag = new Uint8Array(bytes);
     return st;
   }
-};
+}
+
+module.exports = SessionTag;

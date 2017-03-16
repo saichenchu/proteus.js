@@ -117,6 +117,6 @@ class KeyPair {
 
     return self;
   }
-};
+}
 
 module.exports = KeyPair;

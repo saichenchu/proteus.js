@@ -44,8 +44,10 @@ const SessionTag = require('../message/SessionTag');
 
 const PreKeyStore = require('./PreKeyStore');
 
-class Session {
+/** @module session */
 
+/** @class Session */
+class Session {
   constructor() {
     this.counter = 0;
     this.local_identity = null;
@@ -295,6 +297,10 @@ class Session {
     return this.decode(local_identity, d);
   }
 
+  /**
+   * @param e {CBOR.Encoder}
+   * @returns {CBOR.Encoder}
+   */
   encode(e) {
     e.object(6);
     e.u8(0);
@@ -400,7 +406,9 @@ class Session {
   }
 }
 
+/** @type {number} */
 Session.MAX_RECV_CHAINS = 5;
+/** @type {number} */
 Session.MAX_SESSION_STATES = 100;
 
 module.exports = Session;
