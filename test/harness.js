@@ -10,6 +10,7 @@ if (typeof window === 'undefined') {
     Object.assign(global.sodium, sodium_neon);
   } catch (err) {}
 }
+
 Proteus = require('proteus');
 Proteus.derived = {
   DerivedSecrets: require('proteus/derived/DerivedSecrets'),

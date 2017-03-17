@@ -73,4 +73,10 @@ class LocalIdentityChanged extends DecodeError {
   }
 }
 
+Object.assign(DecodeError, {
+  InvalidType,
+  InvalidArrayLen,
+  LocalIdentityChanged,
+});
+
 module.exports = ProteusError.DecodeError = DecodeError;

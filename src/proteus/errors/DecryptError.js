@@ -97,4 +97,14 @@ class PrekeyNotFound extends DecryptError {
   }
 }
 
+Object.assign(DecryptError, {
+  RemoteIdentityChanged,
+  InvalidSignature,
+  InvalidMessage,
+  DuplicateMessage,
+  TooDistantFuture,
+  OutdatedMessage,
+  PrekeyNotFound,
+});
+
 module.exports = ProteusError.DecryptError = DecryptError;
