@@ -871,8 +871,9 @@ module session {
        /**
         * @param {keys.IdentityKeyPair} local_identity - Alice's Identity Key Pair
         * @param {keys.PreKeyBundle} remote_pkbundle - Bob's Pre-Key Bundle
+        * @returns {Promise}
         */
-       static init_from_prekey(local_identity: keys.IdentityKeyPair, remote_pkbundle: keys.PreKeyBundle): void;
+       static init_from_prekey(local_identity: keys.IdentityKeyPair, remote_pkbundle: keys.PreKeyBundle): Promise;
 
        /**
         * @param {keys.IdentityKeyPair} our_identity
@@ -1021,16 +1022,6 @@ module util {
     * Concatenates array buffers (usually 8-bit unsigned).
     */
    const ArrayUtil: any;
-
-   /** @class RandomUtil */
-   class RandomUtil {
-       /** @class RandomUtil */
-       constructor();
-
-       /** @returns {Uint8Array} */
-       random_bytes(): Uint8Array;
-
-   }
 
 }
 

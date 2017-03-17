@@ -80,6 +80,7 @@ class Session {
   /**
    * @param {keys.IdentityKeyPair} local_identity - Alice's Identity Key Pair
    * @param {keys.PreKeyBundle} remote_pkbundle - Bob's Pre-Key Bundle
+   * @returns {Promise}
    */
   static init_from_prekey(local_identity, remote_pkbundle) {
     return new Promise((resolve) => {
