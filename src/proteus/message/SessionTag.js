@@ -25,7 +25,9 @@ if (typeof window === 'undefined') {
   try {
     const sodium_neon = require('libsodium-neon');
     Object.assign(sodium, sodium_neon);
-  } catch (err) {}
+  } catch (err) {
+    // fall back to libsodium.js
+  }
 }
 
 const DontCallConstructor = require('../errors/DontCallConstructor');
@@ -57,7 +59,7 @@ class SessionTag {
   }
 
   /**
-   * @param e {CBOR.Encoder}
+   * @param {CBOR.Encoder} e
    * @returns {CBOR.Encoder}
    */
   encode(e) {
@@ -65,7 +67,7 @@ class SessionTag {
   }
 
   /**
-   * @param d {CBOR.Decoder}
+   * @param {CBOR.Decoder} d
    * @returns {message.SessionTag}
    */
   static decode(d) {

@@ -62,9 +62,9 @@ class SessionState {
   }
 
   /**
-   * @param alice_identity_pair {keys.IdentityKeyPair}
-   * @param alice_base {keys.PublicKey}
-   * @param bob_pkbundle {keys.PreKeyBundle}
+   * @param {keys.IdentityKeyPair} alice_identity_pair
+   * @param {keys.PublicKey} alice_base
+   * @param {keys.PreKeyBundle} bob_pkbundle
    * @returns {session.SessionState}
    */
   static init_as_alice(alice_identity_pair, alice_base, bob_pkbundle) {
@@ -75,7 +75,7 @@ class SessionState {
     const master_key = ArrayUtil.concatenate_array_buffers([
       alice_identity_pair.secret_key.shared_secret(bob_pkbundle.public_key),
       alice_base.secret_key.shared_secret(bob_pkbundle.identity_key.public_key),
-      alice_base.secret_key.shared_secret(bob_pkbundle.public_key)
+      alice_base.secret_key.shared_secret(bob_pkbundle.public_key),
     ]);
 
     const dsecs = DerivedSecrets.kdf_without_salt(master_key, 'handshake');
@@ -99,10 +99,10 @@ class SessionState {
   }
 
   /**
-   * @param bob_ident {keys.IdentityKeyPair}
-   * @param bob_prekey {keys.KeyPair}
-   * @param alice_ident {keys.IdentityKey}
-   * @param alice_base {keys.PublicKey}
+   * @param {keys.IdentityKeyPair} bob_ident
+   * @param {keys.KeyPair} bob_prekey
+   * @param {keys.IdentityKey} alice_ident
+   * @param {keys.PublicKey} alice_base
    * @returns {session.SessionState}
    */
   static init_as_bob(bob_ident, bob_prekey, alice_ident, alice_base) {
@@ -114,7 +114,7 @@ class SessionState {
     const master_key = ArrayUtil.concatenate_array_buffers([
       bob_prekey.secret_key.shared_secret(alice_ident.public_key),
       bob_ident.secret_key.shared_secret(alice_base),
-      bob_prekey.secret_key.shared_secret(alice_base)
+      bob_prekey.secret_key.shared_secret(alice_base),
     ]);
 
     const dsecs = DerivedSecrets.kdf_without_salt(master_key, 'handshake');
@@ -132,7 +132,10 @@ class SessionState {
     return state;
   }
 
-  /** @param ratchet_key {keys.KeyPair} */
+  /**
+   * @param {keys.KeyPair} ratchet_key
+   * @returns {void}
+   */
   ratchet(ratchet_key) {
     const new_ratchet = KeyPair.new();
 
@@ -161,10 +164,10 @@ class SessionState {
   }
 
   /**
-   * @param identity_key {keys.IdentityKey} Public identity key of the local identity key pair
-   * @param pending {Array<number>} Pending pre-key
-   * @param tag {message.SessionTag} Session tag
-   * @param plaintext {string|Uint8Array} The plaintext to encrypt
+   * @param {keys.IdentityKey} identity_key - Public identity key of the local identity key pair
+   * @param {Array<number>} pending - Pending pre-key
+   * @param {message.SessionTag} tag - Session tag
+   * @param {string|Uint8Array} plaintext - The plaintext to encrypt
    * @returns {message.Envelope}
    */
   encrypt(identity_key, pending, tag, plaintext) {
@@ -195,8 +198,8 @@ class SessionState {
   }
 
   /**
-   * @param envelope {message.Envelope}
-   * @param msg {message.CipherMessage}
+   * @param {message.Envelope} envelope
+   * @param {message.CipherMessage} msg
    * @returns {Uint8Array}
    */
   decrypt(envelope, msg) {
@@ -256,7 +259,7 @@ class SessionState {
   }
 
   /**
-   * @param e {CBOR.Encoder}
+   * @param {CBOR.Encoder} e
    * @returns {CBOR.Encoder}
    */
   encode(e) {
@@ -273,7 +276,7 @@ class SessionState {
   }
 
   /**
-   * @param d {CBOR.Decoder}
+   * @param {CBOR.Decoder} d
    * @returns {session.SessionState}
    */
   static decode(d) {

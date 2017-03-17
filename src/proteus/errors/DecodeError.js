@@ -17,6 +17,8 @@
  *
  */
 
+/* eslint no-unused-vars: "off" */
+
 'use strict';
 
 const ProteusError = require('./ProteusError');
@@ -26,7 +28,7 @@ const ProteusError = require('./ProteusError');
 /** @extends ProteusError */
 class DecodeError extends ProteusError {
   /**
-   * @param message {string}
+   * @param {string} message
    * @returns {string}
    */
   constructor(message = 'Unknown decoding error') {
@@ -38,7 +40,7 @@ class DecodeError extends ProteusError {
 /** @extends DecryptError */
 class InvalidType extends DecodeError {
   /**
-   * @param message {string}
+   * @param {string} message
    * @returns {string}
    */
   constructor(message = 'Invalid type') {
@@ -50,7 +52,7 @@ class InvalidType extends DecodeError {
 /** @extends DecryptError */
 class InvalidArrayLen extends DecodeError {
   /**
-   * @param message {string}
+   * @param {string} message
    * @returns {string}
    */
   constructor(message = 'Invalid array length') {
@@ -62,7 +64,7 @@ class InvalidArrayLen extends DecodeError {
 /** @extends DecryptError */
 class LocalIdentityChanged extends DecodeError {
   /**
-   * @param message {string}
+   * @param {string} message
    * @returns {string}
    */
   constructor(message = 'Local identity changed') {

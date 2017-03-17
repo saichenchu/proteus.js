@@ -26,7 +26,9 @@ if (typeof window === 'undefined') {
   try {
     const sodium_neon = require('libsodium-neon');
     Object.assign(sodium, sodium_neon);
-  } catch (err) {}
+  } catch (err) {
+    // fall back to libsodium.js
+  }
 }
 
 const ClassUtil = require('../util/ClassUtil');
@@ -43,8 +45,8 @@ class SecretKey {
   }
 
   /**
-   * @param sec_edward {Uint8Array}
-   * @param sec_curve {Uint8Array}
+   * @param {Uint8Array} sec_edward
+   * @param {Uint8Array} sec_curve
    * @returns {*}
    */
   static new(sec_edward, sec_curve) {
@@ -63,8 +65,8 @@ class SecretKey {
   /**
    * This function can be used to compute a message signature.
    *
-   * @param message {string} Message to be signed
-   * @returns {Uint8Array} A message signature
+   * @param {string} message - Message to be signed
+   * @returns {Uint8Array} - A message signature
    */
   sign(message) {
     return sodium.crypto_sign_detached(message, this.sec_edward);
@@ -74,7 +76,7 @@ class SecretKey {
    * This function can be used to compute a shared secret given a user's secret key and another
    * user's public key.
    *
-   * @param public_key {keys.PublicKey} Another user's public key
+   * @param {keys.PublicKey} public_key - Another user's public key
    * @returns {Uint8Array} Array buffer view of the computed shared secret
    */
   shared_secret(public_key) {
@@ -84,7 +86,7 @@ class SecretKey {
   }
 
   /**
-   * @param e {CBOR.Encoder}
+   * @param {CBOR.Encoder} e
    * @returns {CBOR.Encoder}
    */
   encode(e) {
@@ -94,7 +96,7 @@ class SecretKey {
   }
 
   /**
-   * @param d {CBOR.Decoder}
+   * @param {CBOR.Decoder} d
    * @returns {keys.SecretKey}
    */
   static decode(d) {

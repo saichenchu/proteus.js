@@ -17,6 +17,8 @@
  *
  */
 
+/* eslint no-unused-vars: "off" */
+
 'use strict';
 
 const ProteusError = require('./ProteusError');
@@ -25,16 +27,16 @@ const ProteusError = require('./ProteusError');
 
 /** @extends ProteusError */
 class DecryptError extends ProteusError {
-  /** @param message {string} */
+  /** @param {string} message */
   constructor(message = 'Unknown decryption error') {
     super();
     this.message = message;
   }
-};
+}
 
 /** @extends DecryptError */
 class RemoteIdentityChanged extends DecryptError {
-  /** @param message {string} */
+  /** @param {string} message */
   constructor(message = 'Remote identity changed') {
     super();
     this.message = message;
@@ -43,7 +45,7 @@ class RemoteIdentityChanged extends DecryptError {
 
 /** @extends DecryptError */
 class InvalidSignature extends DecryptError {
-  /** @param message {string} */
+  /** @param {string} message */
   constructor(message = 'Invalid signature') {
     super();
     this.message = message;
@@ -52,16 +54,16 @@ class InvalidSignature extends DecryptError {
 
 /** @extends DecryptError */
 class InvalidMessage extends DecryptError {
-  /** @param message {string} */
+  /** @param {string} message */
   constructor(message = 'Invalid message') {
     super();
     this.message = message;
   }
-};
+}
 
 /** @extends DecryptError */
 class DuplicateMessage extends DecryptError {
-  /** @param message {string} */
+  /** @param {string} message */
   constructor(message = 'Duplicate message') {
     super();
     this.message = message;
@@ -70,7 +72,7 @@ class DuplicateMessage extends DecryptError {
 
 /** @extends DecryptError */
 class TooDistantFuture extends DecryptError {
-  /** @param message {string} */
+  /** @param {string} message */
   constructor(message = 'Message is from too distant in the future') {
     super();
     this.message = message;
@@ -79,7 +81,7 @@ class TooDistantFuture extends DecryptError {
 
 /** @extends DecryptError */
 class OutdatedMessage extends DecryptError {
-  /** @param message {string} */
+  /** @param {string} message */
   constructor(message = 'Outdated message') {
     super();
     this.message = message;
@@ -88,7 +90,7 @@ class OutdatedMessage extends DecryptError {
 
 /** @extends DecryptError */
 class PrekeyNotFound extends DecryptError {
-  /** @param message {string} */
+  /** @param {string} message */
   constructor(message = 'Pre-key not found') {
     super();
     this.message = message;

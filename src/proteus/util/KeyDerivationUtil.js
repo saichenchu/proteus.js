@@ -24,7 +24,9 @@ if (typeof window === 'undefined') {
   try {
     const sodium_neon = require('libsodium-neon');
     Object.assign(sodium, sodium_neon);
-  } catch (err) {}
+  } catch (err) {
+    // fall back to libsodium.js
+  }
 }
 
 const ArrayUtil = require('../util/ArrayUtil');
@@ -37,11 +39,10 @@ const KeyDerivationUtil = {
   /**
    * HMAC-based Key Derivation Function
    *
-   * @param salt {Uint8Array|string) Salt
-   * @param input {Uint8Array|string} Initial Keying Material (IKM)
-   * @param info {Uint8Array|string} Key Derivation Data (Info)
-   * @param length {number} Length of the derived key in bytes (L)
-   *
+   * @param {Uint8Array|string} salt
+   * @param {Uint8Array|string} input - Initial Keying Material (IKM)
+   * @param {Uint8Array|string} info - Key Derivation Data (Info)
+   * @param {number} length - Length of the derived key in bytes (L)
    * @returns {Uint8Array} Output Keying Material (OKM)
    */
   hkdf(salt, input, info, length) {
@@ -62,7 +63,7 @@ const KeyDerivationUtil = {
     const HASH_LEN = 32;
 
     /**
-     * @param salt {*}
+     * @param {*} salt
      * @returns {Uint8Array}
      */
     const salt_to_key = (salt) => {
@@ -77,8 +78,8 @@ const KeyDerivationUtil = {
     };
 
     /**
-     * @param salt {*}
-     * @param input {*}
+     * @param {*} salt
+     * @param {*} input
      * @returns {*}
      */
     const extract = (salt, input) => {
@@ -86,9 +87,9 @@ const KeyDerivationUtil = {
     };
 
     /**
-     * @param tag {*}
-     * @param info {*}
-     * @param length {number}
+     * @param {*} tag
+     * @param {*} info
+     * @param {number} length
      * @returns {Uint8Array}
      */
     const expand = (tag, info, length) => {
@@ -111,7 +112,7 @@ const KeyDerivationUtil = {
     MemoryUtil.zeroize(salt);
 
     return expand(key, info, length);
-  }
+  },
 };
 
 module.exports = KeyDerivationUtil;

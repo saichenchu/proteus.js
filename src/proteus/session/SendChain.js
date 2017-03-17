@@ -47,7 +47,7 @@ class SendChain {
   }
 
   /**
-   * @param e {CBOR.Encoder}
+   * @param {CBOR.Encoder} e
    * @returns {CBOR.Encoder}
    */
   encode(e) {
@@ -59,7 +59,7 @@ class SendChain {
   }
 
   /**
-   * @param d {CBOR.Decoder}
+   * @param {CBOR.Decoder} d
    * @returns {session.SendChain}
    */
   static decode(d) {

@@ -25,7 +25,9 @@ if (typeof window === 'undefined') {
   try {
     const sodium_neon = require('libsodium-neon');
     Object.assign(sodium, sodium_neon);
-  } catch (err) {}
+  } catch (err) {
+    // fall back to libsodium.js
+  }
 }
 
 const ClassUtil = require('../util/ClassUtil');
@@ -41,7 +43,7 @@ class CipherKey {
   }
 
   /**
-   * @param key {Uint8Array}
+   * @param {Uint8Array} key
    * @returns {derived.MacKey}
    */
   static new(key) {
@@ -54,8 +56,8 @@ class CipherKey {
   }
 
   /**
-   * @param plaintext {ArrayBuffer|String|Uint8Array} The text to encrypt
-   * @param nonce {Uint8Array} Counter as nonce
+   * @param {ArrayBuffer|String|Uint8Array} plaintext - The text to encrypt
+   * @param {Uint8Array} nonce - Counter as nonce
    * @returns {Uint8Array} Encrypted payload
    */
   encrypt(plaintext, nonce) {
@@ -68,8 +70,8 @@ class CipherKey {
   }
 
   /**
-   * @param ciphertext {Uint8Array}
-   * @param nonce {Uint8Array}
+   * @param {Uint8Array} ciphertext
+   * @param {Uint8Array} nonce
    * @returns {Uint8Array}
    */
   decrypt(ciphertext, nonce) {
@@ -77,7 +79,7 @@ class CipherKey {
   }
 
   /**
-   * @param e {CBOR.Encoder}
+   * @param {CBOR.Encoder} e
    * @returns {CBOR.Encoder}
    */
   encode(e) {
@@ -87,7 +89,7 @@ class CipherKey {
   }
 
   /**
-   * @param d {CBOR.Encoder}
+   * @param {CBOR.Encoder} d
    * @returns {derived.CipherKey}
    */
   static decode(d) {

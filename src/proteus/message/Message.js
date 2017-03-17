@@ -50,8 +50,8 @@ class Message {
   }
 
   /**
-   * @param buf {ArrayBuffer}
-   * @returns {message.Message}
+   * @param {ArrayBuffer} buf
+   * @returns {message.CipherMessage|message.PreKeyMessage}
    */
   static deserialise(buf) {
     TypeUtil.assert_is_instance(ArrayBuffer, buf);
@@ -69,9 +69,9 @@ class Message {
   }
 }
 
+module.exports = Message;
+
 // these require lines have to come after the Message definition because otherwise
 // it creates a circular dependency with the message subtypes
 const CipherMessage = require('./CipherMessage');
 const PreKeyMessage = require('./PreKeyMessage');
-
-module.exports = Message;

@@ -24,5 +24,5 @@
 module.exports = {
   INVALID: 'Invalid',
   UNKNOWN: 'Unknown',
-  VALID: 'Valid'
+  VALID: 'Valid',
 };

@@ -37,8 +37,8 @@ class Envelope {
   }
 
   /**
-   * @param mac_key {derived.MacKey}
-   * @param message {message.Message}
+   * @param {derived.MacKey} mac_key
+   * @param {message.Message} message
    * @returns {message.Envelope}
    */
   static new(mac_key, message) {
@@ -59,7 +59,7 @@ class Envelope {
   }
 
   /**
-   * @param mac_key {derived.MacKey}
+   * @param {derived.MacKey} mac_key
    * @returns {boolean}
    */
   verify(mac_key) {
@@ -75,7 +75,7 @@ class Envelope {
   }
 
   /**
-   * @param buf {ArrayBuffer}
+   * @param {ArrayBuffer} buf
    * @returns {message.Envelope}
    */
   static deserialise(buf) {
@@ -86,7 +86,7 @@ class Envelope {
   }
 
   /**
-   * @param e {CBOR.Encoder}
+   * @param {CBOR.Encoder} e
    * @returns {CBOR.Encoder}
    */
   encode(e) {
@@ -104,7 +104,7 @@ class Envelope {
   }
 
   /**
-   * @param d {CBOR.Decoder}
+   * @param {CBOR.Decoder} d
    * @returns {message.Envelope}
    */
   static decode(d) {
@@ -120,7 +120,7 @@ class Envelope {
           break;
         case 1:
           const nprops_mac = d.object();
-          for (let i = 0; i <= nprops_mac - 1; i++) {
+          for (let j = 0; j <= nprops_mac - 1; j++) {
             switch (d.u8()) {
               case 0:
                 env.mac = new Uint8Array(d.bytes());

@@ -41,10 +41,10 @@ class PreKeyMessage extends Message {
   }
 
   /**
-   * @param prekey_id {number}
-   * @param base_key {keys.PublicKey}
-   * @param identity_key {keys.IdentityKey}
-   * @param message {message.CipherMessage}
+   * @param {number} prekey_id
+   * @param {keys.PublicKey} base_key
+   * @param {keys.IdentityKey} identity_key
+   * @param {message.CipherMessage} message
    * @returns {message.PreKeyMessage}
    */
   static new(prekey_id, base_key, identity_key, message) {
@@ -65,7 +65,7 @@ class PreKeyMessage extends Message {
   }
 
   /**
-   * @param e {CBOR.Encoder}
+   * @param {CBOR.Encoder} e
    * @returns {CBOR.Encoder}
    */
   encode(e) {
@@ -81,7 +81,7 @@ class PreKeyMessage extends Message {
   }
 
   /**
-   * @param d {CBOR.Decoder}
+   * @param {CBOR.Decoder} d
    * @returns {message.PreKeyMessage}
    */
   static decode(d) {

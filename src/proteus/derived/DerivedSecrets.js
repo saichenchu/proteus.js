@@ -36,9 +36,9 @@ class DerivedSecrets {
   }
 
   /**
-   * @param input {Array<number>}
-   * @param salt {Uint8Array}
-   * @param info {string}
+   * @param {Array<number>} input
+   * @param {Uint8Array} salt
+   * @param {string} info
    * @returns {derived.DerivedSecrets}
    */
   static kdf(input, salt, info) {
@@ -60,8 +60,8 @@ class DerivedSecrets {
   }
 
   /**
-   * @param input {Array<number>} Initial key material (usually the Master Key) in byte array format
-   * @param info {string} Key Derivation Data
+   * @param {Array<number>} input - Initial key material (usually the Master Key) in byte array format
+   * @param {string} info - Key Derivation Data
    * @returns {derived.DerivedSecrets}
    */
   static kdf_without_salt(input, info) {

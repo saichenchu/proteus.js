@@ -29,7 +29,7 @@ const TypeUtil = require('../util/TypeUtil');
  */
 const ArrayUtil = {
   /**
-   * @param buffers {Array}
+   * @param {Array} buffers
    * @returns {Array}
    */
   concatenate_array_buffers(buffers) {
@@ -43,7 +43,10 @@ const ArrayUtil = {
     });
   },
 
-  /** @param array {Array} */
+  /**
+   * @param {Array} array
+   * @returns {void}
+   */
   assert_is_not_zeros(array) {
     let only_zeroes = true;
     for (let val in array) {
@@ -56,7 +59,7 @@ const ArrayUtil = {
     if (only_zeroes === true) {
       throw new ProteusError('Array consists only of zeroes.');
     }
-  }
+  },
 };
 
 module.exports = ArrayUtil;

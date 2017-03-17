@@ -61,8 +61,8 @@ class Session {
   }
 
   /*
-   * @param local_identity [IdentityKeyPair] Alice's Identity Key Pair
-   * @param remote_pkbundle [Proteus.keys.PreKeyBundle] Bob's Pre-Key Bundle
+   * @param {IdentityKeyPair} local_identity - Alice's Identity Key Pair
+   * @param {keys.PreKeyBundle} remote_pkbundle - Bob's Pre-Key Bundle
    */
   static init_from_prekey(local_identity, remote_pkbundle) {
     return new Promise((resolve) => {
@@ -158,7 +158,7 @@ class Session {
       this.session_states[tag] = {
         idx: this.counter,
         tag: tag,
-        state: state
+        state: state,
       };
       this.counter++;
     }
@@ -194,8 +194,8 @@ class Session {
   }
 
   /*
-   * @param plaintext [String, Uint8Array] The plaintext which needs to be encrypted
-   * @return [Proteus.message.Envelope] Encrypted message
+   * @param {String|Uint8Array} plaintext - The plaintext which needs to be encrypted
+   * @return {message.Envelope} Encrypted message
    */
   encrypt(plaintext) {
     return new Promise((resolve, reject) => {
@@ -298,7 +298,7 @@ class Session {
   }
 
   /**
-   * @param e {CBOR.Encoder}
+   * @param {CBOR.Encoder} e
    * @returns {CBOR.Encoder}
    */
   encode(e) {
@@ -387,7 +387,7 @@ class Session {
             self.session_states[tag] = {
               idx: i,
               tag: tag,
-              state: SessionState.decode(d)
+              state: SessionState.decode(d),
             };
           }
           break;

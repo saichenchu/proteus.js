@@ -25,19 +25,19 @@ const DontCallConstructor = require('../errors/DontCallConstructor');
 
 const ClassUtil = {
   /**
-   * @param klass
-   * @returns {Function}
+   * @param {*} klass
+   * @returns {*}
    */
   new_instance(klass) {
     try {
       return new klass();
-    } catch(e) {
+    } catch (e) {
       if (!(e instanceof DontCallConstructor)) {
         throw e;
       }
       return e._instance;
     }
-  }
+  },
 };
 
 module.exports = ClassUtil;

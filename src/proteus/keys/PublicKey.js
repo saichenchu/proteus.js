@@ -26,7 +26,9 @@ if (typeof window === 'undefined') {
   try {
     const sodium_neon = require('libsodium-neon');
     Object.assign(sodium, sodium_neon);
-  } catch (err) {}
+  } catch (err) {
+    // fall back to libsodium.js
+  }
 }
 
 const ClassUtil = require('../util/ClassUtil');
@@ -42,8 +44,8 @@ class PublicKey {
   }
 
   /**
-   * @param pub_edward {Uint8Array}
-   * @param pub_curve {Uint8Array}
+   * @param {Uint8Array} pub_edward
+   * @param {Uint8Array} pub_curve
    * @returns {keys.PublicKey}
    */
   static new(pub_edward, pub_curve) {
@@ -63,8 +65,8 @@ class PublicKey {
   /**
    * This function can be used to verify a message signature.
    *
-   * @param signature {Uint8Array} The signature to verify
-   * @param message {string} The message from which the signature was computed.
+   * @param {Uint8Array} signature - The signature to verify
+   * @param {string} message - The message from which the signature was computed.
    * @returns {boolean} `true` if the signature is valid, `false` otherwise.
    */
   verify(signature, message) {
@@ -78,7 +80,7 @@ class PublicKey {
   }
 
   /**
-   * @param e {CBOR.Encoder}
+   * @param {CBOR.Encoder} e
    * @returns {CBOR.Encoder}
    */
   encode(e) {
@@ -88,7 +90,7 @@ class PublicKey {
   }
 
   /**
-   * @param d {CBOR.Decoder}
+   * @param {CBOR.Decoder} d
    * @returns {keys.PublicKey}
    */
   static decode(d) {

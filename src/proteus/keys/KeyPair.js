@@ -26,7 +26,9 @@ if (typeof window === 'undefined') {
   try {
     const sodium_neon = require('libsodium-neon');
     Object.assign(sodium, sodium_neon);
-  } catch (err) {}
+  } catch (err) {
+    // fall back to libsodium.js
+  }
 }
 
 const ClassUtil = require('../util/ClassUtil');
@@ -61,7 +63,7 @@ class KeyPair {
   /**
    * @description Ed25519 keys can be converted to Curve25519 keys, so that the same key pair can be
    * used both for authenticated encryption (crypto_box) and for signatures (crypto_sign).
-   * @param ed25519_key_pair {Uint8Array} Key pair based on Edwards-curve (Ed25519)
+   * @param {Uint8Array} ed25519_key_pair - Key pair based on Edwards-curve (Ed25519)
    * @returns {keys.SecretKey} Constructed private key
    * @see https://download.libsodium.org/doc/advanced/ed25519-curve25519.html
    */
@@ -72,7 +74,7 @@ class KeyPair {
   }
 
   /**
-   * @param ed25519_key_pair {libsodium.KeyPair} Key pair based on Edwards-curve (Ed25519)
+   * @param {libsodium.KeyPair} ed25519_key_pair - Key pair based on Edwards-curve (Ed25519)
    * @returns {keys.PublicKey} Constructed public key
    */
   _construct_public_key(ed25519_key_pair) {
@@ -82,7 +84,7 @@ class KeyPair {
   }
 
   /**
-   * @param e {CBOR.Encoder}
+   * @param {CBOR.Encoder} e
    * @returns {CBOR.Encoder}
    */
   encode(e) {
@@ -96,7 +98,7 @@ class KeyPair {
   }
 
   /**
-   * @param d {CBOR.Decoder}
+   * @param {CBOR.Decoder} d
    * @returns {keys.KeyPair}
    */
   static decode(d) {

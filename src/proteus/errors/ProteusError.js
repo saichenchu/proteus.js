@@ -24,19 +24,23 @@
 /**
  * @class ProteusError
  * @extends Error
+ * @returns ProteusError
  */
-module.exports = (function() {
+const ProteusError = (function() {
   /**
-   * @param message {string}
+   * @param {string} message
+   * @returns {void}
    */
-  const ProteusError = function(message) {
+  const func = function(message) {
     this.name = this.constructor.name;
     this.message = message;
     this.stack = (new Error).stack;
   };
 
-  ProteusError.prototype = new Error;
-  ProteusError.prototype.constructor = ProteusError;
+  func.prototype = new Error;
+  func.prototype.constructor = func;
 
-  return ProteusError;
+  return func;
 })();
+
+module.exports = ProteusError;

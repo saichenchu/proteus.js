@@ -21,26 +21,24 @@
 
 /** @module util */
 
-const RandomUtil = (() => {
-  let crypto = (typeof window !== 'undefined') && (window.crypto || window.msCrypto);
-  if (crypto) {
-    // browser
-    return {
-      random_bytes(len) {
-        const buffer = new ArrayBuffer(len);
-        const buffer_view = new Uint8Array(buffer);
-        return crypto.getRandomValues(buffer_view);
-      }
-    };
-  } else {
-    // node
-    crypto = require('crypto');
-    return {
-      random_bytes(len) {
-        return new Uint8Array(crypto.randomBytes(len));
-      }
-    };
-  }
-})();
+let crypto = (typeof window !== 'undefined') && (window.crypto || window.msCrypto);
+let random_bytes;
 
-module.exports = RandomUtil;
+if (crypto) {
+  // browser
+  random_bytes = (len) => {
+    const buffer = new ArrayBuffer(len);
+    const buffer_view = new Uint8Array(buffer);
+    return crypto.getRandomValues(buffer_view);
+  };
+} else {
+  // node
+  crypto = require('crypto');
+  random_bytes = (len) => {
+    return new Uint8Array(crypto.randomBytes(len));
+  };
+}
+
+module.exports = {
+  random_bytes
+};

@@ -37,9 +37,9 @@ class MessageKeys {
   }
 
   /**
-   * @param cipher_key {derived.CipherKey}
-   * @param mac_key {derived.MacKey}
-   * @param counter {number}
+   * @param {derived.CipherKey} cipher_key
+   * @param {derived.MacKey} mac_key
+   * @param {number} counter
    * @returns {session.MessageKeys}
    */
   static new(cipher_key, mac_key, counter) {
@@ -65,7 +65,7 @@ class MessageKeys {
   }
 
   /**
-   * @param plaintext {string|Uint8Array}
+   * @param {string|Uint8Array} plaintext
    * @returns {Uint8Array}
    */
   encrypt(plaintext) {
@@ -73,7 +73,7 @@ class MessageKeys {
   }
 
   /**
-   * @param ciphertext {Uint8Array}
+   * @param {Uint8Array} ciphertext
    * @returns {Uint8Array}
    */
   decrypt(ciphertext) {
@@ -81,7 +81,7 @@ class MessageKeys {
   }
 
   /**
-   * @param e {CBOR.Encoder}
+   * @param {CBOR.Encoder} e
    * @returns {CBOR.Encoder}
    */
   encode(e) {
@@ -95,7 +95,7 @@ class MessageKeys {
   }
 
   /**
-   * @param d {CBOR.Decoder}
+   * @param {CBOR.Decoder} d
    * @returns {session.MessageKeys}
    */
   static decode(d) {

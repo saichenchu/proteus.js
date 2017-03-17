@@ -28,12 +28,18 @@ class PreKeyStore {
     this.prekeys = [];
   }
 
-  /** @param prekey_id {number} */
+  /**
+   * @param {number} prekey_id
+   * @returns {void}
+   */
   get_prekey(prekey_id) {
     throw Error('Virtual function unimplemented');
   }
 
-  /** @param prekey_id {number} */
+  /**
+   * @param {number} prekey_id
+   * @returns {void}
+   */
   remove(prekey_id) {
     throw Error('Virtual function unimplemented');
   }

@@ -25,7 +25,9 @@ if (typeof window === 'undefined') {
   try {
     const sodium_neon = require('libsodium-neon');
     Object.assign(sodium, sodium_neon);
-  } catch (err) {}
+  } catch (err) {
+    // fall back to libsodium.js
+  }
 }
 
 const ClassUtil = require('../util/ClassUtil');
@@ -47,7 +49,7 @@ class IdentityKey {
   }
 
   /**
-   * @param public_key {keys.IdentityKey}
+   * @param {keys.IdentityKey} public_key
    * @returns {keys.IdentityKey}
    */
   static new(public_key) {
@@ -69,7 +71,7 @@ class IdentityKey {
   }
 
   /**
-   * @param e {CBOR.Encoder}
+   * @param {CBOR.Encoder} e
    * @returns {CBOR.Encoder}
    */
   encode(e) {
@@ -79,7 +81,7 @@ class IdentityKey {
   }
 
   /**
-   * @param d {CBOR.Decoder}
+   * @param {CBOR.Decoder} d
    * @returns {keys.IdentityKey}
    */
   static decode(d) {

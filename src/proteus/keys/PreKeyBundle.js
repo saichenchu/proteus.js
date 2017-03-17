@@ -25,7 +25,9 @@ if (typeof window === 'undefined') {
   try {
     const sodium_neon = require('libsodium-neon');
     Object.assign(sodium, sodium_neon);
-  } catch (err) {}
+  } catch (err) {
+    // fall back to libsodium.js
+  }
 }
 
 const ClassUtil = require('../util/ClassUtil');
@@ -47,14 +49,15 @@ class PreKeyBundle {
   }
 
   /**
-   * @param public_identity_key {keys.IdentityKey}
-   * @param prekey {keys.PreKey}
+   * @param {keys.IdentityKey} public_identity_key
+   * @param {keys.PreKey} prekey
    * @returns {keys.PreKeyBundle}
    */
   static new(public_identity_key, prekey) {
     TypeUtil.assert_is_instance(IdentityKey, public_identity_key);
     TypeUtil.assert_is_instance(PreKey, prekey);
 
+    /** @type {keys.PreyKeyBundle} */
     const bundle = ClassUtil.new_instance(PreKeyBundle);
 
     bundle.version = 1;
@@ -67,8 +70,8 @@ class PreKeyBundle {
   }
 
   /**
-   * @param identity_pair {keys.IdentityKeyPair}
-   * @param prekey {keys.PreKey}
+   * @param {keys.IdentityKeyPair} identity_pair
+   * @param {keys.PreKey} prekey
    * @returns {keys.PreKeyBundle}
    */
   static signed(identity_pair, prekey) {
@@ -115,12 +118,12 @@ class PreKeyBundle {
   serialised_json() {
     return {
       'id': this.prekey_id,
-      'key': sodium.to_base64(new Uint8Array(this.serialise()), true)
+      'key': sodium.to_base64(new Uint8Array(this.serialise()), true),
     };
   }
 
   /**
-   * @param buf {ArrayBuffer}
+   * @param {ArrayBuffer} buf
    * @returns {keys.PreKeyBundle}
    */
   static deserialise(buf) {
@@ -129,7 +132,7 @@ class PreKeyBundle {
   }
 
   /**
-   * @param e {CBOR.Encoder}
+   * @param {CBOR.Encoder} e
    * @returns {CBOR.Encoder}
    */
   encode(e) {
@@ -154,7 +157,7 @@ class PreKeyBundle {
   }
 
   /**
-   * @param d {CBOR.Decoder}
+   * @param {CBOR.Decoder} d
    * @returns {keys.PreKeyBundle}
    */
   static decode(d) {

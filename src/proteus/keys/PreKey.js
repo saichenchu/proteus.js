@@ -39,7 +39,7 @@ class PreKey {
   }
 
   /**
-   * @param pre_key_id {number}
+   * @param {number} pre_key_id
    * @returns {keys.PreKey}
    */
   static new(pre_key_id) {
@@ -65,8 +65,8 @@ class PreKey {
   }
 
   /**
-   * @param start {number}
-   * @param size {number}
+   * @param {number} start
+   * @param {number} size
    * @returns {Array<keys.PreKey>}
    */
   static generate_prekeys(start, size) {
@@ -98,7 +98,7 @@ class PreKey {
   }
 
   /**
-   * @param buf {ArrayBuffer}
+   * @param {ArrayBuffer} buf
    * @returns {keys.PreKey}
    */
   static deserialise(buf) {
@@ -107,7 +107,7 @@ class PreKey {
   }
 
   /**
-   * @param e {CBOR.Encoder}
+   * @param {CBOR.Encoder} e
    * @returns {CBOR.Encoder}
    */
   encode(e) {
@@ -122,7 +122,7 @@ class PreKey {
   }
 
   /**
-   * @param d {CBOR.Decoder}
+   * @param {CBOR.Decoder} d
    * @returns {keys.PreKey}
    */
   static decode(d) {

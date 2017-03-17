@@ -40,11 +40,11 @@ class CipherMessage extends Message {
   }
 
   /**
-   * @param session_tag {message.SessionTag}
-   * @param counter {number}
-   * @param prev_counter {number}
-   * @param ratchet_key {keys.PublicKey}
-   * @param cipher_text {Uint8Array}
+   * @param {message.SessionTag} session_tag
+   * @param {number} counter
+   * @param {number} prev_counter
+   * @param {keys.PublicKey} ratchet_key
+   * @param {Uint8Array} cipher_text
    * @returns {message.CipherMessage}
    */
   static new(session_tag, counter, prev_counter, ratchet_key, cipher_text) {
@@ -67,7 +67,7 @@ class CipherMessage extends Message {
   }
 
   /**
-   * @param e {CBOR.Encoder}
+   * @param {CBOR.Encoder} e
    * @returns {CBOR.Encoder}
    */
   encode(e) {
@@ -85,7 +85,7 @@ class CipherMessage extends Message {
   }
 
   /**
-   * @param d {CBOR.Decoder}
+   * @param {CBOR.Decoder} d
    * @returns {message.CipherMessage}
    */
   static decode(d) {
@@ -122,6 +122,6 @@ class CipherMessage extends Message {
 
     return CipherMessage.new(session_tag, counter, prev_counter, ratchet_key, cipher_text);
   }
-};
+}
 
 module.exports = CipherMessage;

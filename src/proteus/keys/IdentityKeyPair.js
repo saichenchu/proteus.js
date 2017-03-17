@@ -58,7 +58,7 @@ class IdentityKeyPair {
   }
 
   /**
-   * @param buf {ArrayBuffer}
+   * @param {ArrayBuffer} buf
    * @returns {keys.IdentityKeyPair}
    */
   static deserialise(buf) {
@@ -69,7 +69,7 @@ class IdentityKeyPair {
   }
 
   /**
-   * @param e {CBOR.Encoder}
+   * @param {CBOR.Encoder} e
    * @returns {CBOR.Encoder}
    */
   encode(e) {
@@ -83,7 +83,7 @@ class IdentityKeyPair {
   }
 
   /**
-   * @param d {CBOR.Decoder}
+   * @param {CBOR.Decoder} d
    * @returns {keys.IdentityKeyPair}
    */
   static decode(d) {

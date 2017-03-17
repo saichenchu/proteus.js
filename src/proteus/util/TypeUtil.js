@@ -23,8 +23,9 @@
 
 const TypeUtil = {
   /**
-   * @param classes {*}
-   * @param inst {*}
+   * @param {*} classes
+   * @param {*} inst
+   * @returns {void}
    */
   assert_is_instance(classes, inst) {
     if (!Array.isArray(classes)) {
@@ -40,7 +41,7 @@ const TypeUtil = {
     throw TypeError(`Expected one of ${valid_types}, got '${String(inst)}'.`);
   },
   /**
-   * @param inst {*}
+   * @param {*} inst
    * @returns {boolean}
    */
   assert_is_integer(inst) {
@@ -51,7 +52,7 @@ const TypeUtil = {
       throw new TypeError(`Expected integer, got '${inst.constructor.name}'.`);
     }
     throw new TypeError(`Expected integer, got '${String(inst)}'.`);
-  }
+  },
 };
 
 module.exports = TypeUtil;

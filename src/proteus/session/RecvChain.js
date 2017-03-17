@@ -45,8 +45,8 @@ class RecvChain {
   }
 
   /**
-   * @param chain_key {session.ChainKey}
-   * @param public_key {keys.PublicKey}
+   * @param {session.ChainKey} chain_key
+   * @param {keys.PublicKey} public_key
    * @returns {message.PreKeyMessage}
    */
   static new(chain_key, public_key) {
@@ -61,8 +61,8 @@ class RecvChain {
   }
 
   /**
-   * @param envelope {message.Envelope}
-   * @param msg {message.CipherMessage}
+   * @param {message.Envelope} envelope
+   * @param {message.CipherMessage} msg
    * @returns {Uint8Array}
    */
   try_message_keys(envelope, msg) {
@@ -90,7 +90,7 @@ class RecvChain {
   }
 
   /**
-   * @param msg {message.CipherMessage}
+   * @param {message.CipherMessage} msg
    * @returns {Array<session.ChainKey>|session.MessageKeys}
    */
   stage_message_keys(msg) {
@@ -113,7 +113,10 @@ class RecvChain {
     return [chk, mk, keys];
   }
 
-  /** @param keys {Array<session.MessageKeys>} */
+  /**
+   * @param {Array<session.MessageKeys>} keys
+   * @returns {void}
+   */
   commit_message_keys(keys) {
     TypeUtil.assert_is_instance(Array, keys);
     keys.map((k) => TypeUtil.assert_is_instance(MessageKeys, k));
@@ -136,7 +139,7 @@ class RecvChain {
   }
 
   /**
-   * @param e {CBOR.Encoder}
+   * @param {CBOR.Encoder} e
    * @returns {Array<CBOR.Encoder>}
    */
   encode(e) {
@@ -152,7 +155,7 @@ class RecvChain {
   }
 
   /**
-   * @param d {CBOR.Decoder}
+   * @param {CBOR.Decoder} d
    * @returns {session.RecvChain}
    */
   static decode(d) {
