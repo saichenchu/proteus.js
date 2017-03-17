@@ -40,5 +40,5 @@ if (crypto) {
 }
 
 module.exports = {
-  random_bytes
+  random_bytes,
 };
