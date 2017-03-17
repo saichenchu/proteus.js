@@ -191,11 +191,13 @@ module errors {
    /**
     * @class ProteusError
     * @extends Error
+    * @returns ProteusError
     */
    class ProteusError extends Error {
        /**
         * @class ProteusError
         * @extends Error
+        * @returns ProteusError
         */
        constructor();
 
@@ -286,8 +288,8 @@ module keys {
         */
        constructor();
 
-       /** @returns {key.KeyPair} */
-       static new(): key.KeyPair;
+       /** @returns {keys.KeyPair} */
+       static new(): keys.KeyPair;
 
        /**
         * @description Ed25519 keys can be converted to Curve25519 keys, so that the same key pair can be
@@ -330,6 +332,11 @@ module keys {
        constructor();
 
        /**
+        * @returns {number}
+        */
+       static MAX_PREKEY_ID: any;
+
+       /**
         * @param {number} pre_key_id
         * @returns {keys.PreKey}
         */
@@ -366,11 +373,12 @@ module keys {
         */
        static decode(d: CBOR.Decoder): keys.PreKey;
 
-       /**
-        * @static
-        * @type {number}
-        */
-       static MAX_PREKEY_ID: number;
+   }
+
+   /** @class PreKeyAuth */
+   class PreKeyAuth {
+       /** @class PreKeyAuth */
+       constructor();
 
    }
 
@@ -587,9 +595,9 @@ module message {
 
        /**
         * @param {ArrayBuffer} buf
-        * @returns {message.Message}
+        * @returns {message.CipherMessage|message.PreKeyMessage}
         */
-       static deserialise(buf: ArrayBuffer): message.Message;
+       static deserialise(buf: ArrayBuffer): (message.CipherMessage|message.PreKeyMessage);
 
    }
 
@@ -732,10 +740,16 @@ module session {
        /** @class PreKeyStore */
        constructor();
 
-       /** @param {number} prekey_id */
+       /**
+        * @param {number} prekey_id
+        * @returns {void}
+        */
        get_prekey(prekey_id: number): void;
 
-       /** @param {number} prekey_id */
+       /**
+        * @param {number} prekey_id
+        * @returns {void}
+        */
        remove(prekey_id: number): void;
 
    }
@@ -765,7 +779,10 @@ module session {
         */
        stage_message_keys(msg: message.CipherMessage): (session.ChainKey[]|session.MessageKeys);
 
-       /** @param {Array<session.MessageKeys>} keys */
+       /**
+        * @param {Array<session.MessageKeys>} keys
+        * @returns {void}
+        */
        commit_message_keys(keys: session.MessageKeys[]): void;
 
        /**
@@ -842,16 +859,96 @@ module session {
        constructor();
 
        /**
+        * @returns {number}
+        */
+       static MAX_RECV_CHAINS: any;
+
+       /**
+        * @returns {number}
+        */
+       static MAX_SESSION_STATES: any;
+
+       /**
+        * @param {keys.IdentityKeyPair} local_identity - Alice's Identity Key Pair
+        * @param {keys.PreKeyBundle} remote_pkbundle - Bob's Pre-Key Bundle
+        */
+       static init_from_prekey(local_identity: keys.IdentityKeyPair, remote_pkbundle: keys.PreKeyBundle): void;
+
+       /**
+        * @param {keys.IdentityKeyPair} our_identity
+        * @param {session.PreKeyStore} prekey_store
+        * @param {message.Envelope} envelope
+        * @returns {Promise}
+        */
+       static init_from_message(our_identity: keys.IdentityKeyPair, prekey_store: session.PreKeyStore, envelope: message.Envelope): Promise;
+
+       /**
+        * @param {session.PreKeyStore} pre_key_store
+        * @param {message.PreKeyMessage} pre_key_message
+        * @returns {Promise}
+        * @private
+        */
+       private _new_state(pre_key_store: session.PreKeyStore, pre_key_message: message.PreKeyMessage): Promise;
+
+       /**
+        * @param {message.SessionTag} tag
+        * @param {session.SessionState} state
+        * @returns {boolean}
+        * @private
+        */
+       private _insert_session_state(tag: message.SessionTag, state: session.SessionState): boolean;
+
+       /**
+        * @returns {void}
+        * @private
+        */
+       private _evict_oldest_session_state(): void;
+
+       /** @returns {keys.PublicKey} */
+       get_local_identity(): keys.PublicKey;
+
+       /**
+        * @param {String|Uint8Array} plaintext - The plaintext which needs to be encrypted
+        * @return {Promise<message.Envelope>} Encrypted message
+        */
+       encrypt(plaintext: (String|Uint8Array)): Promise<message.Envelope>;
+
+       /**
+        * @param {session.PreKeyStore} prekey_store
+        * @param {message.Envelope} envelope
+        * @returns {Promise}
+        */
+       decrypt(prekey_store: session.PreKeyStore, envelope: message.Envelope): Promise;
+
+       /**
+        * @param {message.Envelope} envelope
+        * @param {message.Message} msg
+        * @param {session.PreKeyStore} prekey_store
+        * @returns {Promise}
+        * @private
+        */
+       private _decrypt_prekey_message(envelope: message.Envelope, msg: message.Message, prekey_store: session.PreKeyStore): Promise;
+
+       /**
+        * @param {message.Envelope} envelope
+        * @param {message.Message} msg
+        * @returns {string}
+        * @private
+        */
+       private _decrypt_cipher_message(envelope: message.Envelope, msg: message.Message): string;
+
+       /**
         * @param {CBOR.Encoder} e
         * @returns {CBOR.Encoder}
         */
        encode(e: CBOR.Encoder): CBOR.Encoder;
 
-       /** @type {number} */
-       static MAX_RECV_CHAINS: number;
-
-       /** @type {number} */
-       static MAX_SESSION_STATES: number;
+       /**
+        * @param {keys.IdentityKeyPair} local_identity
+        * @param {CBOR.Decoder} d
+        * @returns {session.Session}
+        */
+       static decode(local_identity: keys.IdentityKeyPair, d: CBOR.Decoder): session.Session;
 
    }
 
@@ -877,7 +974,10 @@ module session {
         */
        static init_as_bob(bob_ident: keys.IdentityKeyPair, bob_prekey: keys.KeyPair, alice_ident: keys.IdentityKey, alice_base: keys.PublicKey): session.SessionState;
 
-       /** @param {keys.KeyPair} ratchet_key */
+       /**
+        * @param {keys.KeyPair} ratchet_key
+        * @returns {void}
+        */
        ratchet(ratchet_key: keys.KeyPair): void;
 
        /**
@@ -921,6 +1021,16 @@ module util {
     * Concatenates array buffers (usually 8-bit unsigned).
     */
    const ArrayUtil: any;
+
+   /** @class RandomUtil */
+   class RandomUtil {
+       /** @class RandomUtil */
+       constructor();
+
+       /** @returns {Uint8Array} */
+       random_bytes(): Uint8Array;
+
+   }
 
 }
 

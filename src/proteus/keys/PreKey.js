@@ -29,6 +29,8 @@ const KeyPair = require('./KeyPair');
 
 /** @module keys **/
 
+const MAX_PREKEY_ID = 0xFFFF;
+
 /**
  * @classdesc Pre-generated (and regularly refreshed) pre-keys.
  * A Pre-Shared Key contains the public long-term identity and ephemeral handshake keys for the initial triple DH.
@@ -36,6 +38,13 @@ const KeyPair = require('./KeyPair');
 class PreKey {
   constructor() {
     throw new DontCallConstructor(this);
+  }
+
+  /**
+   * @returns {number}
+   */
+  static get MAX_PREKEY_ID() {
+    return MAX_PREKEY_ID;
   }
 
   /**
@@ -155,9 +164,4 @@ class PreKey {
   }
 }
 
-/**
- * @static
- * @type {number}
- */
-PreKey.MAX_PREKEY_ID = 0xFFFF;
 module.exports = PreKey;

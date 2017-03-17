@@ -49,7 +49,7 @@ class KeyPair {
     throw new DontCallConstructor(this);
   }
 
-  /** @returns {key.KeyPair} */
+  /** @returns {keys.KeyPair} */
   static new() {
     const ed25519_key_pair = sodium.crypto_sign_keypair();
 

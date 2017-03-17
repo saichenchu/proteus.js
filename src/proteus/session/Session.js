@@ -46,6 +46,9 @@ const PreKeyStore = require('./PreKeyStore');
 
 /** @module session */
 
+const MAX_RECV_CHAINS = 5;
+const MAX_SESSION_STATES = 100;
+
 /** @class Session */
 class Session {
   constructor() {
@@ -60,8 +63,22 @@ class Session {
     throw new DontCallConstructor(this);
   }
 
-  /*
-   * @param {IdentityKeyPair} local_identity - Alice's Identity Key Pair
+  /**
+   * @returns {number}
+   */
+  static get MAX_RECV_CHAINS() {
+    return MAX_RECV_CHAINS;
+  }
+
+  /**
+   * @returns {number}
+   */
+  static get MAX_SESSION_STATES() {
+    return MAX_SESSION_STATES;
+  }
+
+  /**
+   * @param {keys.IdentityKeyPair} local_identity - Alice's Identity Key Pair
    * @param {keys.PreKeyBundle} remote_pkbundle - Bob's Pre-Key Bundle
    */
   static init_from_prekey(local_identity, remote_pkbundle) {
@@ -87,6 +104,12 @@ class Session {
     });
   }
 
+  /**
+   * @param {keys.IdentityKeyPair} our_identity
+   * @param {session.PreKeyStore} prekey_store
+   * @param {message.Envelope} envelope
+   * @returns {Promise}
+   */
   static init_from_message(our_identity, prekey_store, envelope) {
     return new Promise((resolve, reject) => {
       TypeUtil.assert_is_instance(IdentityKeyPair, our_identity);
@@ -131,6 +154,12 @@ class Session {
     });
   }
 
+  /**
+   * @param {session.PreKeyStore} pre_key_store
+   * @param {message.PreKeyMessage} pre_key_message
+   * @returns {Promise}
+   * @private
+   */
   _new_state(pre_key_store, pre_key_message) {
     return pre_key_store.get_prekey(pre_key_message.prekey_id)
     .then((pre_key) => {
@@ -146,6 +175,12 @@ class Session {
     });
   }
 
+  /**
+   * @param {message.SessionTag} tag
+   * @param {session.SessionState} state
+   * @returns {boolean}
+   * @private
+   */
   _insert_session_state(tag, state) {
     if (this.session_states.hasOwnProperty(tag)) {
       this.session_states[tag].state = state;
@@ -178,6 +213,10 @@ class Session {
     return this._evict_oldest_session_state();
   }
 
+  /**
+   * @returns {void}
+   * @private
+   */
   _evict_oldest_session_state() {
     const oldest = Object.keys(this.session_states)
     .filter((obj) => obj.toString() !== this.session_tag)
@@ -189,13 +228,14 @@ class Session {
     delete this.session_states[oldest];
   }
 
+  /** @returns {keys.PublicKey} */
   get_local_identity() {
     return this.local_identity.public_key;
   }
 
-  /*
+  /**
    * @param {String|Uint8Array} plaintext - The plaintext which needs to be encrypted
-   * @return {message.Envelope} Encrypted message
+   * @return {Promise<message.Envelope>} Encrypted message
    */
   encrypt(plaintext) {
     return new Promise((resolve, reject) => {
@@ -215,6 +255,11 @@ class Session {
     });
   }
 
+  /**
+   * @param {session.PreKeyStore} prekey_store
+   * @param {message.Envelope} envelope
+   * @returns {Promise}
+   */
   decrypt(prekey_store, envelope) {
     return new Promise((resolve) => {
       TypeUtil.assert_is_instance(PreKeyStore, prekey_store);
@@ -237,6 +282,13 @@ class Session {
     });
   }
 
+  /**
+   * @param {message.Envelope} envelope
+   * @param {message.Message} msg
+   * @param {session.PreKeyStore} prekey_store
+   * @returns {Promise}
+   * @private
+   */
   _decrypt_prekey_message(envelope, msg, prekey_store) {
     return Promise.resolve()
     .then(() => this._decrypt_cipher_message(envelope, msg.message))
@@ -261,6 +313,12 @@ class Session {
     });
   }
 
+  /**
+   * @param {message.Envelope} envelope
+   * @param {message.Message} msg
+   * @returns {string}
+   * @private
+   */
   _decrypt_cipher_message(envelope, msg) {
     let state = this.session_states[msg.session_tag];
     if (!state) {
@@ -333,6 +391,11 @@ class Session {
     }
   }
 
+  /**
+   * @param {keys.IdentityKeyPair} local_identity
+   * @param {CBOR.Decoder} d
+   * @returns {session.Session}
+   */
   static decode(local_identity, d) {
     TypeUtil.assert_is_instance(IdentityKeyPair, local_identity);
     TypeUtil.assert_is_instance(CBOR.Decoder, d);
@@ -405,11 +468,6 @@ class Session {
     return self;
   }
 }
-
-/** @type {number} */
-Session.MAX_RECV_CHAINS = 5;
-/** @type {number} */
-Session.MAX_SESSION_STATES = 100;
 
 module.exports = Session;
 

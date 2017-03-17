@@ -21,8 +21,25 @@
 
 /** @module keys */
 
-module.exports = {
+const staticValues = {
   INVALID: 'Invalid',
   UNKNOWN: 'Unknown',
   VALID: 'Valid',
 };
+
+/** @class PreKeyAuth */
+class PreKeyAuth {
+  static get INVALID() {
+    return staticValues.INVALID;
+  }
+
+  static get UNKNOWN() {
+    return staticValues.UNKNOWN;
+  }
+
+  static get VALID() {
+    return staticValues.VALID;
+  }
+}
+
+module.exports = PreKeyAuth;

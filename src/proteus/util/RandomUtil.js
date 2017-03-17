@@ -40,5 +40,6 @@ if (crypto) {
 }
 
 module.exports = {
-  random_bytes,
+  /** @returns {Uint8Array} */
+  random_bytes
 };
