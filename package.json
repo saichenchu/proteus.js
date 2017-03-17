@@ -33,6 +33,6 @@
     "prepublish": "npm run bundle && npm test",
     "test": "mocha -s 30000 -t 30000 --recursive test/harness.js test --trace-warnings"
   },
-  "typings": "dist/typings/proteus.d.ts",
+  "typings": "dist/typings/types.d.ts",
   "version": "5.0.0"
 }
