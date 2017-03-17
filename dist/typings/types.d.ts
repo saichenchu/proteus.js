@@ -7,9 +7,9 @@ module derived {
 
        /**
         * @param {Uint8Array} key
-        * @returns {derived.MacKey}
+        * @returns {derived.CipherKey}
         */
-       static new(key: Uint8Array): derived.MacKey;
+       static new(key: Uint8Array): derived.CipherKey;
 
        /**
         * @param {ArrayBuffer|String|Uint8Array} plaintext - The text to encrypt

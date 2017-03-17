@@ -44,7 +44,7 @@ class CipherKey {
 
   /**
    * @param {Uint8Array} key
-   * @returns {derived.MacKey}
+   * @returns {derived.CipherKey}
    */
   static new(key) {
     TypeUtil.assert_is_instance(Uint8Array, key);

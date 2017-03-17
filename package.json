@@ -2,7 +2,7 @@
   "dependencies": {
     "ed2curve": "0.2.1",
     "libsodium-wrappers-sumo": "0.4.9",
-    "wire-webapp-cbor": "1.1.1"
+    "wire-webapp-cbor": "^1.1.1"
   },
   "description": "Axolotl protocol implementation for JavaScript.",
   "devDependencies": {
@@ -28,7 +28,7 @@
   "scripts": {
     "bundle": "npm run copy && webpack --progress",
     "copy": "cpx 'src/**/*' dist/commonjs",
-    "generate": "jsdoc --verbose --pedantic --configure jsdoc.json src/",
+    "types": "jsdoc --verbose --pedantic --configure jsdoc.json src/",
     "lint": "eslint src/",
     "prepublish": "npm run bundle && npm test",
     "test": "mocha -s 30000 -t 30000 --recursive test/harness.js test --trace-warnings"
